@@ -3,8 +3,10 @@ Type: Package
 Title: 
 Version: 0.0.1
 Date: 11/06/15
-Author: Tim Lucas, Dave Redding
-Maintainer: Tim Lucas <timcdlucas@gmail.com>
+Authors@R: as.person(c(
+    "Tim Lucas <timcdlucas@gmail.com> [aut, cre]", 
+    "Dave Redding <dwredding@gmail.com> [aut]"
+  ))
 Description: 
 License: MIT + file LICENSE
 Imports:
