@@ -4,12 +4,12 @@
 \alias{autoplot.inla}
 \title{Autoplot method for INLA objects}
 \usage{
-\method{autoplot}{inla}(x, which = c(1, 2))
+\method{autoplot}{inla}(x, which = 1:3)
 }
 \arguments{
 \item{x}{An inla object}
 
-\item{which}{Vector of integers selecting which plots (1 -- 2) are wanted.}
+\item{which}{Vector of integers selecting which plots (1 -- 4) are wanted.}
 }
 \description{
 Replicate the plots produced by \link{\code{plot}} using ggplot.
