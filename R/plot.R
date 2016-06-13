@@ -1,27 +1,38 @@
 
+#' Autoplot method for INLA objects
 #'
+#' Replicate the plots produced by \link{\code{plot}} using ggplot.
 #'
+#'@param x An inla object
+#'@param which Vector of integers selecting which plots (1 -- 2) are wanted.
+#'
+#'@export
 #'
 #'
 #'@examples
-#'data(Epil)
-#'my.center = function(x) (x - mean(x))
-
-#'## make centered covariates
-#'Epil$CTrt    = my.center(Epil$Trt)
-#'Epil$ClBase4 = my.center(log(Epil$Base/4))
-#'Epil$CV4     = my.center(Epil$V4)
-#'Epil$ClAge   = my.center(log(Epil$Age))
-#'Epil$CBT     = my.center(Epil$Trt*Epil$ClBase4)
-
-#'##Define the model
-#'formula = y ~ ClBase4 + CTrt + CBT+ ClAge + CV4 +
-#          f(Ind, model="iid") + f(rand,model="iid")
-
-#'result = inla(formula,family="poisson", data = Epil)
-#'summary(result)
-#'plot(result)
-#'autoplot(result)
+#'  data(Epil)
+#'  my.center = function(x) (x - mean(x))
+#'  ## make centered covariates
+#'  Epil$CTrt    = my.center(Epil$Trt)
+#'  Epil$ClBase4 = my.center(log(Epil$Base/4))
+#'  Epil$CV4     = my.center(Epil$V4)
+#'  Epil$ClAge   = my.center(log(Epil$Age))
+#'  Epil$CBT     = my.center(Epil$Trt*Epil$ClBase4)
+#'  ##Define the model
+#'  formula = y ~ ClBase4 + CTrt + CBT+ ClAge + CV4 +
+#'           f(Ind, model="iid") + f(rand,model="iid")
+#'  result = inla(formula,family="poisson", data = Epil)
+#'  summary(result)
+#'  plot(result)
+#'
+#'  p <- autoplot(result)
+#'
+#'  p
+#'
+#'  p + theme_bw()
+#'
+#'  p[2] <- p[2] + ggtitle('Hyper parameters')
+#'  p
 
 autoplot.inla <- function(x, which = c(1, 2)){
 

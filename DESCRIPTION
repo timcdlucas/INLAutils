@@ -10,7 +10,8 @@ Authors@R: as.person(c(
 Description: 
 License: MIT + file LICENSE
 Imports:
-    INLA
+    INLA,
+    ggfortify
 Suggests:
     knitr,
     testthat
