@@ -36,12 +36,12 @@
 #'  p
 
 
-autoplot.inla <- function(x, which = 1:3){
+autoplot.inla <- function(x, which = c(1:3, 5)){
 
   assert_that(is.numeric(which))
 
-  if(!all(which %in% 1:4)){
-    stop('which should only contain integers in 1:3')
+  if(!all(which %in% 1:5)){
+    stop('which should only contain integers in 1:5')
   }
 
   # Check that the plots requested are possible
@@ -76,10 +76,10 @@ autoplot.inla <- function(x, which = 1:3){
    
   # plot predicted data 
   if(5 %in% which){
-
+    plots$marginal.fitted <- plot.marginals.fitted(x)
   }
 
-  new('ggmultiplot', plots = plots)
+  new('ggmultiplot', plots = plots, nrow = 2)
 }
 
 
@@ -126,8 +126,9 @@ plot.random.effects <- function(x, type = 'line'){
 
     # plot
     p <- ggplot2::ggplot(allSummary, aes(x = as.numeric(ID), y = mean)) +
-           facet_wrap('var', scales = 'free_x') +
+           facet_wrap('var', scales = 'free_x', ncol = 1) +
            geom_line() +
+           xlab('ID') +
            geom_line(aes(y = X0.025quant), linetype = 2) +
            geom_line(aes(y = X0.975quant), linetype = 2)
   }
@@ -147,7 +148,7 @@ plot.random.effects <- function(x, type = 'line'){
 
     # Plot
     p <- ggplot2::ggplot(combMarginals, aes(ID, y = x)) + 
-           facet_wrap('var', scales = 'free_x') +
+           facet_wrap('var', scales = 'free_x', ncol = 1) +
            geom_boxplot(outlier.size = 0.01) 
 
   }
@@ -191,6 +192,48 @@ plot.hyper.marginals <- function(x){
          geom_line() 
 }
 
+
+
+
+#'@name plot.marginals.fitted
+#'@rdname plot.random.effects
+#'@export
+
+plot.marginals.fitted <- function(x){
+
+  #assert_that(type %in% c('line'))
+  #if(type == 'line'){
+    d1 <- cbind(ID = 1:NROW(x$summary.linear.predictor), x$summary.linear.predictor[, -7], plot = 'Linear Predictor')
+    d2 <- cbind(ID = 1:NROW(x$summary.fitted.values), x$summary.fitted.values, plot = 'Fitted Values')
+    
+    d <- rbind(d1, d2)
+
+    p <- ggplot2::ggplot(d, aes(x = ID, y = mean)) +
+           facet_wrap('plot', scales = 'free', ncol = 1) +
+           geom_line() +
+           geom_line(aes(y = `0.025quant`), linetype = 2) +
+           geom_line(aes(y = `0.975quant`), linetype = 2)
+  #}
+
+#  if(type == 'boxplot'){
+
+#    allMarginals = list()
+#    for(i in seq_len(length(x$marginals.fitted.values))){
+#      allMarginals[[i]] <- lapply(seq_len(length(x$marginals.fitted.values[[i]])), 
+#                             function(p) data.frame(x$marginals.fitted.values[[i]][[p]], 
+#                                                    ID = as.character(p)))
+#      allMarginals[[i]] <- do.call(rbind, allMarginals[[i]])
+#    }
+#    combMarginals <- do.call(rbind, allMarginals)
+#    names(combMarginals) <- c('x', 'ID')
+
+#    # Plot
+#    p <- ggplot2::ggplot(combMarginals, aes(ID, y = x)) + 
+#           geom_boxplot(outlier.size = 0.01) 
+
+#  }
+  return(p)
+}
 
 
 

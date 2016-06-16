@@ -4,7 +4,7 @@
 \alias{autoplot.inla}
 \title{Autoplot method for INLA objects}
 \usage{
-\method{autoplot}{inla}(x, which = 1:3)
+\method{autoplot}{inla}(x, which = c(1:3, 5))
 }
 \arguments{
 \item{x}{An inla object}

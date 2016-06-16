@@ -3,6 +3,7 @@
 \name{plot.random.effects}
 \alias{plot.fixed.marginals}
 \alias{plot.hyper.marginals}
+\alias{plot.marginals.fitted}
 \alias{plot.random.effects}
 \title{Individual plot functions for INLA objects}
 \usage{
@@ -11,6 +12,8 @@ plot.random.effects(x, type = "line")
 plot.fixed.marginals(x)
 
 plot.hyper.marginals(x)
+
+plot.marginals.fitted(x)
 }
 \arguments{
 \item{x}{An inla object}
