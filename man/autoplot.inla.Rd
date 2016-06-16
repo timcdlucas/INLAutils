@@ -14,12 +14,22 @@
 \description{
 Replicate the plots produced by \link{\code{plot}} using ggplot.
 }
+\details{
+The plot types are
+\enumerate{
+  \item Marginal plot for fixed effects
+  \item Marginal plot for hyper parameters
+  \item Marginal line plot for random effects
+  \item Marginal boxplot plot for random effects (more informative then 3, but gets big with lots of levels
+  \item
+}
+}
 \examples{
  data(Epil)
  ##Define the model
  formula = y ~ Trt + Age + V4 +
           f(Ind, model="iid") + f(rand,model="iid")
- result = inla(formula, family="poisson", data = Epil)
+ result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
  plot(result)
 
  p <- autoplot(result)

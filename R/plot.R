@@ -8,13 +8,22 @@
 #'
 #'@export
 #'
+#'@details
+#'  The plot types are
+#' \enumerate{
+#'   \item Marginal plot for fixed effects
+#'   \item Marginal plot for hyper parameters
+#'   \item Marginal line plot for random effects
+#'   \item Marginal boxplot plot for random effects (more informative then 3, but gets big with lots of levels
+#'   \item
+#' }
 #'
 #'@examples
 #'  data(Epil)
 #'  ##Define the model
 #'  formula = y ~ Trt + Age + V4 +
 #'           f(Ind, model="iid") + f(rand,model="iid")
-#'  result = inla(formula, family="poisson", data = Epil)
+#'  result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
 #'  plot(result)
 #'
 #'  p <- autoplot(result)
@@ -35,9 +44,6 @@ autoplot.inla <- function(x, which = 1:3){
     stop('which should only contain integers in 1:3')
   }
 
-  # Create empty list.
-  plots <- list()
-
   # Check that the plots requested are possible
   if(length(x$marginals.fixed) == 0){
     warning('Plot 1 selected in which, but not fixed effects to plot marginals for.')
@@ -45,38 +51,75 @@ autoplot.inla <- function(x, which = 1:3){
   }
 
 
+  # Create empty list.
+  plots <- list()
+
+
   # Plot marginals for fixed effects
   if(1 %in% which){
-
-
-    # Combine all marginals
-    allMarginals <- lapply(seq_len(length(x$marginals.fixed)), 
-                      function(p) data.frame(x$marginals.fixed[[p]], var = names(x$marginals.fixed)[p]))
-    allMarginals <- do.call(rbind, allMarginals)
-
-    # Plot
-    p <- ggplot2::ggplot(allMarginals, aes(x, y)) + 
-           facet_wrap('var') +
-           geom_line() 
-    plots$fixed.marginals <- p
+    plots$fixed.marginals <- plot.fixed.marginals(x)
   }
 
   # Plot marginals for hyperparameters
   if(2 %in% which){
-
-    allMarginals <- lapply(seq_len(length(x$marginals.hyperpar)), 
-                      function(p) data.frame(x$marginals.hyperpar[[p]], var = names(x$marginals.hyperpar)[p]))
-    allMarginals <- do.call(rbind, allMarginals)
-
-
-    # Plot
-    p <- ggplot2::ggplot(allMarginals, aes(x, y)) + 
-           facet_wrap('var', scales = 'free_x') +
-           geom_line() 
-    plots$hyper.marginals <- p
+    plots$hyper.marginals <- plot.hyper.marginals(x)
   }
 
+  # plot random effects
   if(3 %in% which){
+        plots$random.effects.line <- plot.random.effects(x, type = 'line')
+  }
+
+  if(4 %in% which){
+    plots$random.effects.boxplots <- plot.random.effects(x, type = 'boxplot')
+  }
+   
+  # plot predicted data 
+  if(5 %in% which){
+
+  }
+
+  new('ggmultiplot', plots = plots)
+}
+
+
+
+
+
+# ------------------------------------------------------------------------------ #
+# individual plot types. Export? Probably.
+# ------------------------------------------------------------------------------ #
+
+
+
+#' Individual plot functions for INLA objects
+#'
+#' Replicate the individual plots produced by \link{\code{plot}} using ggplot.
+#'
+#'@param x An inla object
+#'@param type Which type of plot? 'boxplot' or 'line'
+#'
+#'@export
+#'@name plot.random.effects
+#'
+#'
+#'@examples
+#'  data(Epil)
+#'  ##Define the model
+#'  formula = y ~ Trt + Age + V4 +
+#'           f(Ind, model="iid") + f(rand,model="iid")
+#'  result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
+#'
+#'  plot.random.effects(result)
+#'  plot.random.effects(result, type = 'boxplot')
+#'  plot.fixed.marginals(result)
+#'  plot.hyper.marginals(result)
+
+
+plot.random.effects <- function(x, type = 'line'){
+
+  assert_that(type %in% c('line', 'boxplot'))
+  if(type == 'line'){
     allSummary <- lapply(seq_len(length(x$summary.random)), 
                       function(p) data.frame(x$summary.random[[p]], var = names(x$summary.random)[p]))
     allSummary <- do.call(rbind, allSummary)
@@ -87,10 +130,9 @@ autoplot.inla <- function(x, which = 1:3){
            geom_line() +
            geom_line(aes(y = X0.025quant), linetype = 2) +
            geom_line(aes(y = X0.975quant), linetype = 2)
-    plots$random.effects.line <- p
   }
 
-  if(4 %in% which){
+  if(type == 'boxplot'){
 
     allMarginals = list()
     for(i in seq_len(length(x$marginals.random))){
@@ -107,8 +149,56 @@ autoplot.inla <- function(x, which = 1:3){
     p <- ggplot2::ggplot(combMarginals, aes(ID, y = x)) + 
            facet_wrap('var', scales = 'free_x') +
            geom_boxplot(outlier.size = 0.01) 
-    plots$random.effects.boxplots <- p
+
   }
-    
-  new('ggmultiplot', plots = plots)
+  return(p)
 }
+
+
+
+
+#'@name plot.fixed.marginals
+#'@rdname plot.random.effects
+#'@export
+
+plot.fixed.marginals <- function(x){
+  # Combine all marginals
+  allMarginals <- lapply(seq_len(length(x$marginals.fixed)), 
+                    function(p) data.frame(x$marginals.fixed[[p]], var = names(x$marginals.fixed)[p]))
+  allMarginals <- do.call(rbind, allMarginals)
+
+  # Plot
+  p <- ggplot2::ggplot(allMarginals, aes(x, y)) + 
+         facet_wrap('var') +
+         geom_line() 
+}
+
+
+#'@name plot.hyper.marginals
+#'@rdname plot.random.effects
+#'@export
+
+plot.hyper.marginals <- function(x){
+
+  allMarginals <- lapply(seq_len(length(x$marginals.hyperpar)), 
+                    function(p) data.frame(x$marginals.hyperpar[[p]], var = names(x$marginals.hyperpar)[p]))
+  allMarginals <- do.call(rbind, allMarginals)
+
+
+  # Plot
+  p <- ggplot2::ggplot(allMarginals, aes(x, y)) + 
+         facet_wrap('var', scales = 'free_x') +
+         geom_line() 
+}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -2,4 +2,7 @@
 
 S3method(autoplot,inla)
 S3method(ggplot,inla.residuals)
+export(plot.fixed.marginals)
+export(plot.hyper.marginals)
 export(plot.inla.residuals)
+export(plot.random.effects)
