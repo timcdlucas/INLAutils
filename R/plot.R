@@ -78,7 +78,7 @@ autoplot.inla <- function(x, which = 1:3){
 
     # Plot
     p <- ggplot2::ggplot(allMarginals, aes(x, y)) + 
-           facet_wrap('var') +
+           facet_wrap('var', scales = 'free_x') +
            geom_line() 
     plots$hyper.marginals <- p
   }
