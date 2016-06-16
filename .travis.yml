@@ -9,4 +9,4 @@ cache: packages
 r_packages:
  - covr
 after_success:
- - Rscript -e 'library(covr);codecov()'
+ - Rscript -e 'install.packages("INLA", repos="https://www.math.ntnu.no/inla/R/stable");library(covr);codecov()'
