@@ -45,7 +45,7 @@ autoplot.inla <- function(x, which = c(1:3, 5)){
   }
 
   # Check that the plots requested are possible
-  if(length(x$marginals.fixed) == 0){
+  if(length(x$marginals.fixed) == 0 & 1 %in% which){
     warning('Plot 1 selected in which, but not fixed effects to plot marginals for.')
     which <- which[which != 1]
   }
