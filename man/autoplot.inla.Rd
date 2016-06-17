@@ -12,7 +12,7 @@
 \item{which}{Vector of integers selecting which plots (1 -- 4) are wanted.}
 }
 \description{
-Replicate the plots produced by \link{\code{plot}} using ggplot.
+Replicate the plots produced by \code{\link{plot}} using ggplot.
 }
 \details{
 The plot types are
@@ -25,6 +25,7 @@ The plot types are
 }
 }
 \examples{
+ library(INLA)
  data(Epil)
  ##Define the model
  formula = y ~ Trt + Age + V4 +
@@ -40,5 +41,6 @@ The plot types are
 
  p[2] <- p[2] + ggtitle('Hyper parameters')
  p
+
 }
 

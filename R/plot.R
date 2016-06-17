@@ -1,7 +1,7 @@
 
 #' Autoplot method for INLA objects
 #'
-#' Replicate the plots produced by \link{\code{plot}} using ggplot.
+#' Replicate the plots produced by \code{\link{plot}} using ggplot.
 #'
 #'@param x An inla object
 #'@param which Vector of integers selecting which plots (1 -- 4) are wanted.
@@ -19,6 +19,7 @@
 #' }
 #'
 #'@examples
+#'  library(INLA)
 #'  data(Epil)
 #'  ##Define the model
 #'  formula = y ~ Trt + Age + V4 +
@@ -58,26 +59,26 @@ autoplot.inla <- function(x, which = c(1:3, 5)){
 
   # Plot marginals for fixed effects
   if(1 %in% which){
-    plots$fixed.marginals <- plot.fixed.marginals(x)
+    plots$fixed.marginals <- plot_fixed_marginals(x)
   }
 
   # Plot marginals for hyperparameters
   if(2 %in% which){
-    plots$hyper.marginals <- plot.hyper.marginals(x)
+    plots$hyper.marginals <- plot_hyper_marginals(x)
   }
 
   # plot random effects
   if(3 %in% which){
-        plots$random.effects.line <- plot.random.effects(x, type = 'line')
+        plots$random.effects.line <- plot_random_effects(x, type = 'line')
   }
 
   if(4 %in% which){
-    plots$random.effects.boxplots <- plot.random.effects(x, type = 'boxplot')
+    plots$random.effects.boxplots <- plot_random_effects(x, type = 'boxplot')
   }
    
   # plot predicted data 
   if(5 %in% which){
-    plots$marginal.fitted <- plot.marginals.fitted(x)
+    plots$marginal.fitted <- plot_marginals_fitted(x)
   }
 
   new('ggmultiplot', plots = plots, nrow = 2)
@@ -95,29 +96,30 @@ autoplot.inla <- function(x, which = c(1:3, 5)){
 
 #' Individual plot functions for INLA objects
 #'
-#' Replicate the individual plots produced by \link{\code{plot}} using ggplot.
+#' Replicate the individual plots produced by \code{\link{plot}} using ggplot.
 #'
 #'@param x An inla object
 #'@param type Which type of plot? 'boxplot' or 'line'
 #'
 #'@export
-#'@name plot.random.effects
+#'@name plot_random_effects
 #'
 #'
 #'@examples
+#'  library(INLA)
 #'  data(Epil)
 #'  ##Define the model
 #'  formula = y ~ Trt + Age + V4 +
 #'           f(Ind, model="iid") + f(rand,model="iid")
 #'  result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
 #'
-#'  plot.random.effects(result)
-#'  plot.random.effects(result, type = 'boxplot')
-#'  plot.fixed.marginals(result)
-#'  plot.hyper.marginals(result)
+#'  plot_random_effects(result)
+#'  plot_random_effects(result, type = 'boxplot')
+#'  plot_fixed_marginals(result)
+#'  plot_hyper_marginals(result)
 
 
-plot.random.effects <- function(x, type = 'line'){
+plot_random_effects <- function(x, type = 'line'){
 
   assert_that(type %in% c('line', 'boxplot'))
   if(type == 'line'){
@@ -160,11 +162,11 @@ plot.random.effects <- function(x, type = 'line'){
 
 
 
-#'@name plot.fixed.marginals
-#'@rdname plot.random.effects
+#'@name plot_fixed_marginals
+#'@rdname plot_random_effects
 #'@export
 
-plot.fixed.marginals <- function(x){
+plot_fixed_marginals <- function(x){
   # Combine all marginals
   allMarginals <- lapply(seq_len(length(x$marginals.fixed)), 
                     function(p) data.frame(x$marginals.fixed[[p]], var = names(x$marginals.fixed)[p]))
@@ -177,11 +179,11 @@ plot.fixed.marginals <- function(x){
 }
 
 
-#'@name plot.hyper.marginals
-#'@rdname plot.random.effects
+#'@name plot_hyper_marginals
+#'@rdname plot_random_effects
 #'@export
 
-plot.hyper.marginals <- function(x){
+plot_hyper_marginals <- function(x){
 
   allMarginals <- lapply(seq_len(length(x$marginals.hyperpar)), 
                     function(p) data.frame(x$marginals.hyperpar[[p]], var = names(x$marginals.hyperpar)[p]))
@@ -197,11 +199,11 @@ plot.hyper.marginals <- function(x){
 
 
 
-#'@name plot.marginals.fitted
-#'@rdname plot.random.effects
+#'@name plot_marginals_fitted
+#'@rdname plot_random_effects
 #'@export
 
-plot.marginals.fitted <- function(x){
+plot_marginals_fitted <- function(x){
 
   #assert_that(type %in% c('line'))
   #if(type == 'line'){
