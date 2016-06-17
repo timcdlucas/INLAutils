@@ -12,6 +12,9 @@ cache: packages
 r_packages:
  - covr
  - ggplot2
+ - ggfortify
+ - testthat
+ - assertthat
 
 r_github_packages:
  - andrewzm/INLA
