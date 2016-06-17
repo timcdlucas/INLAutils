@@ -13,8 +13,8 @@ r_packages:
  - covr
  - ggplot2
 
-before_script:
-- Rscript -e "install.packages(\"INLA\", repos=\"https://www.math.ntnu.no/inla/R/stable\")"
+r_github_packages:
+ - andrewzm/INLA
 
 
 
