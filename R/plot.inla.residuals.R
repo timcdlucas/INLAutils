@@ -10,6 +10,7 @@
 #'@export
 #'
 #'@examples
+#'  library(INLA)
 #'  data(Epil)
 #'  observed <- Epil[1:30, 'y']
 #'  Epil <- rbind(Epil, Epil[1:30, ])
@@ -18,10 +19,10 @@
 #'  formula = y ~ Trt + Age + V4 +
 #'           f(Ind, model="iid") + f(rand,model="iid")
 #'  result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
-#'  plot.inla.residuals(result, observed)
+#'  plot_inla_residuals(result, observed)
 
 
-plot.inla.residuals <- function(inla.model, observed){
+plot_inla_residuals <- function(inla.model, observed){
   predicted.p.value <- c()
   n <- length(observed)
   for(i in (1:n)){
@@ -48,10 +49,12 @@ plot.inla.residuals <- function(inla.model, observed){
 #'
 #'@param inla.model An inla object
 #'@param observed The observed values
+#'@param binwidth The size of the bins used for the histogram. If NULL ggplot guesses for you.
 #'
 #'@export
 #'
 #'@examples
+#'  library(INLA)
 #'  data(Epil)
 #'  observed <- Epil[1:30, 'y']
 #'  Epil <- rbind(Epil, Epil[1:30, ])
@@ -60,10 +63,10 @@ plot.inla.residuals <- function(inla.model, observed){
 #'  formula = y ~ Trt + Age + V4 +
 #'           f(Ind, model="iid") + f(rand,model="iid")
 #'  result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
-#'  ggplot.inla.residuals(result, observed)
+#'  ggplot_inla_residuals(result, observed)
 
 
-ggplot.inla.residuals <- function(inla.model, observed, binwidth = NULL){
+ggplot_inla_residuals <- function(inla.model, observed, binwidth = NULL){
   predicted.p.value <- c()
   n <- length(observed)
   for(i in (1:n)){
@@ -79,10 +82,10 @@ ggplot.inla.residuals <- function(inla.model, observed, binwidth = NULL){
 
   plots <- list()
 
-  plots[[1]] <- ggplot(df, aes(x = predicted.p.value)) + 
+  plots[[1]] <- ggplot2::ggplot(df, aes(x = predicted.p.value)) + 
                   geom_histogram(binwidth = binwidth)
 
-  plots[[2]] <- ggplot(df, aes(x = predicted, y = observed)) +
+  plots[[2]] <- ggplot2::ggplot(df, aes(x = predicted, y = observed)) +
                   geom_point() +
                   geom_abline(slope = 1, intercept = 0) +
                   labs(y = "Observed", x = "Fitted") +
