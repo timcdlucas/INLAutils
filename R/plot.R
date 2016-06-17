@@ -34,6 +34,7 @@
 #'
 #'  p[2] <- p[2] + ggtitle('Hyper parameters')
 #'  p
+#'
 
 
 autoplot.inla <- function(x, which = c(1:3, 5)){
@@ -126,11 +127,12 @@ plot.random.effects <- function(x, type = 'line'){
 
     # plot
     p <- ggplot2::ggplot(allSummary, aes(x = as.numeric(ID), y = mean)) +
-           facet_wrap('var', scales = 'free_x', ncol = 1) +
+           facet_wrap('var', scales = 'free', ncol = 1) +
            geom_line() +
            xlab('ID') +
-           geom_line(aes(y = X0.025quant), linetype = 2) +
-           geom_line(aes(y = X0.975quant), linetype = 2)
+           geom_ribbon(aes(ymin = `X0.025quant`, ymax = `X0.975quant`), alpha = 0.3)
+           #geom_line(aes(y = X0.025quant), linetype = 2) +
+           #geom_line(aes(y = X0.975quant), linetype = 2)
   }
 
   if(type == 'boxplot'){
@@ -148,7 +150,7 @@ plot.random.effects <- function(x, type = 'line'){
 
     # Plot
     p <- ggplot2::ggplot(combMarginals, aes(ID, y = x)) + 
-           facet_wrap('var', scales = 'free_x', ncol = 1) +
+           facet_wrap('var', scales = 'free', ncol = 1) +
            geom_boxplot(outlier.size = 0.01) 
 
   }
@@ -170,7 +172,7 @@ plot.fixed.marginals <- function(x){
 
   # Plot
   p <- ggplot2::ggplot(allMarginals, aes(x, y)) + 
-         facet_wrap('var') +
+         facet_wrap('var', scales = 'free_y') +
          geom_line() 
 }
 
@@ -188,7 +190,7 @@ plot.hyper.marginals <- function(x){
 
   # Plot
   p <- ggplot2::ggplot(allMarginals, aes(x, y)) + 
-         facet_wrap('var', scales = 'free_x') +
+         facet_wrap('var', scales = 'free') +
          geom_line() 
 }
 
@@ -211,8 +213,9 @@ plot.marginals.fitted <- function(x){
     p <- ggplot2::ggplot(d, aes(x = ID, y = mean)) +
            facet_wrap('plot', scales = 'free', ncol = 1) +
            geom_line() +
-           geom_line(aes(y = `0.025quant`), linetype = 2) +
-           geom_line(aes(y = `0.975quant`), linetype = 2)
+           geom_ribbon(aes(ymin = `0.025quant`, ymax = `0.975quant`), alpha = 0.3)
+           #geom_line(aes(y = `0.025quant`), linetype = 2) +
+           #geom_line(aes(y = `0.975quant`), linetype = 2)
   #}
 
 #  if(type == 'boxplot'){
