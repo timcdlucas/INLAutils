@@ -1,17 +1,22 @@
 Package: INLAutils
 Type: Package
-Title: 
+Title: Utility functions for INLA. Additional plots and support for ggplot2.
+  Species distribution modelling functions and others.
 Version: 0.0.1
 Date: 11/06/15
 Authors@R: as.person(c(
     "Tim Lucas <timcdlucas@gmail.com> [aut, cre]", 
     "Dave Redding <dwredding@gmail.com> [aut]"
   ))
-Description: 
+Description: A number of utility functions for INLA. Additional diagnostic plots
+  and support for ggplot2. Step wise regression with INLA. Species distribution models 
+  and others.
 License: MIT + file LICENSE
 Imports:
     INLA,
     ggfortify
+Depends:
+    ggplot2
 Suggests:
     knitr,
     testthat
