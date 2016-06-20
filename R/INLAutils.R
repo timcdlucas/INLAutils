@@ -8,8 +8,6 @@
 #'  ))
 #'@docType package
 #'@importFrom assertthat assert_that
-#'@importFrom INLA inla
-#'@importFrom ggplot2 autoplot
 #'@importFrom graphics abline hist par plot 
 #'@importClassesFrom ggfortify ggmultiplot
 #'@import ggplot2
