@@ -5,6 +5,7 @@
 #'
 #'@param object An inla object
 #'@param which Vector of integers selecting which plots (1 -- 4) are wanted.
+#'@param ... other arguments passed to methods
 #'
 #'@export
 #'
@@ -39,7 +40,7 @@
 #'
 
 
-autoplot.inla <- function(object, which = c(1:3, 5)){
+autoplot.inla <- function(object, which = c(1:3, 5), ...){
 
   assert_that(is.numeric(which))
 

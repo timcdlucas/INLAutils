@@ -10,6 +10,7 @@
 #'@importFrom assertthat assert_that
 #'@importFrom graphics abline hist par plot 
 #'@importClassesFrom ggfortify ggmultiplot
+#'@importFrom ggplot2 autoplot
 #'@import INLA
 NULL
 
