@@ -28,7 +28,6 @@ The plot types are
 }
 \examples{
  library(INLA)
- library(ggplot2)
  data(Epil)
  ##Define the model
  formula = y ~ Trt + Age + V4 +

@@ -11,8 +11,12 @@
 #'@importFrom graphics abline hist par plot 
 #'@importClassesFrom ggfortify ggmultiplot
 #'@importFrom ggplot2 autoplot
+#'@importFrom utils globalVariables 
+
 #'@import INLA
 NULL
 
+
+#@importFrom methods new
 
 

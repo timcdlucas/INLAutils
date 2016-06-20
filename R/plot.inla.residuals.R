@@ -82,16 +82,16 @@ ggplot_inla_residuals <- function(inla.model, observed, binwidth = NULL){
 
   plots <- list()
 
-  plots[[1]] <- ggplot2::ggplot(df, aes(x = predicted.p.value)) + 
-                  geom_histogram(binwidth = binwidth)
+  plots[[1]] <- ggplot2::ggplot(df, ggplot2::aes_string(x = 'predicted.p.value')) + 
+                  ggplot2::geom_histogram(binwidth = binwidth)
 
-  plots[[2]] <- ggplot2::ggplot(df, aes(x = predicted, y = observed)) +
-                  geom_point() +
-                  geom_abline(slope = 1, intercept = 0) +
-                  labs(y = "Observed", x = "Fitted") +
-                  lims(x = c(min, max), y = c(min, max))
+  plots[[2]] <- ggplot2::ggplot(df, ggplot2::aes_string(x = 'predicted', y = 'observed')) +
+                  ggplot2::geom_point() +
+                  ggplot2::geom_abline(slope = 1, intercept = 0) +
+                  ggplot2::labs(y = "Observed", x = "Fitted") +
+                  ggplot2::lims(x = c(min, max), y = c(min, max))
 
 
-  new('ggmultiplot', plots = plots)
+  methods::new('ggmultiplot', plots = plots)
 
 }

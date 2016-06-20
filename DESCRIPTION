@@ -14,7 +14,8 @@ License: MIT + file LICENSE
 Imports:
     INLA,
     ggfortify,
-    assertthat
+    assertthat,
+    methods
 Depends:
     ggplot2
 Suggests:

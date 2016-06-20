@@ -21,7 +21,6 @@
 #'
 #'@examples
 #'  library(INLA)
-#'  library(ggplot2)
 #'  data(Epil)
 #'  ##Define the model
 #'  formula = y ~ Trt + Age + V4 +
@@ -89,7 +88,7 @@ autoplot.inla <- function(object, which = c(1:3, 5), ...){
     plots$marginal.fitted <- plot_marginals_fitted(object)
   }
 
-  new('ggmultiplot', plots = plots, nrow = 2)
+  methods::new('ggmultiplot', plots = plots, nrow = 2)
 }
 
 
@@ -129,18 +128,20 @@ autoplot.inla <- function(object, which = c(1:3, 5), ...){
 
 plot_random_effects <- function(x, type = 'line'){
 
+
   assert_that(type %in% c('line', 'boxplot'))
   if(type == 'line'){
     allSummary <- lapply(seq_len(length(x$summary.random)), 
                       function(p) data.frame(x$summary.random[[p]], var = names(x$summary.random)[p]))
     allSummary <- do.call(rbind, allSummary)
+    allSummary$ID <- as.numeric(factor(allSummary$ID))
 
     # plot
-    p <- ggplot2::ggplot(allSummary, aes(x = as.numeric(factor(ID)), y = mean)) +
-           facet_wrap('var', scales = 'free', ncol = 1) +
-           geom_line() +
-           xlab('ID') +
-           geom_ribbon(aes(ymin = `X0.025quant`, ymax = `X0.975quant`), alpha = 0.3)
+    p <- ggplot2::ggplot(allSummary, ggplot2::aes_string(x = 'ID', y = 'mean')) +
+           ggplot2::facet_wrap('var', scales = 'free', ncol = 1) +
+           ggplot2::geom_line() +
+           ggplot2::xlab('ID') +
+           ggplot2::geom_ribbon(ggplot2::aes_string(ymin = '`X0.025quant`', ymax = '`X0.975quant`'), alpha = 0.3)
            #geom_line(aes(y = X0.025quant), linetype = 2) +
            #geom_line(aes(y = X0.975quant), linetype = 2)
   }
@@ -159,9 +160,9 @@ plot_random_effects <- function(x, type = 'line'){
     
 
     # Plot
-    p <- ggplot2::ggplot(combMarginals, aes(ID, y = x)) + 
-           facet_wrap('var', scales = 'free', ncol = 1) +
-           geom_boxplot(outlier.size = 0.0, outlier.colour = '#FFFFFF00') 
+    p <- ggplot2::ggplot(combMarginals, ggplot2::aes_string(x = 'ID', y = 'x')) + 
+           ggplot2::facet_wrap('var', scales = 'free', ncol = 1) +
+           ggplot2::geom_boxplot(outlier.size = 0.0, outlier.colour = '#FFFFFF00') 
 
   }
   return(p)
@@ -181,9 +182,10 @@ plot_fixed_marginals <- function(x){
   allMarginals <- do.call(rbind, allMarginals)
 
   # Plot
-  p <- ggplot2::ggplot(allMarginals, aes(x, y)) + 
-         facet_wrap('var', scales = 'free_y') +
-         geom_line() 
+  p <- ggplot2::ggplot(allMarginals, ggplot2::aes_string('x', 'y')) + 
+         ggplot2::facet_wrap('var', scales = 'free_y') +
+         ggplot2::geom_line() 
+  return(p)
 }
 
 
@@ -199,9 +201,10 @@ plot_hyper_marginals <- function(x){
 
 
   # Plot
-  p <- ggplot2::ggplot(allMarginals, aes(x, y)) + 
-         facet_wrap('var', scales = 'free') +
-         geom_line() 
+  p <- ggplot2::ggplot(allMarginals, ggplot2::aes_string('x', 'y')) + 
+         ggplot2::facet_wrap('var', scales = 'free') +
+         ggplot2::geom_line() 
+  return(p)
 }
 
 
@@ -220,12 +223,11 @@ plot_marginals_fitted <- function(x){
     
     d <- rbind(d1, d2)
 
-    p <- ggplot2::ggplot(d, aes(x = ID, y = mean)) +
-           facet_wrap('plot', scales = 'free', ncol = 1) +
-           geom_line() +
-           geom_ribbon(aes(ymin = `0.025quant`, ymax = `0.975quant`), alpha = 0.3)
-           #geom_line(aes(y = `0.025quant`), linetype = 2) +
-           #geom_line(aes(y = `0.975quant`), linetype = 2)
+    p <- ggplot2::ggplot(d, ggplot2::aes_string(x = 'ID', y = 'mean')) +
+           ggplot2::facet_wrap('plot', scales = 'free', ncol = 1) +
+           ggplot2::geom_line() +
+           ggplot2::geom_ribbon(ggplot2::aes_string(ymin = '`0.025quant`', ymax = '`0.975quant`'), alpha = 0.3)
+
   #}
 
 #  if(type == 'boxplot'){
