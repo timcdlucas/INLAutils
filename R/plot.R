@@ -3,7 +3,7 @@
 #'
 #' Replicate the plots produced by \code{\link{plot}} using ggplot.
 #'
-#'@param x An inla object
+#'@param object An inla object
 #'@param which Vector of integers selecting which plots (1 -- 4) are wanted.
 #'
 #'@export
@@ -39,7 +39,7 @@
 #'
 
 
-autoplot.inla <- function(x, which = c(1:3, 5)){
+autoplot.inla <- function(object, which = c(1:3, 5)){
 
   assert_that(is.numeric(which))
 
@@ -48,13 +48,13 @@ autoplot.inla <- function(x, which = c(1:3, 5)){
   }
 
   # Check that the plots requested are possible
-  if(length(x$marginals.fixed) == 0 & 1 %in% which){
+  if(length(object$marginals.fixed) == 0 & 1 %in% which){
     warning('Plot 1 selected in which, but no fixed effects to plot marginals for.')
     warning('Plot 1 will not be plotted.')
     which <- which[which != 1]
   }
 
-  if(5 %in% which & !x$.args$control.predictor$compute){
+  if(5 %in% which & !object$.args$control.predictor$compute){
     warning('Plot 5 selected but this can only be plotted if `control.predictor = list(compute = TRUE)` is passed to `inla`.
              \nPlot 5 will not be plotted.')
     which <- which[which != 5]
@@ -66,26 +66,26 @@ autoplot.inla <- function(x, which = c(1:3, 5)){
 
   # Plot marginals for fixed effects
   if(1 %in% which){
-    plots$fixed.marginals <- plot_fixed_marginals(x)
+    plots$fixed.marginals <- plot_fixed_marginals(object)
   }
 
   # Plot marginals for hyperparameters
   if(2 %in% which){
-    plots$hyper.marginals <- plot_hyper_marginals(x)
+    plots$hyper.marginals <- plot_hyper_marginals(object)
   }
 
   # plot random effects
   if(3 %in% which){
-        plots$random.effects.line <- plot_random_effects(x, type = 'line')
+        plots$random.effects.line <- plot_random_effects(object, type = 'line')
   }
 
   if(4 %in% which){
-    plots$random.effects.boxplots <- plot_random_effects(x, type = 'boxplot')
+    plots$random.effects.boxplots <- plot_random_effects(object, type = 'boxplot')
   }
    
   # plot predicted data 
   if(5 %in% which){
-    plots$marginal.fitted <- plot_marginals_fitted(x)
+    plots$marginal.fitted <- plot_marginals_fitted(object)
   }
 
   new('ggmultiplot', plots = plots, nrow = 2)
