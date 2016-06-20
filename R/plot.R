@@ -3,8 +3,9 @@
 #'
 #' Replicate the plots produced by \code{\link{plot}} using ggplot.
 #'
-#'@param object An inla object
+#'@param object An inla object.
 #'@param which Vector of integers selecting which plots (1 -- 4) are wanted.
+#'@param prior Logical, plot priors as well.
 #'@param ... other arguments passed to methods
 #'
 #'@export
@@ -39,7 +40,7 @@
 #'
 
 
-autoplot.inla <- function(object, which = c(1:3, 5), ...){
+autoplot.inla <- function(object, which = c(1:3, 5), priors = FALSE, ...){
 
   assert_that(is.numeric(which))
 
@@ -66,7 +67,7 @@ autoplot.inla <- function(object, which = c(1:3, 5), ...){
 
   # Plot marginals for fixed effects
   if(1 %in% which){
-    plots$fixed.marginals <- plot_fixed_marginals(object)
+    plots$fixed.marginals <- plot_fixed_marginals(object, priors)
   }
 
   # Plot marginals for hyperparameters
@@ -96,7 +97,7 @@ autoplot.inla <- function(object, which = c(1:3, 5), ...){
 
 
 # ------------------------------------------------------------------------------ #
-# individual plot types. Export? Probably.
+# individual plot types. 
 # ------------------------------------------------------------------------------ #
 
 
@@ -107,6 +108,7 @@ autoplot.inla <- function(object, which = c(1:3, 5), ...){
 #'
 #'@param x An inla object
 #'@param type Which type of plot? 'boxplot' or 'line'
+#'@param prior Logical, plot priors as well.
 #'
 #'@export
 #'@name plot_random_effects
@@ -175,7 +177,7 @@ plot_random_effects <- function(x, type = 'line'){
 #'@rdname plot_random_effects
 #'@export
 
-plot_fixed_marginals <- function(x){
+plot_fixed_marginals <- function(x, priors = FALSE){
   # Combine all marginals
   allMarginals <- lapply(seq_len(length(x$marginals.fixed)), 
                     function(p) data.frame(x$marginals.fixed[[p]], var = names(x$marginals.fixed)[p]))
@@ -185,6 +187,15 @@ plot_fixed_marginals <- function(x){
   p <- ggplot2::ggplot(allMarginals, ggplot2::aes_string('x', 'y')) + 
          ggplot2::facet_wrap('var', scales = 'free_y') +
          ggplot2::geom_line() 
+
+  if(priors){
+    # empty dataframe for priors
+    priorParams <- extractPriors(x)
+    evalPriors <- evalPriors(x, allMarginals, priorParams)
+
+    p <- p + geom_line(data = evalPriors, colour = '#2078C0')
+  }
+
   return(p)
 }
 
@@ -253,10 +264,57 @@ plot_marginals_fitted <- function(x){
 
 
 
+# Get the priors out of the inla object and into a dta.frame
+extractPriors <- function(x){
+  priors <- data.frame(var = x$names.fixed, mean = NA, prec = NA)
+  row.names(priors) <- x$names.fixed
+  priors['(Intercept)', 2:3] <- c(x$.args$control.fixed$mean.intercept, x$.args$control.fixed$prec.intercept)
+
+  # find and combine prior means    
+  if(length(x$.args$control.fixed$mean) == 1){
+    priors$mean[!priors$var == '(Intercept)'] <- x$.args$control.fixed$mean
+  } else if(length(x$.args$control.fixed$mean) == length(x$names.fixed) - 1) {
+    priors$mean[names(x3$.args$control.fixed$mean)] <- unlist(x$.args$control.fixed$mean)
+  } else {
+    priors$mean[!priors$var == '(Intercept)'] <- x$.args$control.fixed$mean$default
+    # Take mean values that are not defulat
+    nondef <- unlist(x$.args$control.fixed$mean)[names(x$.args$control.fixed$mean) != 'default']
+    priors[names(nondef), 'mean'] <- x$.args$control.fixed$mean[[1]]
+  }
+
+  # find and combine prior prec
+  if(length(x$.args$control.fixed$prec) == 1){
+    priors$prec[!priors$var == '(Intercept)'] <- x$.args$control.fixed$prec
+  } else if(length(x$.args$control.fixed$prec) == length(x$names.fixed) - 1) {
+    priors$prec[names(x3$.args$control.fixed$prec)] <- unlist(x$.args$control.fixed$prec)
+  } else {
+    priors$prec[!priors$var == '(Intercept)'] <- x$.args$control.fixed$prec$default
+    # Take mean values that are not defulat
+    nondef <- unlist(x$.args$control.fixed$prec)[names(x$.args$control.fixed$prec) != 'default']
+    priors[names(nondef), 'mean'] <- x$.args$control.fixed$prec[[1]]
+  }
 
 
+  
+  return(priors)
+}
 
+# Return priors evaluated at points on x to be plotted.
+#   Doesn't account for free_x very well?
+evalPriors <- function(x, allMarginals, priors){
+    priorsEval <- data.frame(x = rep(seq(min(allMarginals$x), 
+                                         max(allMarginals$x), 
+                                         length.out = 1000),
+                                     by = length(x$names.fixed)),
+                             var = rep(x$names.fixed, each = 1000),
+                             mean = rep(priors$mean, each = 1000),
+                             prec = rep(priors$prec, each = 1000))
+    priorsEval$sd <- 1/sqrt(priorsEval$prec)
+    priorsEval$sd[is.infinite(priorsEval$sd)] <- 1e100
 
+    priorsEval$y <- with(priorsEval, dnorm(x, mean, sd))
+    return(priorsEval)
+}
 
 
 
