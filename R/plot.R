@@ -49,10 +49,16 @@ autoplot.inla <- function(x, which = c(1:3, 5)){
 
   # Check that the plots requested are possible
   if(length(x$marginals.fixed) == 0 & 1 %in% which){
-    warning('Plot 1 selected in which, but not fixed effects to plot marginals for.')
+    warning('Plot 1 selected in which, but no fixed effects to plot marginals for.')
+    warning('Plot 1 will not be plotted.')
     which <- which[which != 1]
   }
 
+  if(5 %in% which & !x$.args$control.predictor$compute){
+    warning('Plot 5 selected but this can only be plotted if `control.predictor = list(compute = TRUE)` is passed to `inla`.
+             \nPlot 5 will not be plotted.')
+    which <- which[which != 5]
+  }
 
   # Create empty list.
   plots <- list()
@@ -129,7 +135,7 @@ plot_random_effects <- function(x, type = 'line'){
     allSummary <- do.call(rbind, allSummary)
 
     # plot
-    p <- ggplot2::ggplot(allSummary, aes(x = as.numeric(ID), y = mean)) +
+    p <- ggplot2::ggplot(allSummary, aes(x = as.numeric(factor(ID)), y = mean)) +
            facet_wrap('var', scales = 'free', ncol = 1) +
            geom_line() +
            xlab('ID') +
@@ -154,7 +160,7 @@ plot_random_effects <- function(x, type = 'line'){
     # Plot
     p <- ggplot2::ggplot(combMarginals, aes(ID, y = x)) + 
            facet_wrap('var', scales = 'free', ncol = 1) +
-           geom_boxplot(outlier.size = 0.01) 
+           geom_boxplot(outlier.size = 0.0, outlier.colour = '#FFFFFF00') 
 
   }
   return(p)
