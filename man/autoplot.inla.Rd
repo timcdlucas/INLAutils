@@ -4,12 +4,14 @@
 \alias{autoplot.inla}
 \title{Autoplot method for INLA objects}
 \usage{
-\method{autoplot}{inla}(object, which = c(1:3, 5), ...)
+\method{autoplot}{inla}(object, which = c(1:3, 5), priors = FALSE, ...)
 }
 \arguments{
-\item{object}{An inla object}
+\item{object}{An inla object.}
 
 \item{which}{Vector of integers selecting which plots (1 -- 4) are wanted.}
+
+\item{priors}{Logical, plot priors as well.}
 
 \item{...}{other arguments passed to methods}
 }
