@@ -15,15 +15,13 @@ Installation
 
 To install, first install `INLA`.
 
-
-```r
+```{r installINLA, eval = FALSE}
 install.packages("INLA", repos="https://www.math.ntnu.no/inla/R/stable")
 ```
 
 then install `INLAutils`
 
-
-```r
+```{r installINLAutils, eval = FALSE}
 library(devtools)
 install_github('timcdlucas/INLAutils')
 
@@ -32,22 +30,11 @@ library(INLAutils)
 ```
 
 
+```{r loadINLAutils, eval = TRUE, echo = FALSE}
+# Now actually load the packages. This chunk is hidden
 
-```
-## Loading required package: sp
-```
-
-```
-## Loading required package: Matrix
-```
-
-```
-## Loading required package: splines
-```
-
-```
-## This is INLA 0.0-1463562937, dated 2016-05-18 (11:01:03+0200).
-## See www.r-inla.org/contact-us for how to get help.
+library(INLA)
+library(INLAutils)
 ```
 
 
@@ -63,8 +50,7 @@ Overview
 I find the the `plot` function in `INLA` annoying and I like `ggplot2`.
 So `INLAutils` provides an `autoplot` function for inla objects.
 
-
-```r
+```{r autoplot, eval = TRUE, echo = TRUE}
       data(Epil)
       ##Define the model
       formula = y ~ Trt + Age + V4 +
@@ -72,6 +58,6 @@ So `INLAutils` provides an `autoplot` function for inla objects.
       result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
      
       autoplot(result)
-```
 
-![plot of chunk autoplot](figure/autoplot-1.png)
+
+```
