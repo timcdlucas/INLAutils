@@ -30,7 +30,7 @@ library(INLAutils)
 ```
 
 
-```{r loadINLAutils, eval = TRUE, echo = FALSE}
+```{r loadINLAutils, eval = TRUE, echo = FALSE, results = 'hide'}
 # Now actually load the packages. This chunk is hidden
 
 library(INLA)
@@ -58,6 +58,20 @@ So `INLAutils` provides an `autoplot` function for inla objects.
       result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
      
       autoplot(result)
-
-
 ```
+
+
+
+
+
+
+
+To do list
+----------
+
+* `inla.sdm`
+* ggplot2 version of `plot.inla.mesh` and `plot.inla.tremesh`
+* Make good `plot` and `ggplot` functions for plotting the Gaussian Random Field with value and uncertainty.
+* `stepINLA`
+* mesh_find
+
