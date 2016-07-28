@@ -9,7 +9,7 @@
 \usage{
 plot_random_effects(x, type = "line")
 
-plot_fixed_marginals(x)
+plot_fixed_marginals(x, priors = FALSE)
 
 plot_hyper_marginals(x)
 
@@ -19,6 +19,8 @@ plot_marginals_fitted(x)
 \item{x}{An inla object}
 
 \item{type}{Which type of plot? 'boxplot' or 'line'}
+
+\item{priors}{Logical, plot priors as well.}
 }
 \description{
 Replicate the individual plots produced by \code{\link{plot}} using ggplot.
