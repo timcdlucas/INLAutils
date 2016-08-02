@@ -4,10 +4,19 @@
 \alias{autoplot.inla.mesh}
 \title{An autoplot (ggplot2) method for INLA mesh objects.}
 \usage{
-\method{autoplot}{inla.mesh}(mesh, col = "blue", lwd = 0.5, size = 0)
+\method{autoplot}{inla.mesh}(object, ..., col = "blue", lwd = 0.5,
+  size = 0)
 }
 \arguments{
-\item{mesh}{An inla.mesh object}
+\item{object}{An inla.mesh object}
+
+\item{...}{Other arguments passed to specific methods}
+
+\item{col}{Colour for data points}
+
+\item{lwd}{Line width}
+
+\item{size}{size Size of data points}
 }
 \description{
 An autoplot (ggplot2) method for INLA mesh objects.

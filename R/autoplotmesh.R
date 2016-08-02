@@ -2,7 +2,11 @@
 
 #' An autoplot (ggplot2) method for INLA mesh objects.
 #'
-#'@param mesh An inla.mesh object
+#'@param object An inla.mesh object
+#'@param col Colour for data points
+#'@param lwd Line width
+#'@param size size Size of data points
+#'@param ... Other arguments passed to specific methods
 #'@export
 #'@examples
 #' library(INLA)
@@ -16,8 +20,9 @@
 #' 
 #' autoplot(mesh)
 #' 
-autoplot.inla.mesh <- function(mesh, col = 'blue', lwd = 0.5, size = 0){
+autoplot.inla.mesh <- function(object, ..., col = 'blue', lwd = 0.5, size = 0){
   
+  mesh <- object
   # extract point data
   d <- data.frame(x = mesh$loc[, 1], y = mesh$loc[, 2], type = 'evertices')
   levels(d$type) <- c('evertices', 'adata')
@@ -45,12 +50,12 @@ autoplot.inla.mesh <- function(mesh, col = 'blue', lwd = 0.5, size = 0){
   
   p <- ggplot2::ggplot(data = d, 
                       ggplot2::aes_string('x', 'y', 
-                          colour = type, 
-                          size = type, 
-                          shape = type, 
-                          alpha = type, 
-                          linetype = type, 
-                          fill = type)) +
+                          colour = 'type', 
+                          size = 'type', 
+                          shape = 'type', 
+                          alpha = 'type', 
+                          linetype = 'type', 
+                          fill = 'type')) +
                  ggplot2::geom_segment(data = segments, 
                    ggplot2::aes_string(x = 'x1', y = 'y1', xend = 'x2', yend = 'y2')) +
                  ggplot2::geom_point() +
