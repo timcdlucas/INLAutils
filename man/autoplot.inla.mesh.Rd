@@ -13,6 +13,7 @@
 An autoplot (ggplot2) method for INLA mesh objects.
 }
 \examples{
+library(INLA)
 m = 100
 points = matrix(runif(m*2),m,2)
 mesh = inla.mesh.create.helper(

@@ -238,7 +238,7 @@ plot_fixed_marginals <- function(x, priors = FALSE, CI = FALSE){
     CIs <- do.call(rbind, CIs)
   
     # Add to plot
-    p <- p + geom_segment(data = CIs, aes(x = x, xend = x, y = y, yend = y0))
+    p <- p + ggplot2::geom_segment(data = CIs, ggplot2::aes_string(x = 'x', xend = 'x', y = 'y', yend = 'y0'), colour = 'darkgrey')
     
   }
 
@@ -283,7 +283,7 @@ plot_hyper_marginals <- function(x, CI = FALSE){
     CIs <- do.call(rbind, CIs)
   
     # Add to plot
-    p <- p + geom_segment(data = CIs, aes(x = x, xend = x, y = y, yend = y0))
+    p <- p + ggplot2::geom_segment(data = CIs, ggplot2::aes_string(x = 'x', xend = 'x', y = 'y', yend = 'y0'), colour = 'darkgrey')
     
   }
 

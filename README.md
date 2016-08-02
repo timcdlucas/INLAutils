@@ -33,22 +33,6 @@ library(INLAutils)
 
 
 
-```
-## Loading required package: sp
-```
-
-```
-## Loading required package: Matrix
-```
-
-```
-## Loading required package: splines
-```
-
-```
-## This is INLA 0.0-1463562937, dated 2016-05-18 (11:01:03+0200).
-## See www.r-inla.org/contact-us for how to get help.
-```
 
 
 Overview

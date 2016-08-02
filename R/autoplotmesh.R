@@ -5,6 +5,7 @@
 #'@param mesh An inla.mesh object
 #'@export
 #'@examples
+#' library(INLA)
 #' m = 100
 #' points = matrix(runif(m*2),m,2)
 #' mesh = inla.mesh.create.helper(
@@ -42,27 +43,27 @@ autoplot.inla.mesh <- function(mesh, col = 'blue', lwd = 0.5, size = 0){
   segments <- rbind(segments, innerouter)
 
   
-  p <- ggplot(data = d, 
-              aes(x, y, 
-                  colour = type, 
-                  size = type, 
-                  shape = type, 
-                  alpha = type, 
-                  linetype = type, 
-                  fill = type)) +
-         geom_segment(data = segments, 
-           aes(x = x1, y = y1, xend = x2, yend = y2)) +
-         geom_point() +
-         theme_minimal() +
-         theme(legend.position = 'none')
+  p <- ggplot2::ggplot(data = d, 
+                      ggplot2::aes_string('x', 'y', 
+                          colour = type, 
+                          size = type, 
+                          shape = type, 
+                          alpha = type, 
+                          linetype = type, 
+                          fill = type)) +
+                 ggplot2::geom_segment(data = segments, 
+                   ggplot2::aes_string(x = 'x1', y = 'y1', xend = 'x2', yend = 'y2')) +
+                 ggplot2::geom_point() +
+                 ggplot2::theme_minimal() +
+                 ggplot2::theme(legend.position = 'none')
 #stroke
   p <- p +
-         scale_colour_manual(values = c(col, 'darkgrey', 'black', 'black', 'black')) +
-         scale_linetype_manual(values = rep(1, 5)) +
-         scale_size_manual(values = c(size, lwd, 1.3, 1.3, 0)) +
-         scale_shape_manual(values = rep(16, 5)) +
-         scale_alpha_manual(values = rep(1, 5)) +
-         scale_fill_manual(values = rep('red', 5))
+         ggplot2::scale_colour_manual(values = c(col, 'darkgrey', 'black', 'black', 'black')) +
+         ggplot2::scale_linetype_manual(values = rep(1, 5)) +
+         ggplot2::scale_size_manual(values = c(size, lwd, 1.3, 1.3, 0)) +
+         ggplot2::scale_shape_manual(values = rep(16, 5)) +
+         ggplot2::scale_alpha_manual(values = rep(1, 5)) +
+         ggplot2::scale_fill_manual(values = rep('red', 5))
 
   p
 }
