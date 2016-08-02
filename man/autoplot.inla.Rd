@@ -4,7 +4,8 @@
 \alias{autoplot.inla}
 \title{Autoplot method for INLA objects}
 \usage{
-\method{autoplot}{inla}(object, which = c(1:3, 5), priors = FALSE, ...)
+\method{autoplot}{inla}(object, which = c(1:3, 5), priors = FALSE,
+  CI = FALSE, ...)
 }
 \arguments{
 \item{object}{An inla object.}
@@ -12,6 +13,8 @@
 \item{which}{Vector of integers selecting which plots (1 -- 4) are wanted.}
 
 \item{priors}{Logical, plot priors as well.}
+
+\item{CI}{Plot credible intervals. TRUE for 95% CI or a numeric in [0, 1]}
 
 \item{...}{other arguments passed to methods}
 }
@@ -38,12 +41,18 @@ The plot types are
  plot(result)
 
  p <- autoplot(result)
-
  p
 
+ # Change the theme
  p + theme_bw()
 
+ # Add a title to a subplot
  p[2] <- p[2] + ggtitle('Hyper parameters')
+ p
+
+ # Switch plot of fixed effects posteriors to not rescale x axis
+ #   If variables are on the same scale, this may provide a useful comparison
+ p[1] <- p[1] + facet_wrap('var', scale = 'free_y')
  p
 
 }

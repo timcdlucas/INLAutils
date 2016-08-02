@@ -9,9 +9,9 @@
 \usage{
 plot_random_effects(x, type = "line")
 
-plot_fixed_marginals(x, priors = FALSE)
+plot_fixed_marginals(x, priors = FALSE, CI = FALSE)
 
-plot_hyper_marginals(x)
+plot_hyper_marginals(x, CI = FALSE)
 
 plot_marginals_fitted(x)
 }
@@ -21,6 +21,8 @@ plot_marginals_fitted(x)
 \item{type}{Which type of plot? 'boxplot' or 'line'}
 
 \item{priors}{Logical, plot priors as well.}
+
+\item{CI}{Plot credible intervals. TRUE for 95% CI or a numeric in [0, 1]}
 }
 \description{
 Replicate the individual plots produced by \code{\link{plot}} using ggplot.
