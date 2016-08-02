@@ -22,7 +22,7 @@ plot_marginals_fitted(x)
 
 \item{priors}{Logical, plot priors as well.}
 
-\item{CI}{Plot credible intervals. TRUE for 95% CI or a numeric in [0, 1]}
+\item{CI}{Plot credible intervals. TRUE for 95\% CI or a numeric in [0, 1]}
 }
 \description{
 Replicate the individual plots produced by \code{\link{plot}} using ggplot.

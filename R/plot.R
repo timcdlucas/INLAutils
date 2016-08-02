@@ -6,7 +6,7 @@
 #'@param object An inla object.
 #'@param which Vector of integers selecting which plots (1 -- 4) are wanted.
 #'@param priors Logical, plot priors as well.
-#'@param CI Plot credible intervals. TRUE for 95% CI or a numeric in [0, 1]
+#'@param CI Plot credible intervals. TRUE for 95\% CI or a numeric in [0, 1]
 #'@param ... other arguments passed to methods
 #'
 #'@export
@@ -194,7 +194,7 @@ plot_random_effects <- function(x, type = 'line'){
 
 
 #'@name plot_fixed_marginals
-#'@param CI Plot credible intervals. TRUE for 95% CI or a numeric in [0, 1]
+#'@param CI Plot credible intervals. TRUE for 95\% CI or a numeric in [0, 1]
 #'@param priors Logical, plot priors as well.
 #'@rdname plot_random_effects
 #'@export

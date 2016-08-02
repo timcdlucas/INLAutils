@@ -14,7 +14,7 @@
 
 \item{priors}{Logical, plot priors as well.}
 
-\item{CI}{Plot credible intervals. TRUE for 95% CI or a numeric in [0, 1]}
+\item{CI}{Plot credible intervals. TRUE for 95\% CI or a numeric in [0, 1]}
 
 \item{...}{other arguments passed to methods}
 }
