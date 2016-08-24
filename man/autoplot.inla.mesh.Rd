@@ -52,8 +52,9 @@ p + scale_colour_manual(values = c('red', 'grey', 'darkblue', 'steelblue', 'yell
 p + facet_grid(. ~ type)
 
 # Plot projections with ggalt
+\dontrun{
 library(ggalt)
 p + ggalt::coord_proj("+proj=wintri")
-
+}
 }
 

@@ -38,9 +38,10 @@
 #' p + facet_grid(. ~ type)
 #' 
 #' # Plot projections with ggalt
+#' \dontrun{
 #' library(ggalt)
 #' p + ggalt::coord_proj("+proj=wintri")
-#' 
+#' }
 
 autoplot.inla.mesh <- function(object, ..., col = 'blue', lwd = 0.5, linecol = 'darkgrey', size = 1.2){
   
