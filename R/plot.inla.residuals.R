@@ -117,23 +117,27 @@ ggplot_inla_residuals <- function(inla.model, observed, binwidth = NULL){
 #'  formula = y ~ Trt + Age + V4 +
 #'           f(Ind, model="iid") + f(rand,model="iid")
 #'  result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
-#'  ggplot_inla_residuals(result, observed)
+#'  ggplot_inla_residuals2(result, observed)
 
 
-ggplot_inla_residuals2 <- function(inla.model, observed, binwidth = NULL){
+ggplot_inla_residuals2 <- function(inla.model, observed){
   
   df <- data.frame(predicted = inla.model$summary.fitted.values$mean[1:length(observed)],
+                   lower = inla.model$summary.fitted.values$`0.025quant`[1:length(observed)],
+                   upper = inla.model$summary.fitted.values$`0.975quant`[1:length(observed)],
                    observed = observed)
   
   df$residual <- df$predicted - df$observed
   df$standardResidual <- df$residual / sd(df$residual)
-  
-  min <- min(df[, c('predicted', 'observed')])
-  max <- max(df[, c('predicted', 'observed')])
+  df$standardUpper <- (df$upper - df$observed) / sd(df$residual)
+  df$standardLower <- (df$lower - df$observed) / sd(df$residual)
   
 
   plot <- ggplot2::ggplot(df, ggplot2::aes_string(x = 'predicted', y = 'standardResidual')) +
     ggplot2::geom_point() +
+    ggplot2::geom_segment(aes_string(y = 'standardLower', 
+                              yend = 'standardUpper', 
+                              xend = 'predicted')) +
     ggplot2::labs(y = "Standardised Residual", x = "Fitted") +
     ggplot2::geom_smooth() +
     ggplot2::geom_hline(yintercept = 0, linetype = 2, col = 'red')
