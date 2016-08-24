@@ -5,6 +5,7 @@
 #'@param object An inla.mesh object
 #'@param col Colour for data points
 #'@param lwd Line width
+#'@param linecol The colour for the mesh edges
 #'@param size size Size of data points
 #'@param ... Other arguments passed to specific methods
 #'@export
@@ -19,8 +20,29 @@
 #'   max.edge=c(0.05,0.5) )
 #' 
 #' autoplot(mesh)
+#' p <- autoplot(mesh)
 #' 
-autoplot.inla.mesh <- function(object, ..., col = 'blue', lwd = 0.5, size = 0){
+#' # As a ggplot2 object, the plot can be altered.
+#' p + theme_dark()
+#' 
+#' # The size and colour of all objects can be controlled.
+#' #   The order of the values is 
+#' #   1: data points
+#' #   2: edges
+#' #   3: outer domain
+#' #   4: inner domain
+#' #   5: non data vertices
+#' p + scale_colour_manual(values = c('red', 'grey', 'darkblue', 'steelblue', 'yellow'))
+#' 
+#' # The name of the variable that defines the different objects is 'type'
+#' p + facet_grid(. ~ type)
+#' 
+#' # Plot projections with ggalt
+#' library(ggalt)
+#' p + ggalt::coord_proj("+proj=wintri")
+#' 
+
+autoplot.inla.mesh <- function(object, ..., col = 'blue', lwd = 0.5, linecol = 'darkgrey', size = 1.2){
   
   mesh <- object
   # extract point data
@@ -51,11 +73,7 @@ autoplot.inla.mesh <- function(object, ..., col = 'blue', lwd = 0.5, size = 0){
   p <- ggplot2::ggplot(data = d, 
                       ggplot2::aes_string('x', 'y', 
                           colour = 'type', 
-                          size = 'type', 
-                          shape = 'type', 
-                          alpha = 'type', 
-                          linetype = 'type', 
-                          fill = 'type')) +
+                          size = 'type')) +
                  ggplot2::geom_segment(data = segments, 
                    ggplot2::aes_string(x = 'x1', y = 'y1', xend = 'x2', yend = 'y2')) +
                  ggplot2::geom_point() +
@@ -63,13 +81,8 @@ autoplot.inla.mesh <- function(object, ..., col = 'blue', lwd = 0.5, size = 0){
                  ggplot2::theme(legend.position = 'none')
 #stroke
   p <- p +
-         ggplot2::scale_colour_manual(values = c(col, 'darkgrey', 'black', 'black', 'black')) +
-         ggplot2::scale_linetype_manual(values = rep(1, 5)) +
-         ggplot2::scale_size_manual(values = c(size, lwd, 1.3, 1.3, 0)) +
-         ggplot2::scale_shape_manual(values = rep(16, 5)) +
-         ggplot2::scale_alpha_manual(values = rep(1, 5)) +
-         ggplot2::scale_fill_manual(values = rep('red', 5))
-
+         ggplot2::scale_colour_manual(values = c(col, linecol, 'black', 'black', 'black')) +
+         ggplot2::scale_size_manual(values = c(size, lwd, 1.3, 1.3, 0)) 
   p
 }
 
