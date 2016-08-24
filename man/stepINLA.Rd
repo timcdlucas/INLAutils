@@ -34,9 +34,9 @@ stepINLA(fam1 = "gaussian", dataf, spde, in_stack = NULL,
 
 \item{thresh}{Threshold for whether a new model should replace the old model.}
 
-\item{Ntrails}{Not sure.}
+\item{Ntrials}{Not sure.}
 
-\item{num.thread}{How many threads to use for INLA computation.}
+\item{num.threads}{How many threads to use for INLA computation.}
 }
 \description{
 Run forwards or backwards stepwise variable selection with INLA regression.

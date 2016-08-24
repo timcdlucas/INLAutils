@@ -4,7 +4,7 @@
 #'@param x Object to be printed
 #'@param y not used
 #'@param ... other methods passed to plot.data.frame
-#'@name print.inla.mesh.segment
+#'@name plot.inla.mesh.segment
 #'@export
 
 plot.inla.mesh.segment <- function(x, y, ...){

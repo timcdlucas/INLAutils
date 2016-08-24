@@ -19,8 +19,8 @@
 #'@param powerl Integer up to 3 determining which power terms to include.
 #'@param inter Integer up to 3 determining how many levels of intereactions to include. 
 #'@param thresh Threshold for whether a new model should replace the old model.
-#'@param Ntrails Not sure.
-#'@param num.thread How many threads to use for INLA computation.
+#'@param Ntrials Not sure.
+#'@param num.threads How many threads to use for INLA computation.
 #'@importFrom stats formula
 #'@export
 #@examples todo
@@ -61,7 +61,7 @@ stepINLA<-function(fam1="gaussian",
     if(inter>=2){
       lvls<- data.frame(p1=utils::combn(expl,2)[1,],
                         p2=utils::combn(expl,2)[2,])
-      vls2<-do.call(paste, c(lvls[names(lvls)], sep=":"))
+      lvls2<-do.call(paste, c(lvls[names(lvls)], sep=":"))
       expl2<-c(expl,lvls2)
     }
     if(inter>=3){
