@@ -52,6 +52,8 @@ plot_inla_residuals <- function(inla.model, observed){
 #'@param CI Add credible intervals to the fitted values?
 #'@param binwidth The size of the bins used for the histogram. If NULL ggplot guesses for you.
 #'
+#'@importFrom ggplot2 aes_string
+#'@importFrom ggplot2 ggplot
 #'@export
 #'
 #'@examples
@@ -94,7 +96,7 @@ ggplot_inla_residuals <- function(inla.model, observed, CI = FALSE, binwidth = N
                   ggplot2::labs(y = "Observed", x = "Fitted") +
                   ggplot2::lims(x = c(min, max), y = c(min, max))
   if(CI) plots[[2]] <- plots[[2]] + 
-                         ggplot2::geom_segment(aes_string(x = 'lower', 
+                         ggplot2::geom_segment(ggplot2::aes_string(x = 'lower', 
                                                           xend = 'upper', 
                                                           yend = 'observed'),
                                                alpha = 0.4) 
@@ -137,9 +139,9 @@ ggplot_inla_residuals2 <- function(inla.model, observed, CI = FALSE){
                    observed = observed)
   
   df$residual <- df$predicted - df$observed
-  df$standardResidual <- df$residual / sd(df$residual)
-  df$standardUpper <- (df$upper - df$observed) / sd(df$residual)
-  df$standardLower <- (df$lower - df$observed) / sd(df$residual)
+  df$standardResidual <- df$residual / stats::sd(df$residual)
+  df$standardUpper <- (df$upper - df$observed) / stats::sd(df$residual)
+  df$standardLower <- (df$lower - df$observed) / stats::sd(df$residual)
   
 
   plot <- ggplot2::ggplot(df, ggplot2::aes_string(x = 'predicted', y = 'standardResidual')) +
@@ -147,7 +149,7 @@ ggplot_inla_residuals2 <- function(inla.model, observed, CI = FALSE){
             ggplot2::labs(y = "Standardised Residual", x = "Fitted") +
             ggplot2::geom_smooth() +
             ggplot2::geom_hline(yintercept = 0, linetype = 2, col = 'red')
-  if(CI) plot <- plot + ggplot2::geom_segment(aes_string(y = 'standardLower', 
+  if(CI) plot <- plot + ggplot2::geom_segment(ggplot2::aes_string(y = 'standardLower', 
                                                          yend = 'standardUpper', 
                                                         xend = 'predicted'),
                                               alpha = 0.4) 

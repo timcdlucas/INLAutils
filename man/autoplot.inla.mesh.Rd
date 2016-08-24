@@ -17,15 +17,12 @@
 \item{lwd}{Line width}
 
 \item{size}{size Size of data points}
->>>>>>> 0a5b7afbbd1e107c86c24c35a2848769b1e2ac19
 }
 \description{
 An autoplot (ggplot2) method for INLA mesh objects.
 }
 \examples{
-
 library(INLA)
-
 m = 100
 points = matrix(runif(m*2),m,2)
 mesh = inla.mesh.create.helper(

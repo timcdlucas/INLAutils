@@ -4,6 +4,7 @@
 \alias{print.inla.data.stack}
 \alias{print.inla.mesh}
 \alias{print.inla.mesh.projector}
+\alias{print.inla.mesh.segment}
 \title{These are print methods for a number of inla objects that do not have print methods in the INLA package}
 \usage{
 \method{print}{inla.data.stack}(x, ...)
@@ -11,6 +12,8 @@
 \method{print}{inla.mesh}(x, ...)
 
 \method{print}{inla.mesh.projector}(x, ...)
+
+\method{print}{inla.mesh.segment}(x, ...)
 }
 \arguments{
 \item{x}{Object to be printed}
