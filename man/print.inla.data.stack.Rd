@@ -6,14 +6,16 @@
 \alias{print.inla.mesh.projector}
 \title{These are print methods for a number of inla objects that do not have print methods in the INLA package}
 \usage{
-\method{print}{inla.data.stack}(x)
+\method{print}{inla.data.stack}(x, ...)
 
-\method{print}{inla.mesh}(x)
+\method{print}{inla.mesh}(x, ...)
 
-\method{print}{inla.mesh.projector}(x)
+\method{print}{inla.mesh.projector}(x, ...)
 }
 \arguments{
 \item{x}{Object to be printed}
+
+\item{...}{Further arguments passed to or from other methods.}
 }
 \description{
 These are print methods for a number of inla objects that do not have print methods in the INLA package

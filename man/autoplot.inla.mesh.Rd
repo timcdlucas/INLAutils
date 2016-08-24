@@ -4,15 +4,28 @@
 \alias{autoplot.inla.mesh}
 \title{An autoplot (ggplot2) method for INLA mesh objects.}
 \usage{
-\method{autoplot}{inla.mesh}(mesh, col = "blue", lwd = 0.5, size = 0)
+\method{autoplot}{inla.mesh}(object, ..., col = "blue", lwd = 0.5,
+  size = 0)
 }
 \arguments{
-\item{mesh}{An inla.mesh object}
+\item{object}{An inla.mesh object}
+
+\item{...}{Other arguments passed to specific methods}
+
+\item{col}{Colour for data points}
+
+\item{lwd}{Line width}
+
+\item{size}{size Size of data points}
+>>>>>>> 0a5b7afbbd1e107c86c24c35a2848769b1e2ac19
 }
 \description{
 An autoplot (ggplot2) method for INLA mesh objects.
 }
 \examples{
+
+library(INLA)
+
 m = 100
 points = matrix(runif(m*2),m,2)
 mesh = inla.mesh.create.helper(

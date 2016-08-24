@@ -6,6 +6,7 @@
 #'@param object An inla object.
 #'@param which Vector of integers selecting which plots (1 -- 4) are wanted.
 #'@param priors Logical, plot priors as well.
+#'@param CI Plot credible intervals. TRUE for 95\% CI or a numeric in [0, 1]
 #'@param ... other arguments passed to methods
 #'
 #'@export
@@ -30,17 +31,23 @@
 #'  plot(result)
 #'
 #'  p <- autoplot(result)
-#'
 #'  p
 #'
+#'  # Change the theme
 #'  p + theme_bw()
 #'
+#'  # Add a title to a subplot
 #'  p[2] <- p[2] + ggtitle('Hyper parameters')
 #'  p
 #'
+#'  # Switch plot of fixed effects posteriors to not rescale x axis
+#'  #   If variables are on the same scale, this may provide a useful comparison
+#'  p[1] <- p[1] + facet_wrap('var', scale = 'free_y')
+#'  p
+#'
 
 
-autoplot.inla <- function(object, which = c(1:3, 5), priors = FALSE, ...){
+autoplot.inla <- function(object, which = c(1:3, 5), priors = FALSE, CI = FALSE, ...){
 
   assert_that(is.numeric(which))
 
@@ -61,18 +68,31 @@ autoplot.inla <- function(object, which = c(1:3, 5), priors = FALSE, ...){
     which <- which[which != 5]
   }
 
+  if(length(object$summary.random) == 0 & 3 %in% which){
+    warning('Plot 3 selected in which, but no random effects to plot marginals for.')
+    warning('Plot 3 will not be plotted.')
+    which <- which[which != 3]
+  }
+
+  if(length(object$summary.random) == 0 & 4 %in% which){
+    warning('Plot 4 selected in which, but no random effects to plot marginals for.')
+    warning('Plot 4 will not be plotted.')
+    which <- which[which != 4]
+  }
+
+
   # Create empty list.
   plots <- list()
 
 
   # Plot marginals for fixed effects
   if(1 %in% which){
-    plots$fixed.marginals <- plot_fixed_marginals(object, priors)
+    plots$fixed.marginals <- plot_fixed_marginals(object, priors, CI)
   }
 
   # Plot marginals for hyperparameters
   if(2 %in% which){
-    plots$hyper.marginals <- plot_hyper_marginals(object)
+    plots$hyper.marginals <- plot_hyper_marginals(object, CI)
   }
 
   # plot random effects
@@ -131,6 +151,7 @@ plot_random_effects <- function(x, type = 'line'){
 
 
   assert_that(type %in% c('line', 'boxplot'))
+  if(length(x$summary.random) == 0) stop('No random effects to plot')
   if(type == 'line'){
     allSummary <- lapply(seq_len(length(x$summary.random)), 
                       function(p) data.frame(x$summary.random[[p]], var = names(x$summary.random)[p]))
@@ -173,11 +194,12 @@ plot_random_effects <- function(x, type = 'line'){
 
 
 #'@name plot_fixed_marginals
+#'@param CI Plot credible intervals. TRUE for 95\% CI or a numeric in [0, 1]
 #'@param priors Logical, plot priors as well.
 #'@rdname plot_random_effects
 #'@export
 
-plot_fixed_marginals <- function(x, priors = FALSE){
+plot_fixed_marginals <- function(x, priors = FALSE, CI = FALSE){
   # Combine all marginals
   allMarginals <- lapply(seq_len(length(x$marginals.fixed)), 
                     function(p) data.frame(x$marginals.fixed[[p]], var = names(x$marginals.fixed)[p]))
@@ -185,7 +207,7 @@ plot_fixed_marginals <- function(x, priors = FALSE){
 
   # Plot
   p <- ggplot2::ggplot(allMarginals, ggplot2::aes_string('x', 'y')) + 
-         ggplot2::facet_wrap('var', scales = 'free_y') +
+         ggplot2::facet_wrap('var', scales = 'free') +
          ggplot2::geom_line() 
 
   if(priors){
@@ -196,6 +218,30 @@ plot_fixed_marginals <- function(x, priors = FALSE){
     p <- p + ggplot2::geom_line(data = evalPriors, colour = '#2078C0')
   }
 
+  
+  # If CI is just true, use 95% as default
+  if(identical(CI, TRUE)){
+    CI <- 0.95
+  }
+  # Unless CI is false, loop through fixed effects, find quantiles, find y values for those quantiles
+  if(CI){
+    CIs <- list()
+    for(i in seq_len(length(x$marginals.fixed))){
+      CIs[[i]] <- data.frame(x = c(INLA::inla.qmarginal((1 - CI) / 2, x$marginals.fixed[[i]]), 
+                                          INLA::inla.qmarginal(1 - (1 - CI) / 2, x$marginals.fixed[[i]])),
+                             var = names(x$marginals.fixed)[i],
+                             y0 = 0
+                            )
+      CIs[[i]]$y <- INLA::inla.dmarginal(CIs[[i]]$x, x$marginals.fixed[[i]])
+      
+    }
+    CIs <- do.call(rbind, CIs)
+  
+    # Add to plot
+    p <- p + ggplot2::geom_segment(data = CIs, ggplot2::aes_string(x = 'x', xend = 'x', y = 'y', yend = 'y0'), colour = 'darkgrey')
+    
+  }
+
   return(p)
 }
 
@@ -204,7 +250,7 @@ plot_fixed_marginals <- function(x, priors = FALSE){
 #'@rdname plot_random_effects
 #'@export
 
-plot_hyper_marginals <- function(x){
+plot_hyper_marginals <- function(x, CI = FALSE){
 
   allMarginals <- lapply(seq_len(length(x$marginals.hyperpar)), 
                     function(p) data.frame(x$marginals.hyperpar[[p]], var = names(x$marginals.hyperpar)[p]))
@@ -215,6 +261,32 @@ plot_hyper_marginals <- function(x){
   p <- ggplot2::ggplot(allMarginals, ggplot2::aes_string('x', 'y')) + 
          ggplot2::facet_wrap('var', scales = 'free') +
          ggplot2::geom_line() 
+
+  
+  
+  # If CI is just true, use 95% as default
+  if(identical(CI, TRUE)){
+    CI <- 0.95
+  }
+  # Unless CI is false, loop through fixed effects, find quantiles, find y values for those quantiles
+  if(CI){
+    CIs <- list()
+    for(i in seq_len(length(x$marginals.hyper))){
+      CIs[[i]] <- data.frame(x = c(INLA::inla.qmarginal((1 - CI) / 2, x$marginals.hyper[[i]]), 
+                                          INLA::inla.qmarginal(1 - (1 - CI) / 2, x$marginals.hyper[[i]])),
+                             var = names(x$marginals.hyper)[i],
+                             y0 = 0
+                            )
+      CIs[[i]]$y <- INLA::inla.dmarginal(CIs[[i]]$x, x$marginals.hyper[[i]])
+      
+    }
+    CIs <- do.call(rbind, CIs)
+  
+    # Add to plot
+    p <- p + ggplot2::geom_segment(data = CIs, ggplot2::aes_string(x = 'x', xend = 'x', y = 'y', yend = 'y0'), colour = 'darkgrey')
+    
+  }
+
   return(p)
 }
 
