@@ -95,3 +95,48 @@ ggplot_inla_residuals <- function(inla.model, observed, binwidth = NULL){
   methods::new('ggmultiplot', plots = plots)
 
 }
+
+
+
+
+#' Plot residuals against covariate values for INLA model using ggplot2
+#'
+#'
+#'@param inla.model An inla object
+#'@param observed The observed values
+#'
+#'@export
+#'
+#'@examples
+#'  library(INLA)
+#'  data(Epil)
+#'  observed <- Epil[1:30, 'y']
+#'  Epil <- rbind(Epil, Epil[1:30, ])
+#'  Epil[1:30, 'y'] <- NA
+#'  ## make centered covariates
+#'  formula = y ~ Trt + Age + V4 +
+#'           f(Ind, model="iid") + f(rand,model="iid")
+#'  result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
+#'  ggplot_inla_residuals(result, observed)
+
+
+ggplot_inla_residuals2 <- function(inla.model, observed, binwidth = NULL){
+  
+  df <- data.frame(predicted = inla.model$summary.fitted.values$mean[1:length(observed)],
+                   observed = observed)
+  
+  df$residual <- df$predicted - df$observed
+  df$standardResidual <- df$residual / sd(df$residual)
+  
+  min <- min(df[, c('predicted', 'observed')])
+  max <- max(df[, c('predicted', 'observed')])
+  
+
+  plot <- ggplot2::ggplot(df, ggplot2::aes_string(x = 'predicted', y = 'standardResidual')) +
+    ggplot2::geom_point() +
+    ggplot2::labs(y = "Standardised Residual", x = "Fitted") +
+    ggplot2::geom_smooth() +
+    ggplot2::geom_hline(yintercept = 0, linetype = 2, col = 'red')
+  plot
+  return(plot)
+}
