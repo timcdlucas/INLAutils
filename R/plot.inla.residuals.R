@@ -49,6 +49,7 @@ plot_inla_residuals <- function(inla.model, observed){
 #'
 #'@param inla.model An inla object
 #'@param observed The observed values
+#'@param CI Add credible intervals to the fitted values?
 #'@param binwidth The size of the bins used for the histogram. If NULL ggplot guesses for you.
 #'
 #'@export
@@ -66,7 +67,7 @@ plot_inla_residuals <- function(inla.model, observed){
 #'  ggplot_inla_residuals(result, observed)
 
 
-ggplot_inla_residuals <- function(inla.model, observed, binwidth = NULL){
+ggplot_inla_residuals <- function(inla.model, observed, CI = FALSE, binwidth = NULL){
   predicted.p.value <- c()
   n <- length(observed)
   for(i in (1:n)){
@@ -75,10 +76,12 @@ ggplot_inla_residuals <- function(inla.model, observed, binwidth = NULL){
 
   df <- data.frame(predicted = inla.model$summary.fitted.values$mean[1:length(observed)],
                    observed = observed,
+                   lower = inla.model$summary.fitted.values$`0.025quant`[1:length(observed)],
+                   upper = inla.model$summary.fitted.values$`0.975quant`[1:length(observed)],
                    p.value = predicted.p.value)
 
-  min <- min(df[, c('predicted', 'observed')])
-  max <- max(df[, c('predicted', 'observed')])
+  min <- min(df[, c('lower', 'observed')])
+  max <- max(df[, c('upper', 'observed')])
 
   plots <- list()
 
@@ -90,7 +93,12 @@ ggplot_inla_residuals <- function(inla.model, observed, binwidth = NULL){
                   ggplot2::geom_abline(slope = 1, intercept = 0) +
                   ggplot2::labs(y = "Observed", x = "Fitted") +
                   ggplot2::lims(x = c(min, max), y = c(min, max))
-
+  if(CI) plots[[2]] <- plots[[2]] + 
+                         ggplot2::geom_segment(aes_string(x = 'lower', 
+                                                          xend = 'upper', 
+                                                          yend = 'observed'),
+                                               alpha = 0.4) 
+  
 
   methods::new('ggmultiplot', plots = plots)
 
@@ -104,6 +112,7 @@ ggplot_inla_residuals <- function(inla.model, observed, binwidth = NULL){
 #'
 #'@param inla.model An inla object
 #'@param observed The observed values
+#'@param CI plot credible intervals for each residual
 #'
 #'@export
 #'
@@ -120,7 +129,7 @@ ggplot_inla_residuals <- function(inla.model, observed, binwidth = NULL){
 #'  ggplot_inla_residuals2(result, observed)
 
 
-ggplot_inla_residuals2 <- function(inla.model, observed){
+ggplot_inla_residuals2 <- function(inla.model, observed, CI = FALSE){
   
   df <- data.frame(predicted = inla.model$summary.fitted.values$mean[1:length(observed)],
                    lower = inla.model$summary.fitted.values$`0.025quant`[1:length(observed)],
@@ -134,13 +143,15 @@ ggplot_inla_residuals2 <- function(inla.model, observed){
   
 
   plot <- ggplot2::ggplot(df, ggplot2::aes_string(x = 'predicted', y = 'standardResidual')) +
-    ggplot2::geom_point() +
-    ggplot2::geom_segment(aes_string(y = 'standardLower', 
-                              yend = 'standardUpper', 
-                              xend = 'predicted')) +
-    ggplot2::labs(y = "Standardised Residual", x = "Fitted") +
-    ggplot2::geom_smooth() +
-    ggplot2::geom_hline(yintercept = 0, linetype = 2, col = 'red')
+            ggplot2::geom_point() +
+            ggplot2::labs(y = "Standardised Residual", x = "Fitted") +
+            ggplot2::geom_smooth() +
+            ggplot2::geom_hline(yintercept = 0, linetype = 2, col = 'red')
+  if(CI) plot <- plot + ggplot2::geom_segment(aes_string(y = 'standardLower', 
+                                                         yend = 'standardUpper', 
+                                                        xend = 'predicted'),
+                                              alpha = 0.4) 
+    
   plot
   return(plot)
 }
