@@ -15,7 +15,11 @@ Imports:
     INLA,
     ggfortify,
     assertthat,
-    methods
+    raster,
+    methods,
+    RColorBrewer,
+    sp,
+    reshape2
 Depends:
     ggplot2
 Suggests:
