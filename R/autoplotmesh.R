@@ -58,13 +58,22 @@ autoplot.inla.mesh <- function(object, ..., col = 'blue', lwd = 0.5, linecol = '
               mesh$graph$tv[, c(3, 1), drop = FALSE])
   segments <- data.frame(mesh$loc[idx[, 1], 1:2], mesh$loc[idx[, 2], 1:2], type = 'bsegments')
 
-  innerouter <- rbind(
-                  data.frame(mesh$loc[mesh$segm$bnd$idx[, 1], 1:2],
+  innerouter <- data.frame(mesh$loc[mesh$segm$bnd$idx[, 1], 1:2],
                              mesh$loc[mesh$segm$bnd$idx[, 2], 1:2],
-                             type = 'cbinding'),
-                  data.frame(mesh$loc[mesh$segm$int$idx[, 1], 1:2],
+                             type = 'cbinding', stringsAsFactors = FALSE)
+  if(nrow(mesh$segm$int$idx) > 0){
+    innerouter <- rbind(innerouter,
+                        data.frame(mesh$loc[mesh$segm$int$idx[, 1], 1:2],
                              mesh$loc[mesh$segm$int$idx[, 2], 1:2],
                              type = 'dinternal'))
+  } else {
+    #innerouter <- rbind(innerouter,
+    #                    NA)
+    #innerouter[nrow(innerouter), 5] <- 'dinternal'
+    innerouter$type = factor(innerouter$type, levels = c('dinternal', 'cbinding'))
+  }
+  
+  
   names(segments) <- c('x1', 'y1', 'x2', 'y2', 'type')
   names(innerouter) <- c('x1', 'y1', 'x2', 'y2', 'type')
 
@@ -82,8 +91,8 @@ autoplot.inla.mesh <- function(object, ..., col = 'blue', lwd = 0.5, linecol = '
                  ggplot2::theme(legend.position = 'none')
 #stroke
   p <- p +
-         ggplot2::scale_colour_manual(values = c(col, linecol, 'black', 'black', 'black')) +
-         ggplot2::scale_size_manual(values = c(size, lwd, 1.3, 1.3, 0)) 
+         ggplot2::scale_colour_manual(values = c(col, linecol, 'black', 'black', 'black'), drop = FALSE) +
+         ggplot2::scale_size_manual(values = c(size, lwd, 1.3, 1.3, 0), drop = FALSE) 
   p
 }
 
