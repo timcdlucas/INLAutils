@@ -6,14 +6,16 @@
 #' data from many raster layers.
 #' As the overhead for parallel computation in windows is high
 #' it only makes sense to parallelise in this way.
+#' To run, you must first register a cluster (see examples).
 #'
 #' 
 #' @param raster A raster brick or stack
 #' @param shape A shape file
 #' @param fun The function used to aggregate the pixel data. If NULL, raw pixel data is returned.
-#' @param ... Other arguments to raster::extract
+#' @param ... Other arguments to raster::extract (see \code{\link[raster]{extract]})
 #'
 #' @export
+#' @seealso \code{\link[raster]{extract]}
 #' @examples 
 #' 
 #' # Create raster

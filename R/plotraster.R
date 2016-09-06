@@ -123,7 +123,7 @@ ggplot_projection_shapefile <- function(raster = NULL,
                                               size = 'type')) +
       ggplot2::theme(legend.position = 'none') + 
       ggplot2::scale_colour_manual(values = c('red', 'red', 'black', 'black', 'black')) +
-      ggplot2::scale_size_manual(values = c(0.8, 1.5, 1.3, 1.3, 0)) 
+      ggplot2::scale_size_manual(values = c(1, 1.5, 1.3, 1.3, 0)) 
     
   }
   
