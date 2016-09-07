@@ -12,10 +12,10 @@
 #' @param raster A raster brick or stack
 #' @param shape A shape file
 #' @param fun The function used to aggregate the pixel data. If NULL, raw pixel data is returned.
-#' @param ... Other arguments to raster::extract (see \code{\link[raster]{extract]})
+#' @param ... Other arguments to raster::extract (see \code{\link[raster]{extract}})
 #'
 #' @export
-#' @seealso \code{\link[raster]{extract]}
+#' @seealso \code{\link[raster]{extract}}
 #' @examples 
 #' 
 #' # Create raster
