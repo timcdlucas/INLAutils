@@ -16,7 +16,7 @@ ggplot_projection_shapefile(raster = NULL, projector = NULL,
 
 \item{spatialpolygons}{A \code{\link[sp]{SpatialPolygonsDataFrame}} object.}
 
-\item{mesh}{Not yet implemented. And additional mesh object to plot as well.}
+\item{mesh}{An inla.mesh object to be plotted. Still rough.}
 }
 \description{
 Plot a raster (either a raster layer or a inla projection matrix) with a shape file

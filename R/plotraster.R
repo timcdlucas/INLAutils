@@ -101,13 +101,21 @@ ggplot_projection_shapefile <- function(raster = NULL,
                 mesh$graph$tv[, c(3, 1), drop = FALSE])
     segments <- data.frame(mesh$loc[idx[, 1], 1:2], mesh$loc[idx[, 2], 1:2], type = 'bsegments')
     
-    innerouter <- rbind(
-      data.frame(mesh$loc[mesh$segm$bnd$idx[, 1], 1:2],
-                 mesh$loc[mesh$segm$bnd$idx[, 2], 1:2],
-                 type = 'cbinding'),
-      data.frame(mesh$loc[mesh$segm$int$idx[, 1], 1:2],
-                 mesh$loc[mesh$segm$int$idx[, 2], 1:2],
-                 type = 'dinternal'))
+    innerouter <- data.frame(mesh$loc[mesh$segm$bnd$idx[, 1], 1:2],
+                             mesh$loc[mesh$segm$bnd$idx[, 2], 1:2],
+                             type = 'cbinding', stringsAsFactors = FALSE)
+    if(nrow(mesh$segm$int$idx) > 0){
+      innerouter <- rbind(innerouter,
+                          data.frame(mesh$loc[mesh$segm$int$idx[, 1], 1:2],
+                                     mesh$loc[mesh$segm$int$idx[, 2], 1:2],
+                                     type = 'dinternal'))
+    } else {
+      #innerouter <- rbind(innerouter,
+      #                    NA)
+      #innerouter[nrow(innerouter), 5] <- 'dinternal'
+      innerouter$type = factor(innerouter$type, levels = c('dinternal', 'cbinding'))
+    }
+    
     names(segments) <- c('x1', 'y1', 'x2', 'y2', 'type')
     names(innerouter) <- c('x1', 'y1', 'x2', 'y2', 'type')
     
