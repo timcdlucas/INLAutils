@@ -7,6 +7,7 @@
 #'  (from \code{\link[INLA]{inla.mesh.projector}}) is also needed.
 #'@param spatialpolygons A \code{\link[sp]{SpatialPolygonsDataFrame}} object.
 #'@param mesh An inla.mesh object to be plotted. Still rough.
+#'@param shapecol Colour for the shape file outlines.
 #'@export
 #'@importFrom reshape2 melt
 #'@importFrom grDevices colorRampPalette
@@ -50,9 +51,10 @@
 ggplot_projection_shapefile <- function(raster = NULL,
                                         projector = NULL, 
                                         spatialpolygons, 
-                                        mesh = NULL){
+                                        mesh = NULL,
+                                        shapecol = 'white'){
   
-  if(!is(raster, 'RasterLayer') & !is(raster, 'matrix')){
+  if(!is(raster, 'RasterLayer') & !is(raster, 'matrix') & !is.null(raster)){
     stop('raster must be a raster layer or a matrix.')
   }
   
@@ -80,17 +82,22 @@ ggplot_projection_shapefile <- function(raster = NULL,
   } else if(is(raster, 'RasterLayer')){
     raster.df <- data.frame(raster::rasterToPoints(raster))
     names(raster.df) <- c('long', 'lat', 'value')
-    
   }
     
   shape.df <- ggplot2::fortify(spatialpolygons)   
   
-  plot <- ggplot() + 
+  plot <- ggplot()
+  if(!is.null(raster)){
+  plot <- plot + 
             ggplot2::geom_raster(data = raster.df, 
-                                 aes_string('long', 'lat', fill = 'value')) +
-            ggplot2::geom_path(data = shape.df, 
-                               aes_string('long', 'lat', group = 'group'), 
-                               colour = 'white')
+                                 aes_string('long', 'lat', fill = 'value'))
+  }
+  if(!is.null(spatialpolygons)){
+    plot <- plot + 
+              ggplot2::geom_path(data = shape.df, 
+                                aes_string('long', 'lat', group = 'group'), 
+                                colour = shapecol)
+  }
   
   if(!is.null(mesh)){
     d <- data.frame(x = mesh$loc[, 1], y = mesh$loc[, 2], type = 'evertices')

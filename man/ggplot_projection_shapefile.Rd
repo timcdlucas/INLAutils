@@ -5,7 +5,7 @@
 \title{Plot a raster (either a raster layer or a inla projection matrix) with a shape file}
 \usage{
 ggplot_projection_shapefile(raster = NULL, projector = NULL,
-  spatialpolygons, mesh = NULL)
+  spatialpolygons, mesh = NULL, shapecol = "white")
 }
 \arguments{
 \item{raster}{Either a RasterLayer or a matrix 
@@ -17,6 +17,8 @@ ggplot_projection_shapefile(raster = NULL, projector = NULL,
 \item{spatialpolygons}{A \code{\link[sp]{SpatialPolygonsDataFrame}} object.}
 
 \item{mesh}{An inla.mesh object to be plotted. Still rough.}
+
+\item{shapecol}{Colour for the shape file outlines.}
 }
 \description{
 Plot a raster (either a raster layer or a inla projection matrix) with a shape file
