@@ -6,16 +6,15 @@
 #' data from many raster layers.
 #' As the overhead for parallel computation in windows is high
 #' it only makes sense to parallelise in this way.
-#' To run, you must first register a cluster (see examples).
 #'
 #' 
 #' @param raster A raster brick or stack
-#' @param shape A shape file
+#' @param shape A shape object 
 #' @param fun The function used to aggregate the pixel data. If NULL, raw pixel data is returned.
-#' @param ... Other arguments to raster::extract (see \code{\link[raster]{extract}})
+#' @param id Name of column in shape object to be used to bind an ID column to output.
+#' @param ... Other arguments to raster::extract
 #'
 #' @export
-#' @seealso \code{\link[raster]{extract}}
 #' @examples 
 #' 
 #' # Create raster
@@ -43,21 +42,39 @@
 #' v2 <- parallelExtract(r, polys, fun = mean)
 #' stopCluster(cl)  
 
-parallelExtract <- function(raster, shape, fun = mean, ...){
+parallelExtract <- function(raster, shape, fun = mean, id = 'OBJECTID',  ...){
   
   
-  
+  # Run extract in parallel.
   values <- foreach(i = 1:nlayers(raster)) %dopar% {  
-    raster::extract(raster[[i]], shape, fun = fun, na.rm = TRUE, ...)
+    raster::extract(raster[[i]], shape, fun = fun, na.rm = TRUE, cellnumbers = TRUE, ...)
   } 
   if(!is.null(fun)){
+    # If a summary function was given, just bind everything together and add ID column
     df <- data.frame(do.call(cbind, values))
-    names(df) <- names(raster)
+    df <- cbind(ID = as.data.frame(shape)[, id], df)
+    names(df) <- c(id, names(raster))
+    
     return(df)
   } else {
-    return(values)
+    # If no summary was given we get a list of length n.covariates
+    #   each entry in the list is a list of length n.shapes
+    #   Want to make covariates columns, rbind shapes, and add shape and cell id columns.
+    
+    # list of vectors, one for each covariate
+    rbind.covs <- lapply(values, function(x) do.call(rbind, x)[, 2]) 
+    # List of regions ids and cell ids
+    IDnames <- as.data.frame(shape)[, id]
+    ids.df <- data.frame(regionids = rep(IDnames, sapply(values[[1]], nrow)),
+                         cellids = do.call(rbind, values[[1]])[, 1])
+    
+    
+    df <- data.frame(ids.df, do.call(cbind, rbind.covs))
+    names(df) <- c(id, 'cellid', names(raster))
+    
+    return(df)
   }
-
+  
 }
 
 
