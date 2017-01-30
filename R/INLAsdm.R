@@ -41,7 +41,8 @@ inlaSDM<-function(dataframe,
                   cv_runs=25,
                   spatial = TRUE,
                   num.threads=1,
-                  meshvals=list(minME=0.5, maxME=7, co=1.5, minOS=1, maxOS=10)){
+                  meshvals=list(minME=max(res(predictors)) * 10, maxME=max(res(predictors)) * 100, co=0, minOS = -0.1, maxOS = -0.3)
+){
   
   
 if(!cross_validation) cv_runs <- 1
@@ -70,7 +71,7 @@ for(cv in cv_runs){
     names(sss)[NCOL(sss)] <- y
     
     # Why?
-    sss <- complete.cases(sss)
+    sss <- sss[complete.cases(sss), ]
     dataf1@data<-sss
     
     if(step==TRUE){
@@ -135,7 +136,7 @@ for(cv in cv_runs){
                                          list(dataf1@data[, names(dataf1) != y])), tag='val')
       
       join.stack<-inla.stack(stk.est,stk.val)
-      ntt <- c(dataf1$trials, rep(1,nrow(dataf1)))
+      ntt <- rep(1, nrow(dataf1))
       
       # # What is predict1?
       # if(!predict1==TRUE){
@@ -168,24 +169,23 @@ for(cv in cv_runs){
       ##and the stack data is defined to include effects IMPORTANT they have same names as columns so the formula below will work
       # Todo What is this for!
       # Guessing it's supposed to be the test data? But not defined while taking into account the cross_validation groups above
+      # 
+      # stk.val <- inla.stack(data=list(y=NA),
+      #                       A=list(1), 
+      #                       effects=list(data.frame(Intercept = 1, dataf1@data[, names(dataf1) != y])),
+      #                       tag = 'val')
       
-      stk.val <- inla.stack(data=list(y=NA),
-                            A=list(1), 
-                            effects=list(data.frame(Intercept = 1, dataf1@data[, names(dataf1) != y])),
-                            tag = 'val')
       
-      
-      join.stack<-inla.stack(stk.est,stk.val)
-      ntt <- c(dataf1$trials, rep(1,nrow(dataf1)))
+      ntt <- rep(1,nrow(dataf1))
       
       # Create formula object
       form1 <- formula(form1)
       # Fit unspatial inla model
       res5<-inla(form1,
-                 data=inla.stack.data(join.stack),
+                 data=inla.stack.data(stk.est),
                  family="binomial",
                  Ntrials=ntt,
-                 control.compute=list(cpo=TRUE,waic=TRUE,dic=TRUE),
+                 control.compute=list(cpo=TRUE, waic=TRUE, dic=TRUE),
                  control.fixed = list(expand.factor.strategy = "inla"),
                  num.threads=num.threads,
                  silent=TRUE)
