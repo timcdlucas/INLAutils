@@ -38,10 +38,18 @@ inlaSDM<-function(dataframe,
                                 co = 0, 
                                 minOS = -0.1,
                                 maxOS = -0.3)
-){
+                  ){
   
   
 if(!cross_validation) cv_folds <- 1
+
+# Empty list for all inla models
+models <- list()
+# Empty data frame for summaries
+model_res <- as.data.frame(matrix(NA, ncol = 4, nrow = cv_folds))
+names(model_res) <- c('replicate', 'AUC', 'WAIC', 'comp_time')
+
+
   
 for(cv in cv_folds){
     
@@ -165,7 +173,7 @@ for(cv in cv_folds){
       
       
       ##and the stack data is defined to include effects IMPORTANT they have same names as columns so the formula below will work
-      # Todo What is this for!
+      # Todo W  hat is this for!
       # Guessing it's supposed to be the test data? But not defined while taking into account the cross_validation groups above
       # 
       # stk.val <- inla.stack(data=list(y=NA),
@@ -219,31 +227,31 @@ for(cv in cv_folds){
     #predict_rast@data$antimean<-exp(exp(predict_rast@data$mean)+1)-1
     #head(res5$summary.fitted.values[(nrow(dataf1)+1):(nrow(dataf1)+nrow(predict_rast)),])
     
-    test1<-rasterize(predict_rast2,predictxm2,field="mean",mean)
-    names(test1)<-paste("Quarter_",QQ,"_ONI_",ONI,sep="")
+    # test1<-rasterize(predict_rast2,predictxm2,field="mean",mean)
+    # names(test1)<-paste("Quarter_",QQ,"_ONI_",ONI,sep="")
     
     if(cross_validation==TRUE){
-      c3<-as.data.frame(res5$summary.fitted.values[1:nrow(dataf1), c("mean", "sd") ])
+      c3 <- as.data.frame(res5$summary.fitted.values[1:nrow(dataf1), c("mean", "sd") ])
       c3$p_pred<-c3$mean#round(c3$mean,0)
       c3$p_real<-rbind(pres_train,backg_train,pres_test,backg_test,datat, datatb)$Presence
       ###internal testing points
       c5<-c3[(nrow(pres_train)+nrow(backg_train))+1:(nrow(pres_train)+nrow(backg_train)+nrow(pres_test)+nrow(backg_test)),]
       ##evaluate INLA output ## full predict
       e5b <-dismo::evaluate(p=c5[c5$p_real==1,"p_pred"],a=c5[c5$p_real==0,"p_pred"])
-    } else {e5b=NA}
+    } else {
+      e5b <- NA
+    }
     
-    model_res<-data.frame(version=z,
-                          replicate=cv,
-                          sens_run=xx,
-                          layersx[1,],
-                          AUC=e2,
-                          AIC=maxAIC,
-                          arguements=paste(args1,collapse=" "),
-                          beta=beta1,
-                          comp_time=max(maxtime,na.rm=T))
-    if(z==1){model_res2<-model_res}else{model_res2<-rbind(model_res2,model_res)}
-    if(z==1){models=list(xm)} else{models<-append(models,xm)}
-    z=z+1
+    model_res[cv, ] <- c(replicate=cv,
+                         #sens_run=xx,
+                         #layersx[1,],
+                         AUC=e5b,
+                         WAIC=res5$waic$waic,
+                         #arguements=paste(args1,collapse=" "),
+                         #beta=beta1,
+                         comp_time=inla.time[['Total']])
+                        
+    models[[cv]] <- res5
   }## end cv
   
   return(list(model_res,models))
