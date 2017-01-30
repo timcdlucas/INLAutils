@@ -9,14 +9,11 @@
 
 #'@param dataframe A \link{\code[sp]{SpatialPointsDataframe}}
 #'@param predictors Raster of predictors (covariates)
-#'@param invariant Character indicating the parts of the model formula that should not change (e.g. the intercept).
 #'@param include Vector of integers describing which covariates to include in the model
 #'@param step Logical indicating whether to run stepwise elimination of variables.
-#'@param sens
+#'@param invariant Character indicating the parts of the model formula that should not change despite stepwise selection (e.g. the intercept).
 #'@param y Charactor indicating which column is the response variable
-#'@param sens_num
 #'@param cross_validation Run cross validation?
-#'@param cv_runs How many time should cross validation be run?
 #'@param cv_folds How many folds should the data be split into?
 #'@param meshvals List giving details for the creation of the INLA mesh (see details and \link{\code{INLA::inla.mesh.2d}})
 #'@param spatial Run INLA with a spatial term.
@@ -24,30 +21,29 @@
 #'@details For now invariant MUST include 'Intercept'.
 #'
 #'@examples
-#' data <- data.frame(y = rep(0:1, 200),
-#'                    x1 = rnorm(200) + rep(0:1, 200),
-#'                    x2 = rnorm(200))
 
 ##without dismo
 inlaSDM<-function(dataframe,
                   predictors, 
-                  invariant = "0 + Intercept",
                   include = 1:nlayers(predictors),
                   step=FALSE,
-                  #sens=FALSE,
+                  invariant = "0 + Intercept",
                   y="y",
-                  #sens_num=50,
                   cross_validation=FALSE,
-                  cv_runs=25,
+                  cv_folds = 5
                   spatial = TRUE,
                   num.threads=1,
-                  meshvals=list(minME=max(res(predictors)) * 10, maxME=max(res(predictors)) * 100, co=0, minOS = -0.1, maxOS = -0.3)
+                  meshvals=list(minME = max(res(predictors)) * 10, 
+                                maxME = max(res(predictors)) * 100, 
+                                co = 0, 
+                                minOS = -0.1,
+                                maxOS = -0.3)
 ){
   
   
-if(!cross_validation) cv_runs <- 1
+if(!cross_validation) cv_folds <- 1
   
-for(cv in cv_runs){
+for(cv in cv_folds){
     
   
   
@@ -129,13 +125,13 @@ for(cv in cv_runs){
       ##and the stack data is defined to include effects IMPORTANT they have same names as columns so the formula below will work
       # Todo What is this for!
       # Guessing it's supposed to be the test data? But not defined while taking into account the cross_validation groups above
-      
-      stk.val <- inla.stack(data=list(y=NA),
-                            A=list(A.val,1), 
-                            effects=list(c(s.index, list(Intercept=1)), 
-                                         list(dataf1@data[, names(dataf1) != y])), tag='val')
-      
-      join.stack<-inla.stack(stk.est,stk.val)
+      # 
+      # stk.val <- inla.stack(data=list(y=NA),
+      #                       A=list(A.val,1), 
+      #                       effects=list(c(s.index, list(Intercept=1)), 
+      #                                    list(dataf1@data[, names(dataf1) != y])), tag='val')
+      # 
+      # join.stack<-inla.stack(stk.est,stk.val)
       ntt <- rep(1, nrow(dataf1))
       
       # # What is predict1?
@@ -149,14 +145,16 @@ for(cv in cv_runs){
       
       # Fit spatial inla model.
       res5<-inla(form1,
-                 data=inla.stack.data(join.stack,spde=spde),
+                 data=inla.stack.data(stk.est, spde=spde),
                  family="binomial",
                  Ntrials=ntt,
-                 control.predictor=list(A=inla.stack.A(join.stack),compute=TRUE),
+                 control.predictor=list(A=inla.stack.A(stk.est),compute=TRUE),
                  control.compute=list(cpo=TRUE,waic=TRUE,dic=TRUE),
                  control.fixed = list(expand.factor.strategy = "inla"),
                  num.threads=num.threads,
                  silent=TRUE)
+      
+      
     }else{
       
       # Assumes invariant has `Intercept`
