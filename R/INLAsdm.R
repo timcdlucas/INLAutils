@@ -70,7 +70,7 @@ for(cv in cv_runs){
     names(sss)[NCOL(sss)] <- y
     
     # Why?
-    sss[is.na(sss)]<-0
+    sss <- complete.cases(sss)
     dataf1@data<-sss
     
     if(step==TRUE){
