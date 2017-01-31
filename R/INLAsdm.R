@@ -20,7 +20,6 @@
 #'
 #'@details For now invariant MUST include 'Intercept'.
 #'
-#'@examples
 
 ##without dismo
 inlaSDM<-function(dataframe,
@@ -30,7 +29,7 @@ inlaSDM<-function(dataframe,
                   invariant = "0 + Intercept",
                   y="y",
                   cross_validation=FALSE,
-                  cv_folds = 5
+                  cv_folds = 5,
                   spatial = TRUE,
                   num.threads=1,
                   meshvals=list(minME = max(res(predictors)) * 10, 
