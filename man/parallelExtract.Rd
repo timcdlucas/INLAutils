@@ -4,16 +4,18 @@
 \alias{parallelExtract}
 \title{Parallel extraction of means of rasters by shape file.}
 \usage{
-parallelExtract(raster, shape, fun = mean, ...)
+parallelExtract(raster, shape, fun = mean, id = "OBJECTID", ...)
 }
 \arguments{
 \item{raster}{A raster brick or stack}
 
-\item{shape}{A shape file}
+\item{shape}{A shape object}
 
 \item{fun}{The function used to aggregate the pixel data. If NULL, raw pixel data is returned.}
 
-\item{...}{Other arguments to raster::extract (see \code{\link[raster]{extract}})}
+\item{id}{Name of column in shape object to be used to bind an ID column to output.}
+
+\item{...}{Other arguments to raster::extract}
 }
 \description{
 Parallelisation is performed across rasters, not shapes. 
@@ -21,7 +23,6 @@ So this function is only useful if you are extracting
 data from many raster layers.
 As the overhead for parallel computation in windows is high
 it only makes sense to parallelise in this way.
-To run, you must first register a cluster (see examples).
 }
 \examples{
 
@@ -48,8 +49,5 @@ cl <- makeCluster(2) #change the 2 to your number of CPU cores
 registerDoSNOW(cl)  
 v2 <- parallelExtract(r, polys, fun = mean)
 stopCluster(cl)  
-}
-\seealso{
-\code{\link[raster]{extract}}
 }
 
