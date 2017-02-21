@@ -14,7 +14,6 @@
 #'@param include Vector of integers describing which covariates to include in the model
 #'@param step Logical indicating whether to run stepwise elimination of variables.
 #'@param invariant Character indicating the parts of the model formula that should not change despite stepwise selection (e.g. the intercept).
-#'@param y Charactor indicating which column is the response variable
 #'@param cross_validation Run cross validation?
 #'@param cv_folds How many folds should the data be split into?
 #'@param meshvals List giving details for the creation of the INLA mesh (see details and \code{\link[INLA]{inla.mesh.2d}})
@@ -30,19 +29,23 @@ inlaSDM<-function(dataframe,
                   include = 1:raster::nlayers(predictors),
                   step = FALSE,
                   invariant = "0 + Intercept",
-                  y = "y",
                   cross_validation = FALSE,
                   cv_folds = 5,
                   spatial = TRUE,
                   num.threads = 1,
-                  meshvals=list(minME = max(raster::res(predictors)) * 10, 
-                                maxME = max(raster::res(predictors)) * 100, 
-                                co = 0, 
-                                minOS = -0.1,
-                                maxOS = -0.3)
+                  meshvals = list(minME = max(raster::res(predictors)) * 10, 
+                                  maxME = max(raster::res(predictors)) * 100, 
+                                  co = 0, 
+                                  minOS = -0.1,
+                                  maxOS = -0.3)
                   ){
   
     
+  # Deal with names of response column.
+  assert_that(ncol(dataframe) == 1)
+  y <- 'y'
+  names(dataframe) <- 'y'
+  
   if(!cross_validation) cv_folds <- 1
   
   # Empty list for all inla models
@@ -123,11 +126,11 @@ inlaSDM<-function(dataframe,
       #if(bin1==FALSE){dataf1$Presence<-dataf1$p; fam1=fam2}
       
       # Assumes invariant has `Intercept`
-      stk.est <- inla.stack(data=list(y=dataf1$y),
-                            A=list(A,1), 
-                            effects=list(c(s.index,list(Intercept=1)),
+      stk.est <- inla.stack(data = list(y = dataf1$y),
+                            A = list(A, 1), 
+                            effects = list(c(s.index,list(Intercept = 1)),
                                          list(dataf1@data[, names(dataf1) != y])),
-                            tag='est')
+                            tag = 'est')
       
       ###projector matrix for known
       A.val <- inla.spde.make.A(mesh5, loc = sp::coordinates(dataf1))
