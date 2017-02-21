@@ -21,9 +21,10 @@
 #' @export
 #' @examples 
 #' 
-#' # Create raster
+#' # Create raster stack
 #' r <- raster::raster(ncol=36, nrow=18)
 #' r[] <- 1:raster::ncell(r)
+#' r <- stack(r, r)
 #' 
 #' # Create polygon
 #' cds1 <- rbind(c(-180,-20), c(-160,5), c(-60, 0), c(-160,-60), c(-180,-20))
@@ -60,7 +61,13 @@ parallelExtract <- function(raster, shape, fun = mean, id = 'OBJECTID',  ...){
   if(!is.null(fun)){
     # If a summary function was given, just bind everything together and add ID column
     df <- data.frame(do.call(cbind, values))
-    df <- cbind(ID = as.data.frame(shape)[, id], df)
+    if(class(shape) == 'SpatialPolygonsDataFrame'){
+      df <- cbind(ID = as.data.frame(shape)[, id], df)
+    } else{
+      df <- cbind(ID = names(shape), df)
+      id <- 'id'
+    }
+    
     names(df) <- c(id, names(raster))
     
     return(df)
@@ -72,7 +79,7 @@ parallelExtract <- function(raster, shape, fun = mean, id = 'OBJECTID',  ...){
     # list of vectors, one for each covariate
     rbind.covs <- lapply(values, function(x) do.call(rbind, x)[, 2]) 
     # List of regions ids and cell ids
-    IDnames <- as.data.frame(shape)[, id]
+    IDnames <- raster::as.data.frame(shape)[, id]
     ids.df <- data.frame(regionids = rep(IDnames, sapply(values[[1]], nrow)),
                          cellids = do.call(rbind, values[[1]])[, 1])
     
