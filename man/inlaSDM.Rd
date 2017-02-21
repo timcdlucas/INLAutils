@@ -5,11 +5,10 @@
 \title{Fit INLA species distribution models.}
 \usage{
 inlaSDM(dataframe, predictors, include = 1:raster::nlayers(predictors),
-  step = FALSE, invariant = "0 + Intercept", y = "y",
-  cross_validation = FALSE, cv_folds = 5, spatial = TRUE,
-  num.threads = 1, meshvals = list(minME = max(raster::res(predictors)) *
-  10, maxME = max(raster::res(predictors)) * 100, co = 0, minOS = -0.1, maxOS =
-  -0.3))
+  step = FALSE, invariant = "0 + Intercept", cross_validation = FALSE,
+  cv_folds = 5, spatial = TRUE, num.threads = 1, meshvals = list(minME =
+  max(raster::res(predictors)) * 10, maxME = max(raster::res(predictors)) * 100,
+  co = 0, minOS = -0.1, maxOS = -0.3))
 }
 \arguments{
 \item{dataframe}{A \code{\link[sp]{SpatialPointsDataFrame}}}
@@ -21,8 +20,6 @@ inlaSDM(dataframe, predictors, include = 1:raster::nlayers(predictors),
 \item{step}{Logical indicating whether to run stepwise elimination of variables.}
 
 \item{invariant}{Character indicating the parts of the model formula that should not change despite stepwise selection (e.g. the intercept).}
-
-\item{y}{Charactor indicating which column is the response variable}
 
 \item{cross_validation}{Run cross validation?}
 

@@ -40,11 +40,17 @@ inlaSDM<-function(dataframe,
                                   maxOS = -0.3)
                   ){
   
-    
+  
   # Deal with names of response column.
   assert_that(ncol(dataframe) == 1)
   y <- 'y'
   names(dataframe) <- 'y'
+  
+  
+  # Check meshvals is complete
+  assert_that(names(meshvals) == c('minME', 'maxME', 'co', 'minOS', 'maxOS'))
+  
+  
   
   if(!cross_validation) cv_folds <- 1
   
@@ -75,13 +81,16 @@ inlaSDM<-function(dataframe,
     
     
     ###add training data and testing data (NAs) together
-    sss <- as.data.frame(raster::extract(predictors, dataf1))
+    sss <- as.data.frame(raster::extract(predictors[[include]], dataf1))
+    # If there's only 1 predictor, we end up with funny names.
+    if(NCOL(sss) == 1) colnames(sss) <- names(predictors[[include]])
+    
     sss <- cbind(sss, dataf1@data[, y])
     names(sss)[NCOL(sss)] <- y
     
     # Why?
     sss <- sss[complete.cases(sss), ]
-    dataf1@data<-sss
+    dataf1@data <- sss
     
     if(step == TRUE){
       # Data is a raster (or at least some s4 thing).
@@ -103,7 +112,7 @@ inlaSDM<-function(dataframe,
       
     } else {
       # Make formula of all covariates but not
-      form1 <- paste0(y, ' ~ ', invariant, ' + ', paste(names(predictors), collapse = ' + '))
+      form1 <- paste0(y, ' ~ ', invariant, ' + ', paste(names(predictors[[include]]), collapse = ' + '))
     }
     
     if(spatial==TRUE){
@@ -129,7 +138,7 @@ inlaSDM<-function(dataframe,
       stk.est <- inla.stack(data = list(y = dataf1$y),
                             A = list(A, 1), 
                             effects = list(c(s.index,list(Intercept = 1)),
-                                         list(dataf1@data[, names(dataf1) != y])),
+                                         list(dataf1@data[, names(dataf1) != y, drop = FALSE])),
                             tag = 'est')
       
       ###projector matrix for known
@@ -171,10 +180,10 @@ inlaSDM<-function(dataframe,
     }else{
       
       # Assumes invariant has `Intercept`
-      stk.est <- inla.stack(data=list(y=dataf1$y),
-                            A=list(1), 
-                            effects=list(data.frame(Intercept = 1, dataf1@data[, names(dataf1) != y])),
-                            tag='est')
+      stk.est <- inla.stack(data = list(y = dataf1$y),
+                            A = list(1), 
+                            effects = list(data.frame(Intercept = 1, dataf1@data[, names(dataf1) != y, drop = FALSE])),
+                            tag = 'est')
       
       
       ##and the stack data is defined to include effects IMPORTANT they have same names as columns so the formula below will work
@@ -187,30 +196,30 @@ inlaSDM<-function(dataframe,
       #                       tag = 'val')
       
       
-      ntt <- rep(1,nrow(dataf1))
+      ntt <- rep(1, nrow(dataf1))
       
       # Create formula object
       form1 <- formula(form1)
       # Fit unspatial inla model
       res5<-inla(form1,
-                 data=inla.stack.data(stk.est),
-                 family="binomial",
-                 Ntrials=ntt,
-                 control.compute=list(cpo=TRUE, waic=TRUE, dic=TRUE),
+                 data = inla.stack.data(stk.est),
+                 family = "binomial",
+                 Ntrials = ntt,
+                 control.compute = list(cpo = TRUE, waic = TRUE, dic = TRUE),
                  control.fixed = list(expand.factor.strategy = "inla"),
-                 num.threads=num.threads,
-                 silent=TRUE)
+                 num.threads = num.threads,
+                 silent = TRUE)
     }
     
     
-    inla.time<-(res5$cpu.used)
-    waic<-(res5$waic$waic)
-    dic<-(res5$dic$dic)
-    cpo.fit<-(sum(log(res5$cpo$cpo),na.rm=T))
+    inla.time <- (res5$cpu.used)
+    waic <- (res5$waic$waic)
+    dic <- (res5$dic$dic)
+    cpo.fit <- (sum(log(res5$cpo$cpo),na.rm=T))
     
     ##put it all together ## replace with function!!!!
-    res1<-data.frame(row.names=rownames(res5$summary.fixed),res5$summary.fixed)
-    res1$sig<-"non-sig"##is a term significant? i.e. does it include 0 in distribution
+    res1 <- data.frame(row.names=rownames(res5$summary.fixed),res5$summary.fixed)
+    res1$sig <- "non-sig"##is a term significant? i.e. does it include 0 in distribution
     res1$sig[(res1$X0.025quant<0 & res1$X0.975quant<0)|(res1$X0.025quant>0 & res1$X0.975quant>0)]<-"sig"
     #res1<-res1[res1$sig=="sig",]
     

@@ -1,4 +1,4 @@
-context('Test that autoplot works on mesh objects.')
+context('Test that autoplot works on mesh objects')
 
 
 test_that('Mesh plot can be built and altered', {

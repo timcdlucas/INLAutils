@@ -1,4 +1,4 @@
-context('Basic tests that autoplot produces plots without errors.')
+context('Basic tests that autoplot produces plots without errors')
 
 test_that('autoplot does not fail when it should not.', {
   library(INLA)

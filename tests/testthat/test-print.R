@@ -1,4 +1,4 @@
-context('Simple tests to make sure no print methods cause errors.')
+context('Simple tests to make sure no print methods cause errors')
 
 
 # Can't easily test much beyond error/not error
@@ -47,10 +47,11 @@ res<-inla(formula,data=inla.stack.data(stk.e),control.predictor=list(A=inla.stac
 gproj<-inla.mesh.projector(mesh,xlim=0:1,ylim=0:1,dims=c(300,300))
 g.mean<-inla.mesh.project(gproj, res$summary.random$s$mean)
 
-
-# Now test print all objects
-expect_error(print(stk.e), NA)
-expect_error(print(mesh), NA)
-expect_error(print(gproj), NA)
+z <- capture.output({
+  # Now test print all objects
+  expect_error(print(stk.e), NA)
+  expect_error(print(mesh), NA)
+  expect_error(print(gproj), NA)
+})
 
 })
