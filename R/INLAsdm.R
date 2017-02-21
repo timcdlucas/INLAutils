@@ -7,7 +7,7 @@
 #spit out sum CPO as well as DIC and wAIC, pred-obs data, standardised residuals
 #how to deal with invariant??
 
-#'@param dataframe A \link{\code[sp]{SpatialPointsDataframe}}
+#'@param dataframe A \code{\link{SpatialPointsDataframe}}
 #'@param predictors Raster of predictors (covariates)
 #'@param include Vector of integers describing which covariates to include in the model
 #'@param step Logical indicating whether to run stepwise elimination of variables.
