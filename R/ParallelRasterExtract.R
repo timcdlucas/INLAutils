@@ -44,9 +44,14 @@
 
 parallelExtract <- function(raster, shape, fun = mean, id = 'OBJECTID',  ...){
   
+  if (!requireNamespace("foreach", quietly = TRUE)) {
+    stop("foreach needed for this function to work. Please install it.",
+         call. = FALSE)
+  }
   
+  i <- NULL
   # Run extract in parallel.
-  values <- foreach(i = 1:nlayers(raster)) %dopar% {  
+  values <- foreach::foreach(i = 1:raster::nlayers(raster)) %dopar% {  
     raster::extract(raster[[i]], shape, fun = fun, na.rm = TRUE, cellnumbers = TRUE, ...)
   } 
   if(!is.null(fun)){

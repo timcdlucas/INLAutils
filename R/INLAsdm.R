@@ -7,6 +7,8 @@
 #spit out sum CPO as well as DIC and wAIC, pred-obs data, standardised residuals
 #how to deal with invariant??
 
+#' Fit INLA species distribution models.
+#' 
 #'@param dataframe A \code{\link{SpatialPointsDataframe}}
 #'@param predictors Raster of predictors (covariates)
 #'@param include Vector of integers describing which covariates to include in the model
@@ -17,23 +19,25 @@
 #'@param cv_folds How many folds should the data be split into?
 #'@param meshvals List giving details for the creation of the INLA mesh (see details and \link{\code{INLA::inla.mesh.2d}})
 #'@param spatial Run INLA with a spatial term.
+#'@param numthreads How many threads should be used for parallel computation.
 #'
 #'@details For now invariant MUST include 'Intercept'.
-#'
+#'@export
+
 
 ##without dismo
 inlaSDM<-function(dataframe,
                   predictors, 
-                  include = 1:nlayers(predictors),
+                  include = 1:raster::nlayers(predictors),
                   step=FALSE,
                   invariant = "0 + Intercept",
                   y="y",
-                  cross_validation=FALSE,
+                  cross_validation = FALSE,
                   cv_folds = 5,
                   spatial = TRUE,
                   num.threads=1,
-                  meshvals=list(minME = max(res(predictors)) * 10, 
-                                maxME = max(res(predictors)) * 100, 
+                  meshvals=list(minME = max(raster::res(predictors)) * 10, 
+                                maxME = max(raster::res(predictors)) * 100, 
                                 co = 0, 
                                 minOS = -0.1,
                                 maxOS = -0.3)
@@ -102,7 +106,7 @@ for(cv in cv_folds){
     
     if(spatial==TRUE){
       ##make mesh
-      mesh5<-inla.mesh.2d(loc= coordinates(dataf1), 
+      mesh5<-inla.mesh.2d(loc = raster::coordinates(dataf1), 
                           max.edge = c(meshvals$minME, meshvals$maxME), 
                           cutoff = meshvals$co, 
                           offset = c(meshvals$minOS, meshvals$maxOS))
@@ -111,7 +115,7 @@ for(cv in cv_folds){
       spde <- inla.spde2.matern(mesh5, alpha=2)
       
       ###projector matrix for known
-      A <- inla.spde.make.A(mesh5, loc = coordinates(dataf1))
+      A <- inla.spde.make.A(mesh5, loc = raster::coordinates(dataf1))
       
       ###make index for spatial field
       s.index<-inla.spde.make.index(name="spatial.field",n.spde=spde$n.spde)
@@ -127,7 +131,7 @@ for(cv in cv_folds){
                             tag='est')
       
       ###projector matrix for known
-      A.val <- inla.spde.make.A(mesh5, loc = coordinates(dataf1))
+      A.val <- inla.spde.make.A(mesh5, loc = raster::coordinates(dataf1))
       
       ##and the stack data is defined to include effects IMPORTANT they have same names as columns so the formula below will work
       # Todo What is this for!

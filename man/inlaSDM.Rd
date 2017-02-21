@@ -2,15 +2,17 @@
 % Please edit documentation in R/INLAsdm.R
 \name{inlaSDM}
 \alias{inlaSDM}
+\title{Fit INLA species distribution models.}
 \usage{
-inlaSDM(dataframe, predictors, include = 1:nlayers(predictors),
+inlaSDM(dataframe, predictors, include = 1:raster::nlayers(predictors),
   step = FALSE, invariant = "0 + Intercept", y = "y",
   cross_validation = FALSE, cv_folds = 5, spatial = TRUE,
-  num.threads = 1, meshvals = list(minME = max(res(predictors)) * 10, maxME
-  = max(res(predictors)) * 100, co = 0, minOS = -0.1, maxOS = -0.3))
+  num.threads = 1, meshvals = list(minME = max(raster::res(predictors)) *
+  10, maxME = max(raster::res(predictors)) * 100, co = 0, minOS = -0.1, maxOS =
+  -0.3))
 }
 \arguments{
-\item{dataframe}{A \link{\code[sp]{SpatialPointsDataframe}}}
+\item{dataframe}{A \code{\link{SpatialPointsDataframe}}}
 
 \item{predictors}{Raster of predictors (covariates)}
 
@@ -29,6 +31,11 @@ inlaSDM(dataframe, predictors, include = 1:nlayers(predictors),
 \item{spatial}{Run INLA with a spatial term.}
 
 \item{meshvals}{List giving details for the creation of the INLA mesh (see details and \link{\code{INLA::inla.mesh.2d}})}
+
+\item{numthreads}{How many threads should be used for parallel computation.}
+}
+\description{
+Fit INLA species distribution models.
 }
 \details{
 For now invariant MUST include 'Intercept'.

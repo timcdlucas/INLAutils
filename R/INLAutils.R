@@ -12,7 +12,7 @@
 #'@importClassesFrom ggfortify ggmultiplot
 #'@importFrom ggplot2 autoplot
 #'@importFrom utils globalVariables 
-
+#'@importFrom stats complete.cases
 #'@import INLA
 NULL
 

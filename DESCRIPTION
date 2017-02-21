@@ -24,7 +24,8 @@ Depends:
     ggplot2
 Suggests:
     knitr,
-    testthat
+    testthat,
+    foreach
 VignetteBuilder: knitr
 LazyData: true
 URL: https://github.com/timcdlucas/INLAutils
