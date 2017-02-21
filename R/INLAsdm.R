@@ -28,13 +28,13 @@
 inlaSDM<-function(dataframe,
                   predictors, 
                   include = 1:raster::nlayers(predictors),
-                  step=FALSE,
+                  step = FALSE,
                   invariant = "0 + Intercept",
-                  y="y",
+                  y = "y",
                   cross_validation = FALSE,
                   cv_folds = 5,
                   spatial = TRUE,
-                  num.threads=1,
+                  num.threads = 1,
                   meshvals=list(minME = max(raster::res(predictors)) * 10, 
                                 maxME = max(raster::res(predictors)) * 100, 
                                 co = 0, 
@@ -42,33 +42,33 @@ inlaSDM<-function(dataframe,
                                 maxOS = -0.3)
                   ){
   
-  
-if(!cross_validation) cv_folds <- 1
-
-# Empty list for all inla models
-models <- list()
-# Empty data frame for summaries
-model_res <- as.data.frame(matrix(NA, ncol = 4, nrow = cv_folds))
-names(model_res) <- c('replicate', 'AUC', 'WAIC', 'comp_time')
-
-
-  
-for(cv in cv_folds){
     
+  if(!cross_validation) cv_folds <- 1
   
+  # Empty list for all inla models
+  models <- list()
+  # Empty data frame for summaries
+  model_res <- as.data.frame(matrix(NA, ncol = 4, nrow = cv_folds))
+  names(model_res) <- c('replicate', 'AUC', 'WAIC', 'comp_time')
   
-  if(cross_validation==TRUE){
-    group <- dismo::kfold(dataframe, 5)
-    train <- dataframe[group != cv, ]
-    test <- dataframe[group == cv, ]
-    test@data[, y] <- NA
-    dataf1<-rbind(train,test)
-  } else { # Not sure how this works
-    dataf1<-dataframe
-  }
   
     
+  for(cv in cv_folds){
+      
     
+    
+    if(cross_validation==TRUE){
+      group <- dismo::kfold(dataframe, 5)
+      train <- dataframe[group != cv, ]
+      test  <- dataframe[group == cv, ]
+      test@data[, y] <- NA
+      dataf1 <- rbind(train,test)
+    } else { # Not sure how this works
+      dataf1 <- dataframe
+    }
+    
+      
+      
     
     
     ###add training data and testing data (NAs) together
@@ -80,23 +80,23 @@ for(cv in cv_folds){
     sss <- sss[complete.cases(sss), ]
     dataf1@data<-sss
     
-    if(step==TRUE){
+    if(step == TRUE){
       # Data is a raster (or at least some s4 thing).
-      stepINLA<-stepINLA(fam1="binomial", #?
-                         dataf1,
-                         invariant=invariant,
-                         direction='backwards',
-                         include=1:ncol(dataf1),
-                         y=y,
-                         y2 = y,
-                         in_stack=NULL,
-                         powerl=1,
-                         inter=1,
-                         thresh=2,
-                         Ntrials=NULL,
-                         num.threads=num.threads)
+      stepINLA <- stepINLA(fam1 = "binomial", #?
+                          dataf1,
+                          invariant = invariant,
+                          direction = 'backwards',
+                          include = 1:ncol(dataf1),
+                          y = y,
+                          y2 = y,
+                          in_stack = NULL,
+                          powerl = 1,
+                          inter = 1,
+                          thresh = 2,
+                          Ntrials = ,
+                          num.threads = num.threads)
       
-      form1<-paste0(as.character(stepINLA$best.formula), collapse = FALSE)
+      form1 <- paste0(as.character(stepINLA$best.formula), collapse = FALSE)
       
     } else {
       # Make formula of all covariates but not
@@ -105,10 +105,10 @@ for(cv in cv_folds){
     
     if(spatial==TRUE){
       ##make mesh
-      mesh5<-inla.mesh.2d(loc = sp::coordinates(dataf1), 
-                          max.edge = c(meshvals$minME, meshvals$maxME), 
-                          cutoff = meshvals$co, 
-                          offset = c(meshvals$minOS, meshvals$maxOS))
+      mesh5 <- inla.mesh.2d(loc = sp::coordinates(dataf1), 
+                            max.edge = c(meshvals$minME, meshvals$maxME), 
+                            cutoff = meshvals$co, 
+                            offset = c(meshvals$minOS, meshvals$maxOS))
       
       ####The SPDE model is defined 
       spde <- inla.spde2.matern(mesh5, alpha=2)
@@ -256,5 +256,8 @@ for(cv in cv_folds){
     models[[cv]] <- res5
   }## end cv
   
-  return(list(model_res,models))
+  output <- list(model_res, models)
+  class(output) <- 'inlaSDM'
+
+  return(output)
 }
