@@ -12,7 +12,7 @@ inlaSDM(dataframe, predictors, include = 1:raster::nlayers(predictors),
   -0.3))
 }
 \arguments{
-\item{dataframe}{A \code{\link{SpatialPointsDataframe}}}
+\item{dataframe}{A \code{\link[sp]{SpatialPointsDataFrame}}}
 
 \item{predictors}{Raster of predictors (covariates)}
 
@@ -30,9 +30,9 @@ inlaSDM(dataframe, predictors, include = 1:raster::nlayers(predictors),
 
 \item{spatial}{Run INLA with a spatial term.}
 
-\item{meshvals}{List giving details for the creation of the INLA mesh (see details and \link{\code{INLA::inla.mesh.2d}})}
+\item{num.threads}{How many threads should be used for parallel computation.}
 
-\item{numthreads}{How many threads should be used for parallel computation.}
+\item{meshvals}{List giving details for the creation of the INLA mesh (see details and \code{\link[INLA]{inla.mesh.2d}})}
 }
 \description{
 Fit INLA species distribution models.

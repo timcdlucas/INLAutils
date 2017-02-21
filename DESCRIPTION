@@ -19,13 +19,16 @@ Imports:
     methods,
     RColorBrewer,
     sp,
-    reshape2
+    reshape2,
+    foreach,
+    doSNOW,
+    snow,
+    dismo
 Depends:
     ggplot2
 Suggests:
     knitr,
-    testthat,
-    foreach
+    testthat
 VignetteBuilder: knitr
 LazyData: true
 URL: https://github.com/timcdlucas/INLAutils

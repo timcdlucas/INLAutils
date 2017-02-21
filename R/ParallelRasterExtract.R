@@ -13,34 +13,37 @@
 #' @param fun The function used to aggregate the pixel data. If NULL, raw pixel data is returned.
 #' @param id Name of column in shape object to be used to bind an ID column to output.
 #' @param ... Other arguments to raster::extract
+#' @importFrom foreach %dopar%
+#' @importFrom snow stopCluster
+#' @importFrom snow makeCluster
+#' @importFrom doSNOW registerDoSNOW
 #'
 #' @export
 #' @examples 
 #' 
 #' # Create raster
-#' r <- raster(ncol=36, nrow=18)
-#' r[] <- 1:ncell(r)
+#' r <- raster::raster(ncol=36, nrow=18)
+#' r[] <- 1:raster::ncell(r)
 #' 
 #' # Create polygon
 #' cds1 <- rbind(c(-180,-20), c(-160,5), c(-60, 0), c(-160,-60), c(-180,-20))
 #' cds2 <- rbind(c(80,0), c(100,60), c(120,0), c(120,-55), c(80,0))
-#' polys <- spPolygons(cds1, cds2)
+#' polys <- raster::spPolygons(cds1, cds2)
 #' 
 #' #plot(r)
 #' #plot(polys, add=TRUE)
 #' 
 #' # Standard raster::extract
-#' v <- extract(r, polys)
-#' v <- extract(r, polys, fun = mean, df = TRUE)
+#' v <- raster::extract(r, polys)
+#' v <- raster::extract(r, polys, fun = mean, df = TRUE)
 #' 
 #' # Parallel extract
 #' #  Register the cluster first (use doMC on linux)
-#' library(doSNOW)  
-#' cl <- makeCluster(2) #change the 2 to your number of CPU cores  
-#' registerDoSNOW(cl)  
+#' cl <- snow::makeCluster(2) #change the 2 to your number of CPU cores  
+#' doSNOW::registerDoSNOW(cl)  
 
 #' v2 <- parallelExtract(r, polys, fun = mean)
-#' stopCluster(cl)  
+#' snow::stopCluster(cl)  
 
 parallelExtract <- function(raster, shape, fun = mean, id = 'OBJECTID',  ...){
   

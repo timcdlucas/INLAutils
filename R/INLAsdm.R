@@ -9,7 +9,7 @@
 
 #' Fit INLA species distribution models.
 #' 
-#'@param dataframe A \code{\link{SpatialPointsDataframe}}
+#'@param dataframe A \code{\link[sp]{SpatialPointsDataFrame}}
 #'@param predictors Raster of predictors (covariates)
 #'@param include Vector of integers describing which covariates to include in the model
 #'@param step Logical indicating whether to run stepwise elimination of variables.
@@ -17,13 +17,12 @@
 #'@param y Charactor indicating which column is the response variable
 #'@param cross_validation Run cross validation?
 #'@param cv_folds How many folds should the data be split into?
-#'@param meshvals List giving details for the creation of the INLA mesh (see details and \link{\code{INLA::inla.mesh.2d}})
+#'@param meshvals List giving details for the creation of the INLA mesh (see details and \code{\link[INLA]{inla.mesh.2d}})
 #'@param spatial Run INLA with a spatial term.
-#'@param numthreads How many threads should be used for parallel computation.
+#'@param num.threads How many threads should be used for parallel computation.
 #'
 #'@details For now invariant MUST include 'Intercept'.
 #'@export
-
 
 ##without dismo
 inlaSDM<-function(dataframe,
@@ -106,7 +105,7 @@ for(cv in cv_folds){
     
     if(spatial==TRUE){
       ##make mesh
-      mesh5<-inla.mesh.2d(loc = raster::coordinates(dataf1), 
+      mesh5<-inla.mesh.2d(loc = sp::coordinates(dataf1), 
                           max.edge = c(meshvals$minME, meshvals$maxME), 
                           cutoff = meshvals$co, 
                           offset = c(meshvals$minOS, meshvals$maxOS))
@@ -115,7 +114,7 @@ for(cv in cv_folds){
       spde <- inla.spde2.matern(mesh5, alpha=2)
       
       ###projector matrix for known
-      A <- inla.spde.make.A(mesh5, loc = raster::coordinates(dataf1))
+      A <- inla.spde.make.A(mesh5, loc = sp::coordinates(dataf1))
       
       ###make index for spatial field
       s.index<-inla.spde.make.index(name="spatial.field",n.spde=spde$n.spde)
@@ -131,7 +130,7 @@ for(cv in cv_folds){
                             tag='est')
       
       ###projector matrix for known
-      A.val <- inla.spde.make.A(mesh5, loc = raster::coordinates(dataf1))
+      A.val <- inla.spde.make.A(mesh5, loc = sp::coordinates(dataf1))
       
       ##and the stack data is defined to include effects IMPORTANT they have same names as columns so the formula below will work
       # Todo What is this for!
