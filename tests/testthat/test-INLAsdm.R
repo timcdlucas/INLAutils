@@ -66,15 +66,16 @@ test_that('All basic INLAsdm options return at least reasonable', {
   # Check layer two is positive (and 0 is not in 95% CI)
   expect_true(all(model_nospace_nocv[[2]][[1]]$summary.fixed['layer.2', c('mean', '0.025quant')] > 0))
 
-    # # CV
-    # model_nospace_nocv <- inlaSDM(dataframe, predictors, spatial = FALSE, cross_validation = TRUE, cv_folds = 2)
-    # 
-    # expect_true(class(model_nospace_nocv) == 'inlaSDM')
-    # expect_true(class(model_nospace_nocv[[2]][[1]]) == 'inla')
-    # expect_true(length(model_nospace_nocv[[2]][[1]]$summary.random) == 0)
-    # # Check layer two is positive (and 0 is not in 95% CI)
-    # expect_true(all(model_nospace_nocv[[2]][[1]]$summary.fixed['layer.2', c('mean', '0.025quant')] > 0))
-
+    # CV
+    if(FALSE){ # add back in later
+      model_nospace_nocv <- inlaSDM(dataframe, predictors, spatial = FALSE, cross_validation = TRUE, cv_folds = 2)
+  
+      expect_true(class(model_nospace_nocv) == 'inlaSDM')
+      expect_true(class(model_nospace_nocv[[2]][[1]]) == 'inla')
+      expect_true(length(model_nospace_nocv[[2]][[1]]$summary.random) == 0)
+      # Check layer two is positive (and 0 is not in 95% CI)
+      expect_true(all(model_nospace_nocv[[2]][[1]]$summary.fixed['layer.2', c('mean', '0.025quant')] > 0))
+    }
   
   # spatial
   

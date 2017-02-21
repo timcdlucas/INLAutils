@@ -48,7 +48,7 @@ inlaSDM<-function(dataframe,
   
   
   # Check meshvals is complete
-  assert_that(names(meshvals) == c('minME', 'maxME', 'co', 'minOS', 'maxOS'))
+  assert_that(all(names(meshvals) == c('minME', 'maxME', 'co', 'minOS', 'maxOS')))
   
   
   
@@ -66,12 +66,12 @@ inlaSDM<-function(dataframe,
       
     
     
-    if(cross_validation==TRUE){
-      group <- dismo::kfold(dataframe, 5)
+    if(cross_validation == TRUE){
+      group <- dismo::kfold(dataframe, cv_folds)
       train <- dataframe[group != cv, ]
       test  <- dataframe[group == cv, ]
       test@data[, y] <- NA
-      dataf1 <- rbind(train,test)
+      dataf1 <- suppressWarnings(rbind(train,test))
     } else { # Not sure how this works
       dataf1 <- dataframe
     }
@@ -246,12 +246,12 @@ inlaSDM<-function(dataframe,
     
     if(cross_validation==TRUE){
       c3 <- as.data.frame(res5$summary.fitted.values[1:nrow(dataf1), c("mean", "sd") ])
-      c3$p_pred<-c3$mean#round(c3$mean,0)
-      c3$p_real<-rbind(pres_train,backg_train,pres_test,backg_test,datat, datatb)$Presence
+      c3$p_pred <- c3$mean #round(c3$mean,0)
+      c3$p_real <- rbind(pres_train, backg_train, pres_test, backg_test, datat, datatb)$Presence
       ###internal testing points
-      c5<-c3[(nrow(pres_train)+nrow(backg_train))+1:(nrow(pres_train)+nrow(backg_train)+nrow(pres_test)+nrow(backg_test)),]
+      c5 <- c3[(nrow(pres_train) + nrow(backg_train)) + 1:(nrow(pres_train) + nrow(backg_train) + nrow(pres_test) + nrow(backg_test)), ]
       ##evaluate INLA output ## full predict
-      e5b <-dismo::evaluate(p=c5[c5$p_real==1,"p_pred"],a=c5[c5$p_real==0,"p_pred"])
+      e5b <- dismo::evaluate(p = c5[c5$p_real == 1, "p_pred"], a = c5[c5$p_real == 0, "p_pred"])
     } else {
       e5b <- NA
     }
