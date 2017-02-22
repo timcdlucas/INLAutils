@@ -54,6 +54,20 @@ test_that('parallelExtract works for SpatialPolygons and SpatialPolygonDataFrame
   expect_equal(v5, v6)
   
   
+  
+  v3 <- parallelExtract(r, polys, fun = mean)
+  
+  polys.df <- SpatialPolygonsDataFrame(Sr = polys, data = data.frame(names = c('a', 'b')))
+  v5 <- parallelExtract(r, polys.df, fun = mean, id = 'names')
+  
+  # check it works with multiple columsns
+  polys.df2 <- SpatialPolygonsDataFrame(Sr = polys, data = data.frame(x = c('xx', 'zz'), names = c('a', 'b')))
+  v6 <- parallelExtract(r, polys.df2, fun = mean, id = 'names')
+  
+  expect_equal(v3[, -1], v5[, -1])
+  expect_equal(v5, v6)
+  
+  
 })
 
 
