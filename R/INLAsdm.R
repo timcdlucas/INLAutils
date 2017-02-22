@@ -47,9 +47,16 @@ inlaSDM<-function(dataframe,
   names(dataframe) <- 'y'
   
   
-  # Check meshvals is complete
-  assert_that(all(names(meshvals) == c('minME', 'maxME', 'co', 'minOS', 'maxOS')))
+  # Make meshvals be complete
   
+  meshvals_complete = list(minME = max(raster::res(predictors)) * 10, 
+                           maxME = max(raster::res(predictors)) * 100, 
+                           co = 0, 
+                           minOS = -0.1,
+                           maxOS = -0.3)
+  
+  meshvals_complete[names(meshvals)] <- meshvals
+
   
   
   if(!cross_validation) cv_folds <- 1
@@ -118,9 +125,9 @@ inlaSDM<-function(dataframe,
     if(spatial==TRUE){
       ##make mesh
       mesh5 <- inla.mesh.2d(loc = sp::coordinates(dataf1), 
-                            max.edge = c(meshvals$minME, meshvals$maxME), 
-                            cutoff = meshvals$co, 
-                            offset = c(meshvals$minOS, meshvals$maxOS))
+                            max.edge = c(meshvals_complete$minME, meshvals_complete$maxME), 
+                            cutoff = meshvals_complete$co, 
+                            offset = c(meshvals_complete$minOS, meshvals_complete$maxOS))
       
       ####The SPDE model is defined 
       spde <- inla.spde2.matern(mesh5, alpha=2)
