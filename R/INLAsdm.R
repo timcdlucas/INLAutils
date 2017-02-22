@@ -77,7 +77,7 @@ inlaSDM<-function(dataframe,
     
     
     if(cross_validation == TRUE){
-      group <- dismo::kfold(dataframe, cv_folds)
+      group <- dismo::kfold(dataframe, cv_folds, by = dataframe$y)
       train <- dataframe[group != cv, ]
       test  <- dataframe[group == cv, ]
       test@data[, y] <- NA
@@ -99,7 +99,7 @@ inlaSDM<-function(dataframe,
     names(sss)[NCOL(sss)] <- y
     
     # Why?
-    sss <- sss[complete.cases(sss), ]
+    # sss <- sss[complete.cases(sss), ]
     dataf1@data <- sss
     
     if(step == TRUE){
@@ -196,14 +196,14 @@ inlaSDM<-function(dataframe,
                             tag = 'est')
       
       
-      ##and the stack data is defined to include effects IMPORTANT they have same names as columns so the formula below will work
+      # and the stack data is defined to include effects IMPORTANT they have same names as columns so the formula below will work
       # Todo W  hat is this for!
       # Guessing it's supposed to be the test data? But not defined while taking into account the cross_validation groups above
-      # 
-      # stk.val <- inla.stack(data=list(y=NA),
-      #                       A=list(1), 
-      #                       effects=list(data.frame(Intercept = 1, dataf1@data[, names(dataf1) != y])),
-      #                       tag = 'val')
+# 
+#       stk.val <- inla.stack(data = list(y = NA),
+#                             A = list(1),
+#                             effects = list(data.frame(Intercept = 1, dataf1@data[, names(dataf1) != y])),
+#                             tag = 'val')
       
       
       ntt <- rep(1, nrow(dataf1))
@@ -244,8 +244,9 @@ inlaSDM<-function(dataframe,
     #graphics.off()
     #U-shaped histograms indicate under-dispersed predictive distributions, hump or inverse-U shaped histograms point at overdispersion, and skewed histograms occur when central tendencies are biased
     
-    dataf1@data <- cbind(dataf1@data[,1:ncol(dataf1)],
-                         res5$summary.fitted.values[(nrow(dataf1)+1):(nrow(dataf1) + nrow(dataf1)),])
+    # recently in.
+    #dataf1@data <- cbind(dataf1@data[,1:ncol(dataf1)],
+    #                     res5$summary.fitted.values[(nrow(dataf1)+1):(nrow(dataf1) + nrow(dataf1)),])
     
     
     #predict_rast@data$antimean<-exp(exp(predict_rast@data$mean)+1)-1
@@ -254,8 +255,13 @@ inlaSDM<-function(dataframe,
     # test1<-rasterize(predict_rast2,predictxm2,field="mean",mean)
     # names(test1)<-paste("Quarter_",QQ,"_ONI_",ONI,sep="")
     
-    if(cross_validation==TRUE){
+    if(cross_validation == TRUE){
       c3 <- as.data.frame(res5$summary.fitted.values[1:nrow(dataf1), c("mean", "sd") ])
+      
+      
+      
+      
+      
       c3$p_pred <- c3$mean #round(c3$mean,0)
       c3$p_real <- rbind(pres_train, backg_train, pres_test, backg_test, datat, datatb)$Presence
       ###internal testing points
@@ -269,8 +275,8 @@ inlaSDM<-function(dataframe,
     model_res[cv, ] <- c(replicate=cv,
                          #sens_run=xx,
                          #layersx[1,],
-                         AUC=e5b,
-                         WAIC=res5$waic$waic,
+                         AUC = e5b,
+                         WAIC = res5$waic$waic,
                          #arguements=paste(args1,collapse=" "),
                          #beta=beta1,
                          comp_time=inla.time[['Total']])
