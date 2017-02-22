@@ -66,7 +66,8 @@ inlaSDM<-function(dataframe,
   # Empty data frame for summaries
   model_res <- as.data.frame(matrix(NA, ncol = 4, nrow = cv_folds))
   names(model_res) <- c('replicate', 'AUC', 'WAIC', 'comp_time')
-  
+  # Empty list for meshes
+  meshes <- list()
   
     
   for(cv in cv_folds){
@@ -273,9 +274,12 @@ inlaSDM<-function(dataframe,
                          comp_time=inla.time[['Total']])
                         
     models[[cv]] <- res5
+    if(spatial){
+      meshes[[cv]] <- mesh5
+    }
   }## end cv
   
-  output <- list(model_res, models)
+  output <- list(result_summary = model_res, models = models, mesh = )
   class(output) <- 'inlaSDM'
 
   return(output)
