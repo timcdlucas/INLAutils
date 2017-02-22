@@ -7,7 +7,7 @@
 #' as random effects are yet to be added).
 #' 
 #' @param varnames Character vector giving the names of the variables to be used.
-#' @param y String giving the name of the response variable
+#' @param response String giving the name of the response variable
 #' @param invariant Any string to be invluded at the beginning of the formula such as identifying the intercept
 #' @param linear If TRUE, all variables are included as linear terms. If a character vector, variables in the 
 #'   vector are included as linear terms. If FALSE, no linear terms are included.
@@ -19,21 +19,21 @@
 #' 
 #' 
 
-makeGAM <- function(varnames, y = 'y', invariant = '0 + Intercept', linear = TRUE, returnstring = TRUE){
+makeGAM <- function(varnames, response = 'y', invariant = '0 + Intercept', linear = TRUE, returnstring = TRUE){
   
-  if(!(is.character(varnames) & is.character(y) & is.character(invariant))){
-    stop('varnames, y and invariant must all be characters')
+  if(!(is.character(varnames) & is.character(response) & is.character(invariant))){
+    stop('varnames, response and invariant must all be characters')
   }
   
-  if(length(y) > 1 | length(invariant) > 1){
-    stop('y and invariant must be length 1')
+  if(length(response) > 1 | length(invariant) > 1){
+    stop('response and invariant must be length 1')
   }
   
   if(!is.logical(linear) & !is.character(linear)){
     stop('linear must either be a logical or a character vector')
   }
   
-  base <- paste(y, ' ~ ', invariant)
+  base <- paste(response, ' ~ ', invariant)
   if(is.character(linear)){
     base <- paste(base, '+', paste(linear, collapse = ' + '))
   } else if(linear){
