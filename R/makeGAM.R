@@ -1,5 +1,5 @@
 
-#' A function to create the formulae needed to fit GAMs in R.
+#' A function to create the formulae needed to fit GAMs in INLA in R.
 #' 
 #' Given the beginning of a formula (e.g. y ~ 0 + Intercept) this function builds the string needed to create 
 #' GAM models either with or withour the linear terms as well.
@@ -17,7 +17,26 @@
 #' @export
 #' @name makeGAM
 #' 
-#' 
+#'  @example 
+#'  # GAM formular
+#'  form1 <- makeGAM(c('x1', 'x2'), response = 'y', invariant = '0 + Intercept')
+#'  
+#'  # GAM with additional linear terms
+#'  form2 <- makeGAM(c('x1', 'x2'), response = 'y', invariant = '0 + Intercept', linear = c('x1', 'x2', 'x3'))
+#'  
+#'  library(INLA)
+#'  data(Epil)
+#'  observed <- Epil[1:30, 'y']
+#'  Epil <- rbind(Epil, Epil[1:30, ])
+#'  Epil[1:30, 'y'] <- NA
+#'  ## make centered covariates
+#'  formula = y ~ Trt + Age + V4 +
+#'           f(Ind, model="iid") + f(rand,model="iid")
+#'  formula <- makeGAM('Age', invariant = '', linear = c('Age', 'Trt', 'V4'), returnstring = FALSE)
+#'  result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
+#'  ggplot_inla_residuals(result, observed, binwidth = 0.2)
+#'  autoplot(result)
+
 
 makeGAM <- function(varnames, response = 'y', invariant = '0 + Intercept', linear = TRUE, returnstring = TRUE){
   
