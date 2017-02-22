@@ -40,10 +40,12 @@
 #' 
 #' # Parallel extract
 #' #  Register the cluster first (use doMC on linux)
+#' \dontrun{
 #' cl <- snow::makeCluster(2) #change the 2 to your number of CPU cores  
 #' doSNOW::registerDoSNOW(cl)  
 #' v2 <- parallelExtract(r, polys, fun = mean)
 #' snow::stopCluster(cl)  
+#' }
 
 parallelExtract <- function(raster, shape, fun = mean, id = 'OBJECTID',  ...){
   
@@ -64,7 +66,7 @@ parallelExtract <- function(raster, shape, fun = mean, id = 'OBJECTID',  ...){
       df <- cbind(ID = as.data.frame(shape)[, id], df)
     } else{
       df <- cbind(ID = names(shape), df)
-      id <- 'id'
+      id <- 'ID'
     }
     
     names(df) <- c(id, names(raster))
@@ -78,7 +80,12 @@ parallelExtract <- function(raster, shape, fun = mean, id = 'OBJECTID',  ...){
     # list of vectors, one for each covariate
     rbind.covs <- lapply(values, function(x) do.call(rbind, x)[, 2]) 
     # List of regions ids and cell ids
-    IDnames <- raster::as.data.frame(shape)[, id]
+    if(class(shape) == 'SpatialPolygonsDataFrame'){
+      IDnames <- raster::as.data.frame(shape)[, id]
+    } else {
+      IDnames <- names(shape)
+      
+    }
     ids.df <- data.frame(regionids = rep(IDnames, sapply(values[[1]], nrow)),
                          cellids = do.call(rbind, values[[1]])[, 1])
     
