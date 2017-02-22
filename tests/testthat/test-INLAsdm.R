@@ -85,6 +85,8 @@ test_that('All basic INLAsdm options return at least reasonable', {
 
   expect_true(class(model_space_nocv) == 'inlaSDM')
   expect_true(class(model_space_nocv[[2]][[1]]) == 'inla')
+  expect_true(class(model_space_nocv$mesh[[1]]) == 'inla.mesh')
+  
   expect_true(length(model_space_nocv[[2]][[1]]$summary.random) != 0)
   # Check layer two is positive (and 0 is not in 95% CI)
   expect_true(all(model_space_nocv[[2]][[1]]$summary.fixed['layer.2', c('mean', '0.025quant')] > 0))
@@ -112,10 +114,45 @@ test_that('INLAsdm invariant works', {
 
 
 
-test_that('meshvals invariant works', { 
+test_that('meshvals cutoff works', { 
   # Complete example
+  model1 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, meshvals = list(co = 1.2))
+  model2 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, meshvals = list(co = 1.5))
+  
+  expect_true(model1$mesh[[1]]$n > model2$mesh[[1]]$n)
+  
+  # incomplete example
   
   
+})
+
+
+
+test_that('meshvals max edge works', { 
+  # Complete example
+  model1 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, 
+                    meshvals = list(co = 1.2))
+  model2 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, 
+                    meshvals = list(co = 1.2, maxME = max(raster::res(predictors)) * 50))
+  
+  expect_true(model1$mesh[[1]]$n < model2$mesh[[1]]$n)
+  
+  # incomplete example
+  
+  
+})
+
+
+test_that('meshvals full list works', { 
+  # Complete example
+  model1 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, 
+                    meshvals = list(minME = max(raster::res(predictors)) * 12, 
+                                    maxME = max(raster::res(predictors)) * 60, 
+                                    co = 1.2, 
+                                    minOS = -0.15,
+                                    maxOS = -0.25))
+
+  expect_true(class(model1$mesh[[1]]) == 'inla.mesh')
   
   # incomplete example
   

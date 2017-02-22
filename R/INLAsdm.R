@@ -48,12 +48,14 @@ inlaSDM<-function(dataframe,
   
   
   # Make meshvals be complete
-  
   meshvals_complete = list(minME = max(raster::res(predictors)) * 10, 
                            maxME = max(raster::res(predictors)) * 100, 
                            co = 0, 
                            minOS = -0.1,
                            maxOS = -0.3)
+  # Check that all values in meshvals arg are correct
+  assert_that(all(names(meshvals) %in% names(meshvals_complete)))
+  
   
   meshvals_complete[names(meshvals)] <- meshvals
 
