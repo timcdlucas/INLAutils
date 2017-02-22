@@ -279,7 +279,7 @@ inlaSDM<-function(dataframe,
     }
   }## end cv
   
-  output <- list(result_summary = model_res, models = models, mesh = )
+  output <- list(result_summary = model_res, models = models, mesh = meshes)
   class(output) <- 'inlaSDM'
 
   return(output)
