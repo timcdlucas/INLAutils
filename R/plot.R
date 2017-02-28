@@ -61,6 +61,13 @@ autoplot.inla <- function(object, which = c(1:3, 5), priors = FALSE, CI = FALSE,
     warning('Plot 1 will not be plotted.')
     which <- which[which != 1]
   }
+  
+  if(length(object$marginals.hyperpar) == 0 & 2 %in% which){
+    warning('Plot 2 selected in which, but no hyperparameters to plot marginals for.')
+    warning('Plot 2 will not be plotted.')
+    which <- which[which != 2]
+  }
+  
 
   if(5 %in% which & !object$.args$control.predictor$compute){
     warning('Plot 5 selected but this can only be plotted if `control.predictor = list(compute = TRUE)` is passed to `inla`.

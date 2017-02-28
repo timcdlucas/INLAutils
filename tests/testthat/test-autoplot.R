@@ -25,3 +25,19 @@ test_that('autoplot does not fail when it should not.', {
 
 
 })
+
+
+
+test_that('Check which arg more carefully.', {
+  
+  data <- data.frame(y = rpois(100, 10), x1 = rnorm(100))
+  
+  data$x2 <- sin(data$y / 2) + rnorm(100, sd = 0.1)
+  
+  #ggplot(data, aes(y, x2)) + geom_point()
+  
+  model <- inla(y ~ x1 + x2, data = data, family = 'poisson')
+  
+  expect_error(suppressWarnings(autoplot(model, which = c(1, 2))), NA)
+  
+})
