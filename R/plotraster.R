@@ -30,9 +30,6 @@
 #' # And the shape file
 #' crds <- loc[chull(loc), ]
 #' SPls <- SpatialPolygons(list(Polygons(list(Polygon(crds)), ID = 'a')))
-#' df <- data.frame(value=1, row.names='a')
-#' my_shapefile <- SpatialPolygonsDataFrame(SPls, df)
-#' 
 #' 
 #' ggplot_projection_shapefile(projection, projector, my_shapefile) + theme_minimal()
 #' 
@@ -50,7 +47,7 @@
 
 ggplot_projection_shapefile <- function(raster = NULL,
                                         projector = NULL, 
-                                        spatialpolygons, 
+                                        spatialpolygons = NULL, 
                                         mesh = NULL,
                                         shapecol = 'white'){
   
@@ -66,6 +63,10 @@ ggplot_projection_shapefile <- function(raster = NULL,
     stop('If raster is a matrix (i.e. from inla.mesh.project), the projector object is also needed.') 
   }
   
+  if(all(is.null(raster), is.null(spatialpolygons), is.null(mesh))){
+    stop('At least one of raster, spatialpolygons or mesh needed')
+  }
+  
   # Check mesh is correct class
   if(!is.null(mesh) & !is(mesh, 'inla.mesh')){
     stop('mesh musth either be and INLA mesh or NULL')
@@ -75,24 +76,27 @@ ggplot_projection_shapefile <- function(raster = NULL,
   # setup colour palette
   cols <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(6, 'Blues'))(1000)
   
-  if(is(raster, 'matrix')){
-    raster.df <- reshape2::melt(raster)
-    raster.df$long <- projector$x[raster.df$Var1]
-    raster.df$lat <- projector$y[raster.df$Var2]
-  } else if(is(raster, 'RasterLayer')){
-    raster.df <- data.frame(raster::rasterToPoints(raster))
-    names(raster.df) <- c('long', 'lat', 'value')
-  }
+
     
-  shape.df <- ggplot2::fortify(spatialpolygons)   
   
   plot <- ggplot()
   if(!is.null(raster)){
+    
+  if(is(raster, 'matrix')){ # Convert matrix + projector to raster.
+    raster <- raster(t(projection)[nrow(projection) : 1, ])
+    extent(raster) <- c(range(projector$x), range(projector$y))
+  } 
+  
+  raster.df <- ggplot2::fortify(raster)
+  names(raster.df) <- c('long', 'lat', 'value')
+  
   plot <- plot + 
             ggplot2::geom_raster(data = raster.df, 
                                  aes_string('long', 'lat', fill = 'value'))
   }
   if(!is.null(spatialpolygons)){
+    shape.df <- ggplot2::fortify(spatialpolygons)   
+    
     plot <- plot + 
               ggplot2::geom_path(data = shape.df, 
                                 aes_string('long', 'lat', group = 'group'), 
