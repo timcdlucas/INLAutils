@@ -25,5 +25,17 @@ Plot residuals of observed vs predicted values for INLA model
           f(Ind, model="iid") + f(rand,model="iid")
  result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
  plot_inla_residuals(result, observed)
+ 
+
+ data(Seeds)
+ l <- nrow(Seeds)
+ Seeds <- rbind(Seeds, Seeds)
+ Seeds$r[1:l] <- NA
+
+
+ formula = r ~ x1 * x2 + f(plate, model = "iid")
+ mod.seeds = inla(formula, data=Seeds, family = "binomial", Ntrials = n, 
+                  control.predictor = list(compute = TRUE, link = 1))
+ plot_inla_residuals(mod.seeds, na.omit(Seeds$r / Seeds$n))
 }
 

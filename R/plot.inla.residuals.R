@@ -20,9 +20,25 @@
 #'           f(Ind, model="iid") + f(rand,model="iid")
 #'  result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
 #'  plot_inla_residuals(result, observed)
+#'  
+#'
+#'  data(Seeds)
+#'  l <- nrow(Seeds)
+#'  Seeds <- rbind(Seeds, Seeds)
+#'  Seeds$r[1:l] <- NA
+#'
+#'
+#'  formula = r ~ x1 * x2 + f(plate, model = "iid")
+#'  mod.seeds = inla(formula, data=Seeds, family = "binomial", Ntrials = n, 
+#'                   control.predictor = list(compute = TRUE, link = 1))
+#'  plot_inla_residuals(mod.seeds, na.omit(Seeds$r / Seeds$n))
+
 
 
 plot_inla_residuals <- function(inla.model, observed){
+  
+  if(is.null(inla.model$marginals.fitted.values)) stop('No fitted values to plot')
+  
   predicted.p.value <- c()
   n <- length(observed)
   for(i in (1:n)){
@@ -67,6 +83,18 @@ plot_inla_residuals <- function(inla.model, observed){
 #'           f(Ind, model="iid") + f(rand,model="iid")
 #'  result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
 #'  ggplot_inla_residuals(result, observed)
+#'  
+#'
+#'  data(Seeds)
+#'  l <- nrow(Seeds)
+#'  Seeds <- rbind(Seeds, Seeds)
+#'  Seeds$r[1:l] <- NA
+#'
+#'
+#'  formula = r ~ x1 * x2 + f(plate, model = "iid")
+#'  mod.seeds = inla(formula, data=Seeds, family = "binomial", Ntrials = n, 
+#'                   control.predictor = list(compute = TRUE, link = 1))
+#'  ggplot_inla_residuals(mod.seeds, na.omit(Seeds$r / Seeds$n))
 
 
 ggplot_inla_residuals <- function(inla.model, observed, CI = FALSE, binwidth = NULL){
@@ -115,7 +143,11 @@ ggplot_inla_residuals <- function(inla.model, observed, CI = FALSE, binwidth = N
 #'@param inla.model An inla object
 #'@param observed The observed values
 #'@param CI plot credible intervals for each residual
-#'
+#'@param se Plot a ribbon showing the standard error of the smoother.
+#'@param method What method should be used for the smoother. 
+#'  Defaults to loess unless data is large. 
+#'  Other options include 'gam', 'loess', 'lm'.
+#'  See \code{\link[ggplot2]{geom_smooth}} for details.
 #'@export
 #'
 #'@examples
@@ -129,9 +161,21 @@ ggplot_inla_residuals <- function(inla.model, observed, CI = FALSE, binwidth = N
 #'           f(Ind, model="iid") + f(rand,model="iid")
 #'  result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
 #'  ggplot_inla_residuals2(result, observed)
+#'  
+#'
+#'  data(Seeds)
+#'  l <- nrow(Seeds)
+#'  Seeds <- rbind(Seeds, Seeds)
+#'  Seeds$r[1:l] <- NA
+#'
+#'
+#'  formula = r ~ x1 * x2 + f(plate, model = "iid")
+#'  mod.seeds = inla(formula, data=Seeds, family = "binomial", Ntrials = n, 
+#'                   control.predictor = list(compute = TRUE, link = 1))
+#'  plot_inla_residuals2(mod.seeds, na.omit(Seeds$r / Seeds$n), method = 'gam')
 
 
-ggplot_inla_residuals2 <- function(inla.model, observed, CI = FALSE){
+ggplot_inla_residuals2 <- function(inla.model, observed, CI = FALSE, se = TRUE, method = 'auto'){
   
   df <- data.frame(predicted = inla.model$summary.fitted.values$mean[1:length(observed)],
                    lower = inla.model$summary.fitted.values$`0.025quant`[1:length(observed)],
@@ -147,7 +191,7 @@ ggplot_inla_residuals2 <- function(inla.model, observed, CI = FALSE){
   plot <- ggplot2::ggplot(df, ggplot2::aes_string(x = 'predicted', y = 'standardResidual')) +
             ggplot2::geom_point() +
             ggplot2::labs(y = "Standardised Residual", x = "Fitted") +
-            ggplot2::geom_smooth() +
+            ggplot2::geom_smooth(se = se, method = method) +
             ggplot2::geom_hline(yintercept = 0, linetype = 2, col = 'red')
   if(CI) plot <- plot + ggplot2::geom_segment(ggplot2::aes_string(y = 'standardLower', 
                                                          yend = 'standardUpper', 

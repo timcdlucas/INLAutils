@@ -4,7 +4,8 @@
 \alias{ggplot_inla_residuals2}
 \title{Plot residuals against covariate values for INLA model using ggplot2}
 \usage{
-ggplot_inla_residuals2(inla.model, observed, CI = FALSE)
+ggplot_inla_residuals2(inla.model, observed, CI = FALSE, se = TRUE,
+  method = "auto")
 }
 \arguments{
 \item{inla.model}{An inla object}
@@ -12,6 +13,13 @@ ggplot_inla_residuals2(inla.model, observed, CI = FALSE)
 \item{observed}{The observed values}
 
 \item{CI}{plot credible intervals for each residual}
+
+\item{se}{Plot a ribbon showing the standard error of the smoother.}
+
+\item{method}{What method should be used for the smoother. 
+Defaults to loess unless data is large. 
+Other options include 'gam', 'loess', 'lm'.
+See \code{\link[ggplot2]{geom_smooth}} for details.}
 }
 \description{
 Plot residuals against covariate values for INLA model using ggplot2
@@ -27,5 +35,17 @@ Plot residuals against covariate values for INLA model using ggplot2
           f(Ind, model="iid") + f(rand,model="iid")
  result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
  ggplot_inla_residuals2(result, observed)
+ 
+
+ data(Seeds)
+ l <- nrow(Seeds)
+ Seeds <- rbind(Seeds, Seeds)
+ Seeds$r[1:l] <- NA
+
+
+ formula = r ~ x1 * x2 + f(plate, model = "iid")
+ mod.seeds = inla(formula, data=Seeds, family = "binomial", Ntrials = n, 
+                  control.predictor = list(compute = TRUE, link = 1))
+ plot_inla_residuals2(mod.seeds, na.omit(Seeds$r / Seeds$n), method = 'gam')
 }
 

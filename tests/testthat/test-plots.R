@@ -48,4 +48,53 @@ test_that('ggplot_projection_shapefile works', {
 })
 
 
+test_that('plot_inla residuals works', {
+  
+  library(INLA)
+  data(Epil)
+  observed <- Epil[1:30, 'y']
+  
+  Epil <- rbind(Epil, Epil[1:30, ])
+  Epil[1:30, 'y'] <- NA
+  
+
+  ## make centered covariates
+  formula = y ~ Trt + Age + V4 +
+           f(Ind, model="iid") + f(rand,model="iid")
+  result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE, link = 1))
+  
+  
+  
+  
+  expect_error(plot_inla_residuals(result, observed), NA)
+  expect_error(ggplot_inla_residuals(result, observed), NA)
+  expect_error(ggplot_inla_residuals2(result, observed), NA)
+  
+  
+  
+  
+  
+  data(Seeds)
+  l <- nrow(Seeds)
+  Seeds <- rbind(Seeds, Seeds)
+  Seeds$r[1:l] <- NA
+  
+
+  formula = r ~ x1 * x2 + f(plate, model = "iid")
+  mod.seeds = inla(formula, data=Seeds, family = "binomial", Ntrials = n, 
+                   control.predictor = list(compute = TRUE, link = 1))
+  
+  
+  
+  
+  ## improved estimation of the hyperparameters
+  
+  expect_error(plot_inla_residuals(mod.seeds, na.omit(Seeds$r / Seeds$n)), NA)
+  expect_error(ggplot_inla_residuals(mod.seeds, na.omit(Seeds$r / Seeds$n)), NA)
+  expect_error(ggplot_inla_residuals2(mod.seeds, na.omit(Seeds$r / Seeds$n)), NA)
+  
+  
+})
+
+
 
