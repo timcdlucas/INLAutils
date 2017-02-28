@@ -43,7 +43,7 @@ as random effects are yet to be added).
  formula = y ~ Trt + Age + V4 +
           f(Ind, model="iid") + f(rand,model="iid")
  formula <- makeGAM('Age', invariant = '', linear = c('Age', 'Trt', 'V4'), returnstring = FALSE)
- result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
+ result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE, link = 1))
  ggplot_inla_residuals(result, observed, binwidth = 0.2)
  autoplot(result)
 }

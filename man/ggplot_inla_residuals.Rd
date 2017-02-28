@@ -27,7 +27,8 @@ Plot residuals of observed vs predicted values for INLA model using ggplot2
  ## make centered covariates
  formula = y ~ Trt + Age + V4 +
           f(Ind, model="iid") + f(rand,model="iid")
- result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
+ result = inla(formula, family="poisson", data = Epil, 
+               control.predictor = list(compute = TRUE, link = 1))
  ggplot_inla_residuals(result, observed)
  
 
