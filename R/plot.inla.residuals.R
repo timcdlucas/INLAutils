@@ -184,7 +184,7 @@ ggplot_inla_residuals <- function(inla.model, observed, CI = FALSE, binwidth = N
 #'  formula = r ~ x1 * x2 + f(plate, model = "iid")
 #'  mod.seeds = inla(formula, data=Seeds, family = "binomial", Ntrials = n, 
 #'                   control.predictor = list(compute = TRUE, link = 1))
-#'  ggplot_inla_residuals2(mod.seeds, na.omit(Seeds$r / Seeds$n), method = 'gam')
+#'  ggplot_inla_residuals2(mod.seeds, na.omit(Seeds$r / Seeds$n), method = 'lm')
 
 
 ggplot_inla_residuals2 <- function(inla.model, observed, CI = FALSE, se = TRUE, method = 'auto'){
