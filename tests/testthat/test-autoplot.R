@@ -9,9 +9,13 @@ test_that('autoplot does not fail when it should not.', {
   result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
 
   # Test that figure builds
-  expect_error(p <- autoplot(result), NA)
+  expect_error(p <- autoplot(result, which = 1:5), NA)
   expect_error(p, NA)
 
+  expect_error(autoplot(result, which = 1:4, CI = TRUE), NA)
+  expect_error(autoplot(result, which = 1:4, priors = TRUE), NA)
+  expect_error(autoplot(result, which = 1, priors = TRUE, CI = TRUE), NA)
+  
   # test theme is modifiable
   expect_error(p2 <- p + theme_bw(), NA)
 
@@ -41,3 +45,5 @@ test_that('Check which arg more carefully.', {
   expect_error(suppressWarnings(autoplot(model, which = c(1, 2))), NA)
   
 })
+
+
