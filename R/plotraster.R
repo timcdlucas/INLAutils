@@ -72,28 +72,28 @@ ggplot_projection_shapefile <- function(raster = NULL,
     stop('mesh musth either be and INLA mesh or NULL')
   }
   
-  
   # setup colour palette
   cols <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(6, 'Blues'))(1000)
   
 
-    
   
+
   plot <- ggplot()
   if(!is.null(raster)){
+      
+    if(is(raster, 'matrix')){ # Convert matrix + projector to raster.
+      raster <- raster::raster(t(raster)[nrow(raster) : 1, ])
+      raster::extent(raster) <- c(range(projector$x), range(projector$y))
+    } 
     
-  if(is(raster, 'matrix')){ # Convert matrix + projector to raster.
-    raster <- raster(t(projection)[nrow(projection) : 1, ])
-    extent(raster) <- c(range(projector$x), range(projector$y))
-  } 
-  
-  raster.df <- ggplot2::fortify(raster)
-  names(raster.df) <- c('long', 'lat', 'value')
-  
-  plot <- plot + 
-            ggplot2::geom_raster(data = raster.df, 
-                                 aes_string('long', 'lat', fill = 'value'))
+    raster.df <- ggplot2::fortify(raster)
+    names(raster.df) <- c('long', 'lat', 'value')
+    
+    plot <- plot + 
+              ggplot2::geom_raster(data = raster.df, 
+                                   aes_string('long', 'lat', fill = 'value'))
   }
+  
   if(!is.null(spatialpolygons)){
     shape.df <- ggplot2::fortify(spatialpolygons)   
     
@@ -101,7 +101,8 @@ ggplot_projection_shapefile <- function(raster = NULL,
               ggplot2::geom_path(data = shape.df, 
                                 aes_string('long', 'lat', group = 'group'), 
                                 colour = shapecol)
-  }
+  }   
+
   
   if(!is.null(mesh)){
     d <- data.frame(x = mesh$loc[, 1], y = mesh$loc[, 2], type = 'evertices')
@@ -145,7 +146,7 @@ ggplot_projection_shapefile <- function(raster = NULL,
       ggplot2::scale_size_manual(values = c(1, 1.5, 1.3, 1.3, 0)) 
     
   }
-  
+
   plot
   
   

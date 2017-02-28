@@ -6,13 +6,13 @@ test_that('ggplot_projection_shapefile works', {
    set.seed(2)
    n <- 20
    loc <- matrix(runif(n*2), n, 2)
-   mesh <- inla.mesh.create(loc, refine = list(max.edge=0.05))
-   projector <- inla.mesh.projector(mesh)
+   mesh <- INLA::inla.mesh.create(loc, refine = list(max.edge=0.05))
+   projector <- INLA::inla.mesh.projector(mesh)
    field <- cos(mesh$loc[,1] * 2 * pi * 3) * sin(mesh$loc[, 2] * 2 * pi * 7)
-   projection <- inla.mesh.project(projector, field)
+   projection <- INLA::inla.mesh.project(projector, field)
    # And the shape file
-   crds <- loc[chull(loc), ]
-   SPls <- SpatialPolygons(list(Polygons(list(Polygon(crds)), ID = 'a')))
+   crds <- loc[grDevices::chull(loc), ]
+   SPls <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(crds)), ID = 'a')))
    expect_error(ggplot_projection_shapefile(projection, projector, SPls), NA)
    
    # Alternatively plot a raster
@@ -23,6 +23,8 @@ test_that('ggplot_projection_shapefile works', {
    
    expect_error(ggplot_projection_shapefile(raster, spatialpolygons = SPls), NA)
    
+   
+   # Check you get the same results using a raster or matrix + projector
    p1 <- ggplot2::ggplot_build(ggplot_projection_shapefile(raster, spatialpolygons = SPls))
    p2 <- ggplot2::ggplot_build(ggplot_projection_shapefile(projection, projector, SPls))
    
@@ -44,3 +46,6 @@ test_that('ggplot_projection_shapefile works', {
    
    
 })
+
+
+

@@ -70,8 +70,7 @@ To do list
 ----------
 
 * `inla.sdm`
-* ggplot2 version of `plot.inla.mesh` and `plot.inla.tremesh`
+* ggplot2 version of `plot.inla.tremesh`
 * Make good `plot` and `ggplot` functions for plotting the Gaussian Random Field with value and uncertainty.
 * `stepINLA`
-* mesh_find
 
