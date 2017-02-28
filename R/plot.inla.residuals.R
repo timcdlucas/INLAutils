@@ -39,7 +39,10 @@
 plot_inla_residuals <- function(inla.model, observed){
   
   if(is.null(inla.model$marginals.fitted.values)) stop('No fitted values to plot')
-  
+  if(any(is.na(inla.model$misc$linkfunctions$link))){ 
+    warning('Fitted values from the INLA model may have been returned on the linear, rather than link scale. Use `control.predictor = list(link = 1)` to make sure all fitted values are on the natural scale.')
+  }
+
   predicted.p.value <- c()
   n <- length(observed)
   for(i in (1:n)){
@@ -100,6 +103,12 @@ plot_inla_residuals <- function(inla.model, observed){
 
 
 ggplot_inla_residuals <- function(inla.model, observed, CI = FALSE, binwidth = NULL){
+  
+  if(is.null(inla.model$marginals.fitted.values)) stop('No fitted values to plot')
+  if(any(is.na(inla.model$misc$linkfunctions$link))){ 
+    warning('Fitted values from the INLA model may have been returned on the linear, rather than link scale. Use `control.predictor = list(link = 1)` to make sure all fitted values are on the natural scale.')
+  }
+  
   predicted.p.value <- c()
   n <- length(observed)
   for(i in (1:n)){
@@ -179,6 +188,11 @@ ggplot_inla_residuals <- function(inla.model, observed, CI = FALSE, binwidth = N
 
 
 ggplot_inla_residuals2 <- function(inla.model, observed, CI = FALSE, se = TRUE, method = 'auto'){
+  
+  if(is.null(inla.model$marginals.fitted.values)) stop('No fitted values to plot')
+  if(any(is.na(inla.model$misc$linkfunctions$link))){ 
+    warning('Fitted values from the INLA model may have been returned on the linear, rather than link scale. Use `control.predictor = list(link = 1)` to make sure all fitted values are on the natural scale.')
+  }
   
   df <- data.frame(predicted = inla.model$summary.fitted.values$mean[1:length(observed)],
                    lower = inla.model$summary.fitted.values$`0.025quant`[1:length(observed)],
