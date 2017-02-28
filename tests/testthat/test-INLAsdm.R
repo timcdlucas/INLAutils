@@ -1,7 +1,7 @@
 context('Tests for INLA sdm functions')
 
 
-
+library(INLA)
 set.seed(6)
 
 # Create locations, presence absence points and covariates with spatial and environmental relationships

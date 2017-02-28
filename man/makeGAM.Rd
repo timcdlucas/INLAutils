@@ -31,7 +31,8 @@ as random effects are yet to be added).
  form1 <- makeGAM(c('x1', 'x2'), response = 'y', invariant = '0 + Intercept')
  
  # GAM with additional linear terms
- form2 <- makeGAM(c('x1', 'x2'), response = 'y', invariant = '0 + Intercept', linear = c('x1', 'x2', 'x3'))
+ form2 <- makeGAM(c('x1', 'x2'), response = 'y', invariant = '0 + Intercept', 
+                  linear = c('x1', 'x2', 'x3'))
  
  library(INLA)
  data(Epil)

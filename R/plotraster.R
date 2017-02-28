@@ -31,15 +31,14 @@
 #' crds <- loc[chull(loc), ]
 #' SPls <- SpatialPolygons(list(Polygons(list(Polygon(crds)), ID = 'a')))
 #' 
-#' ggplot_projection_shapefile(projection, projector, my_shapefile) + theme_minimal()
+#' ggplot_projection_shapefile(projection, projector, SPls) + theme_minimal()
 #' 
 #' 
 #' # Alternatively plot a raster
 #' library(raster)
 #' raster <- raster(projection)
 #' extent(raster) <- c(range(projector$x), range(projector$y))
-#' ggplot_projection_shapefile(raster, spatialpolygons = my_shapefile)
-#' # p.s. I'm not sure why this is different to the above raster.
+#' ggplot_projection_shapefile(raster, spatialpolygons = SPls)
 #' 
 
 

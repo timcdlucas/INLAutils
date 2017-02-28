@@ -23,8 +23,7 @@ Imports:
     foreach,
     doSNOW,
     snow,
-    dismo,
-    ggfortify
+    dismo
 Depends:
     ggplot2
 Suggests:
