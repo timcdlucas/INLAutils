@@ -2,15 +2,15 @@
 % Please edit documentation in R/makeGAM.R
 \name{makeGAM}
 \alias{makeGAM}
-\title{A function to create the formulae needed to fit GAMs in R.}
+\title{A function to create the formulae needed to fit GAMs in INLA in R.}
 \usage{
-makeGAM(varnames, y = "y", invariant = "0 + Intercept", linear = TRUE,
-  returnstring = TRUE)
+makeGAM(varnames, response = "y", invariant = "0 + Intercept",
+  linear = TRUE, returnstring = TRUE)
 }
 \arguments{
 \item{varnames}{Character vector giving the names of the variables to be used.}
 
-\item{y}{String giving the name of the response variable}
+\item{response}{String giving the name of the response variable}
 
 \item{invariant}{Any string to be invluded at the beginning of the formula such as identifying the intercept}
 
@@ -25,5 +25,25 @@ Given the beginning of a formula (e.g. y ~ 0 + Intercept) this function builds t
 GAM models either with or withour the linear terms as well.
 This can then be returned as a formula (if it is to be used directly) or as a string (if other elements such
 as random effects are yet to be added).
+}
+\examples{
+ # GAM formula
+ form1 <- makeGAM(c('x1', 'x2'), response = 'y', invariant = '0 + Intercept')
+ 
+ # GAM with additional linear terms
+ form2 <- makeGAM(c('x1', 'x2'), response = 'y', invariant = '0 + Intercept', linear = c('x1', 'x2', 'x3'))
+ 
+ library(INLA)
+ data(Epil)
+ observed <- Epil[1:30, 'y']
+ Epil <- rbind(Epil, Epil[1:30, ])
+ Epil[1:30, 'y'] <- NA
+ ## make centered covariates
+ formula = y ~ Trt + Age + V4 +
+          f(Ind, model="iid") + f(rand,model="iid")
+ formula <- makeGAM('Age', invariant = '', linear = c('Age', 'Trt', 'V4'), returnstring = FALSE)
+ result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
+ ggplot_inla_residuals(result, observed, binwidth = 0.2)
+ autoplot(result)
 }
 

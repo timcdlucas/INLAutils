@@ -16,9 +16,8 @@
 #' 
 #' @export
 #' @name makeGAM
-#' 
-#'  @example 
-#'  # GAM formular
+#' @examples 
+#'  # GAM formula
 #'  form1 <- makeGAM(c('x1', 'x2'), response = 'y', invariant = '0 + Intercept')
 #'  
 #'  # GAM with additional linear terms
