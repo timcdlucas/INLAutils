@@ -45,9 +45,11 @@ v <- extract(r, polys, fun = mean, df = TRUE)
 
 # Parallel extract
 #  Register the cluster first (use doMC on linux)
+\dontrun{
 cl <- snow::makeCluster(2) #change the 2 to your number of CPU cores  
 doSNOW::registerDoSNOW(cl)  
 v2 <- parallelExtract(r, polys, fun = mean)
 snow::stopCluster(cl)  
+}
 }
 
