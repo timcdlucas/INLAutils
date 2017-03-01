@@ -79,6 +79,34 @@ There is also an autoplot method for INLA SPDE meshes.
 ![plot of chunk autoplot_mesh](figure/autoplot_mesh-1.png)
 
 
+There are also functions for plotting more diagnostic plots.
+
+
+```r
+ data(Epil)
+ observed <- Epil[1:30, 'y']
+ Epil <- rbind(Epil, Epil[1:30, ])
+ Epil[1:30, 'y'] <- NA
+ ## make centered covariates
+ formula = y ~ Trt + Age + V4 +
+          f(Ind, model="iid") + f(rand,model="iid")
+ result = inla(formula, family="poisson", data = Epil,
+               control.predictor = list(compute = TRUE, link = 1))
+ ggplot_inla_residuals(result, observed, binwidth = 10)
+```
+
+![plot of chunk plot_residuals](figure/plot_residuals-1.png)
+
+```r
+ ggplot_inla_residuals2(result, observed, se = FALSE)
+```
+
+```
+## `geom_smooth()` using method = 'loess'
+```
+
+![plot of chunk plot_residuals](figure/plot_residuals-2.png)
+
 
 
 To do list
