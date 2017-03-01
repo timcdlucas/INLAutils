@@ -59,16 +59,17 @@ test_that('Basic usage works', {
   # Assumes invariant has `Intercept`
   stk.est <- INLA::inla.stack(data = list(y = dataf1$y),
                         A = list(A, 1), 
-                        effects = list(c(s.index,list(Intercept = 1)),
+                        effects = list(c(s.index, list(Intercept = 1)),
                                        list(dataf1@data[, names(dataf1) != 'y', drop = FALSE])),
                         tag = 'est')
-  
+
+  dataframe <- dataf1@data 
 
   # spatial
   expect_error(
     suppressMessages(
       INLAstep.out <- INLAstep(fam1 = "binomial", 
-                           dataf1,
+                           dataframe,
                            in_stack = stk.est,
                            spde = spde,
                            invariant = "0 + Intercept + f(spatial.field, model=spde)",
@@ -113,9 +114,30 @@ test_that('Basic usage works', {
 })
 
 
+test_that('Some INLA example datasets work', {
+  
+  data(Epil)
+  stack <- inla.stack(data = list(y = Epil$y),
+                      A = list(1),
+                      effects = list(data.frame(Intercept = 1, Epil[3:5])))
+                      
+  result <- INLAstep(fam1 = "poisson", 
+                     Epil,
+                     in_stack = stack,
+                     invariant = "0 + Intercept",
+                     direction = 'backwards',
+                     include = 3:5,
+                     y = 'y',
+                     y2 = 'y',
+                     powerl = 1,
+                     inter = 1,
+                     thresh = 2)
+  
+})
+
 
 test_that('Spatial and nonspatial works steping through fixed effects only', {
-  
+
 })
 
 
