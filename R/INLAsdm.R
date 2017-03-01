@@ -247,11 +247,10 @@ inlaSDM<-function(dataframe,
                            include = 1:ncol(dataf1),
                            y = y,
                            y2 = y,
-                           in_stack = NULL,
                            powerl = 1,
                            inter = 1,
                            thresh = 2,
-                           Ntrials = ,
+                           Ntrials = NULL,
                            num.threads = num.threads)
       
       form1 <- paste0(as.character(stepINLA$best.formula), collapse = FALSE)

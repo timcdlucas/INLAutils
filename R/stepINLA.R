@@ -8,7 +8,7 @@
 #' 
 #'@name stepINLA
 #'@param fam1 String defining the likelihood familiy
-#'@param dataf A SpatialPointsDataFrame
+#'@param dataf A SpatialPointsDataFrame including covariates and response data.
 #'@param spde An spde model object for the spatial component
 #'@param in_stack An inla.data.stack object containing all needed data
 #'@param invariant The part of the formula that should not change (e.g. the intercept and the spatial component.)
@@ -27,7 +27,7 @@
 
 stepINLA<-function(fam1="gaussian",
                    dataf,
-                   spde,
+                   spde = NULL,
                    in_stack=NULL,
                    invariant="0 + Intercept",
                    direction=c("forwards","backwards"),
@@ -50,9 +50,14 @@ stepINLA<-function(fam1="gaussian",
   if(!(class(dataf)=="data.frame"|class(dataf)=="SpatialPointsDataFrame")){stop("data not data frame")}
   if(!class(in_stack)=="inla.data.stack"){stop("in_stack not INLA stack")}
   
+  
   facts<-sapply(dataf@data, is.factor)[include]
   explF<-names(dataf)[include]
   expl<-explF[!facts]
+  
+  # Sort and combine all different variable types (should refactor and then test nicely.)
+  #   Think its function(expl, powerl, inter) return(expl)
+
   if(length(expl)>0){
     if(powerl==2){expl2<-paste("I(",expl,"^2)",sep="");expl3<-NULL;expl4<-NULL;explX<-c(expl,expl2,expl3,expl4)}
     if(powerl==3){expl2<-paste("I(",expl,"^2)",sep="");expl3<-paste("I(",expl,"^3)",sep="");expl4<-NULL;explX<-c(expl,expl2,expl3,expl4)}
@@ -84,8 +89,9 @@ stepINLA<-function(fam1="gaussian",
   if(length(explF[facts])>0){expl<-c(expl,explF[facts])}
   
   choice<-NULL;chosen<-NULL; new1<-NULL;dicloss<-999; dicold<-NULL
-  ###keep looping until nothing is gained 
   
+  
+  ###keep looping until nothing is gained 
   while(length(expl)>0){
     # If backwards.... ? 
     if(direction=="backwards"){
@@ -99,16 +105,27 @@ stepINLA<-function(fam1="gaussian",
         if(ii==9999999){
           ii<-1:length(expl)
         }else{
-          ii <- {-1 * ii}
+          ii <- {-1 * ii} # Drop each variable in turn. Final run is ii == 9999 and therefore do all variables.
         }
       }
       
+      #print(ii)
+      # Refactor function(chose, invariant, expl, ii) return(formula2)
       if(is.null(chosen)){
-        formula2 <- formula(paste(y,"~",invariant,"+",paste(expl[ii],collapse="+"),sep=""))
+        if(length(expl[ii]) > 0){
+          formula2 <- formula(paste(y,"~",invariant,"+",paste(expl[ii],collapse="+"),sep=""))
+        } else {
+          formula2 <- formula(paste(y,"~",invariant))
+        }
       } else{
-        formula2 <- formula(paste(y,"~",invariant,"+",chosen," + ",expl[ii],sep=""))
+        if(length(expl[ii]) > 0){
+          formula2 <- formula(paste(y,"~",invariant,"+",chosen," + ",expl[ii],sep=""))
+        } else {
+          formula2 <- formula(paste(y,"~",invariant,"+",chosen))
+        }
       }
       
+      print(formula2)
       result2 <- INLA::inla(formula2,
                             family=fam1,
                             num.threads=num.threads,
