@@ -8,7 +8,7 @@
 #' 
 #'@name INLAstep
 #'@param fam1 String defining the likelihood familiy
-#'@param dataf A SpatialPointsDataFrame including covariates and response data.
+#'@param dataf A dataframe including covariates and response data.
 #'@param spde An spde model object for the spatial component
 #'@param in_stack An inla.data.stack object containing all needed data
 #'@param invariant The part of the formula that should not change (e.g. the intercept and the spatial component.)
@@ -18,7 +18,7 @@
 #'@param y2 String determining the name of the test response data.
 #'@param powerl Integer up to 3 determining which power terms to include.
 #'@param inter Integer up to 3 determining how many levels of intereactions to include. 
-#'@param thresh Threshold for whether a new model should replace the old model.
+#'@param thresh Threshold difference in DIC for whether a new model should replace the old model.
 #'@param num.threads How many threads to use for INLA computation.
 #'@param ... Further arguments to \code{INLA::inla} function.
 #'@importFrom stats formula
@@ -64,7 +64,7 @@ INLAstep<-function(fam1 = "gaussian",
   }
   
   if (!is.null(spde) &
-      !grepl('model = spde', invariant)) {
+      !grepl('spde', invariant)) {
     warning('You have included an spde object, but not included it in the invariant part of the formula 
       \n e.g. invariant = "0 + Intercept + f(spatial.field, model=spde)"')
  
@@ -79,7 +79,7 @@ INLAstep<-function(fam1 = "gaussian",
   z <- NULL
 
   
-  facts <- sapply(dataf@data, is.factor)[include]
+  facts <- sapply(dataf, is.factor)[include]
   explF<-names(dataf)[include]
   expl<-explF[!facts]
   
@@ -211,7 +211,7 @@ INLAstep<-function(fam1 = "gaussian",
       
       rmse <-
         sqrt(mean((
-          dataf@data[, y2] - result2$summary.fitted.values$mean[1:nrow(dataf)]
+          dataf[, y2] - result2$summary.fitted.values$mean[1:nrow(dataf)]
         ) ^ 2, na.rm = TRUE))
       sumcpo <- sum(log(result2$cpo$cpo), na.rm = TRUE)
       
