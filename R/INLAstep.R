@@ -57,10 +57,10 @@ INLAstep<-function(fam1 = "gaussian",
   }
   if (!(class(dataf) == "data.frame" |
         class(dataf) == "SpatialPointsDataFrame")) {
-    stop("data not data frame")
+    stop("data is not a data frame")
   }
   if (!class(in_stack) == "inla.data.stack") {
-    stop("in_stack not INLA stack")
+    stop("in_stack is not an inla.stack object")
   }
   
 
@@ -187,18 +187,19 @@ INLAstep<-function(fam1 = "gaussian",
           formula2 <- formula(paste(y, "~", invariant, "+", chosen))
         }
       }
-      
+      cat(deparse(formula2))
       #print(formula2)
       result2 <- INLA::inla(
         formula2,
         family = fam1,
         num.threads = num.threads,
-        control.compute = list(cpo = TRUE, dic = TRUE, waic =
-                                 TRUE),
+        control.compute = list(cpo = TRUE, 
+                               dic = TRUE, 
+                               waic = TRUE),
         verbose = FALSE,
         data = inla.stack.data(in_stack, spde = spde),
-        control.predictor = list(A = inla.stack.A(in_stack), compute =
-                                   TRUE),
+        control.predictor = list(A = inla.stack.A(in_stack), 
+                                 compute = TRUE),
         control.fixed = list(expand.factor.strategy = "inla")
       )
       
