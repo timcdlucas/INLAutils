@@ -7,7 +7,7 @@ INLAutils
 
 A package containing utility functions for the `R-INLA` package.
 
-
+There's a fair bit of overlap with [inlabru](www.github.com/fbachl/inlabru).
 
 
 Installation
@@ -30,7 +30,7 @@ library(INLAutils)
 ```
 
 
-```{r loadINLAutils, eval = TRUE, echo = FALSE, results = 'hide'}
+```{r loadINLAutils, eval = TRUE, echo = FALSE, results = 'hide', message=FALSE, warning=FALSE}
 # Now actually load the packages. This chunk is hidden
 
 library(INLA)
