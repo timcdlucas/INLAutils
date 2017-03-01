@@ -12,7 +12,7 @@ INLAstep(fam1 = "gaussian", dataf, spde = NULL, in_stack = NULL,
 \arguments{
 \item{fam1}{String defining the likelihood familiy}
 
-\item{dataf}{A SpatialPointsDataFrame including covariates and response data.}
+\item{dataf}{A dataframe including covariates and response data.}
 
 \item{spde}{An spde model object for the spatial component}
 
@@ -32,7 +32,7 @@ INLAstep(fam1 = "gaussian", dataf, spde = NULL, in_stack = NULL,
 
 \item{inter}{Integer up to 3 determining how many levels of intereactions to include.}
 
-\item{thresh}{Threshold for whether a new model should replace the old model.}
+\item{thresh}{Threshold difference in DIC for whether a new model should replace the old model.}
 
 \item{num.threads}{How many threads to use for INLA computation.}
 
@@ -43,5 +43,26 @@ Run forwards or backwards stepwise variable selection with INLA regression.
 Use hold data to test new models.
 Chose the level of interactions and power terms
 Force part of the model to remain in the model (e.g. the spatial term and intercept).
+}
+\examples{
+
+  data(Epil)
+  stack <- inla.stack(data = list(y = Epil$y),
+                      A = list(1),
+                      effects = list(data.frame(Intercept = 1, Epil[3:5])))
+                      
+  result <- INLAstep(fam1 = "poisson", 
+                     Epil,
+                     in_stack = stack,
+                     invariant = "0 + Intercept",
+                     direction = 'backwards',
+                     include = 3:5,
+                     y = 'y',
+                     y2 = 'y',
+                     powerl = 1,
+                     inter = 1,
+                     thresh = 2)
+
+autoplot(result$best_model, which = c(1, 5), CI = TRUE)
 }
 

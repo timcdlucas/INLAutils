@@ -23,7 +23,29 @@
 #'@param ... Further arguments to \code{INLA::inla} function.
 #'@importFrom stats formula
 #'@export
-#@examples todo
+#'@examples 
+#' 
+#'   data(Epil)
+#'   stack <- inla.stack(data = list(y = Epil$y),
+#'                       A = list(1),
+#'                       effects = list(data.frame(Intercept = 1, Epil[3:5])))
+#'                       
+#'   result <- INLAstep(fam1 = "poisson", 
+#'                      Epil,
+#'                      in_stack = stack,
+#'                      invariant = "0 + Intercept",
+#'                      direction = 'backwards',
+#'                      include = 3:5,
+#'                      y = 'y',
+#'                      y2 = 'y',
+#'                      powerl = 1,
+#'                      inter = 1,
+#'                      thresh = 2)
+#' 
+#' autoplot(result$best_model, which = c(1, 5), CI = TRUE)
+
+
+
 
 INLAstep<-function(fam1 = "gaussian",
                    dataf,
