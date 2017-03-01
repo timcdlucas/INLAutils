@@ -202,8 +202,7 @@ inlaSDM<-function(dataframe,
       #                                    list(dataf1@data[, names(dataf1) != y])), tag='val')
       # 
       # join.stack<-inla.stack(stk.est,stk.val)
-      ntt <- rep(1, nrow(dataf1))
-      
+
       # # What is predict1?
       # if(!predict1==TRUE){
       #   join.stack<-stk.est
@@ -230,8 +229,7 @@ inlaSDM<-function(dataframe,
 #                             tag = 'val')
       
       
-      ntt <- rep(1, nrow(dataf1))
-     
+
     }
     
     
@@ -250,7 +248,6 @@ inlaSDM<-function(dataframe,
                            powerl = 1,
                            inter = 1,
                            thresh = 2,
-                           Ntrials = NULL,
                            num.threads = num.threads)
       
       form1 <- paste0(as.character(stepINLA$best.formula), collapse = FALSE)
@@ -271,7 +268,6 @@ inlaSDM<-function(dataframe,
       res5<-inla(form1,
                  data=inla.stack.data(stk.est, spde=spde),
                  family="binomial",
-                 Ntrials=ntt,
                  control.predictor=list(A=inla.stack.A(stk.est),compute=TRUE),
                  control.compute=list(cpo=TRUE,waic=TRUE,dic=TRUE),
                  control.fixed = list(expand.factor.strategy = "inla"),
@@ -286,7 +282,6 @@ inlaSDM<-function(dataframe,
       res5<-inla(form1,
                  data = inla.stack.data(stk.est),
                  family = "binomial",
-                 Ntrials = ntt,
                  control.compute = list(cpo = TRUE, waic = TRUE, dic = TRUE),
                  control.fixed = list(expand.factor.strategy = "inla"),
                  num.threads = num.threads,

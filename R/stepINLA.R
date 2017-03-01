@@ -13,14 +13,14 @@
 #'@param in_stack An inla.data.stack object containing all needed data
 #'@param invariant The part of the formula that should not change (e.g. the intercept and the spatial component.)
 #'@param direction string 'forwards' for forward variable selection and 'backwards' for backwards variable elimination.
-#'@param include Vector of integers to determine which columns in dataf should be used.
+#'@param include Vector of integers to determine which columns in dataf should be used. If NULL, use all columns except y and y2.
 #'@param y String determining the response variable.
 #'@param y2 String determining the name of the test response data.
 #'@param powerl Integer up to 3 determining which power terms to include.
 #'@param inter Integer up to 3 determining how many levels of intereactions to include. 
 #'@param thresh Threshold for whether a new model should replace the old model.
-#'@param Ntrials Not sure.
 #'@param num.threads How many threads to use for INLA computation.
+#'@param ... Further arguments to \code{INLA::inla} function.
 #'@importFrom stats formula
 #'@export
 #@examples todo
@@ -37,8 +37,8 @@ stepINLA<-function(fam1 = "gaussian",
                    powerl = 1,
                    inter = 1,
                    thresh = 2,
-                   Ntrials = NULL,
-                   num.threads = 1) {
+                   num.threads = 1,
+                   ...) {
   
   
   
@@ -149,7 +149,7 @@ stepINLA<-function(fam1 = "gaussian",
   
   
   ###keep looping until nothing is gained 
-  while(length(expl)>0){
+  while(length(expl) > 0){
     # If backwards.... ? 
     if (direction == "backwards") {
       runs <- c(1:length(expl), 9999999)
@@ -193,7 +193,6 @@ stepINLA<-function(fam1 = "gaussian",
         formula2,
         family = fam1,
         num.threads = num.threads,
-        Ntrials = Ntrials,
         control.compute = list(cpo = TRUE, dic = TRUE, waic =
                                  TRUE),
         verbose = FALSE,
@@ -280,13 +279,14 @@ stepINLA<-function(fam1 = "gaussian",
     formulax <- formula(paste(y, "~", invariant, "+", chosen, sep = ""))
   }
   
-  
-  
-  return(list(
+  output <- list(
     best_formula = formulax,
     waic = dicold,
     progress = progress,
     best_model = result2
-  ))
+  )
+  class(output) <- 'stepINLA'
+  
+  return(output)
   
 }##end of function
