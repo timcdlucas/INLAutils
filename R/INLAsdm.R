@@ -163,7 +163,7 @@ inlaSDM<-function(dataframe,
     dataf1@data <- sss
     
     # Organise the data
-    if(spatial==TRUE){
+    if(spatial == TRUE){
       ##make mesh
       mesh5 <- inla.mesh.2d(loc = sp::coordinates(dataf1), 
                             max.edge = c(meshvals_complete$minME, meshvals_complete$maxME), 
@@ -179,9 +179,7 @@ inlaSDM<-function(dataframe,
       ###make index for spatial field
       s.index<-inla.spde.make.index(name="spatial.field",n.spde=spde$n.spde)
       
-      ##and the stack data is defined to include effects IMPORTANT they have same names as columns so the formula below will work
-      #if(bin1==FALSE){dataf1$Presence<-dataf1$p; fam1=fam2}
-      
+
       # Assumes invariant has `Intercept`
       stk.est <- inla.stack(data = list(y = dataf1$y),
                             A = list(A, 1), 
@@ -192,23 +190,6 @@ inlaSDM<-function(dataframe,
       ###projector matrix for known
       A.val <- inla.spde.make.A(mesh5, loc = sp::coordinates(dataf1))
       
-      ##and the stack data is defined to include effects IMPORTANT they have same names as columns so the formula below will work
-      # Todo What is this for!
-      # Guessing it's supposed to be the test data? But not defined while taking into account the cross_validation groups above
-      # 
-      # stk.val <- inla.stack(data=list(y=NA),
-      #                       A=list(A.val,1), 
-      #                       effects=list(c(s.index, list(Intercept=1)), 
-      #                                    list(dataf1@data[, names(dataf1) != y])), tag='val')
-      # 
-      # join.stack<-inla.stack(stk.est,stk.val)
-
-      # # What is predict1?
-      # if(!predict1==TRUE){
-      #   join.stack<-stk.est
-      #   ntt=dataf1$trials
-      # }
-      
       
     }else{
       
@@ -217,17 +198,6 @@ inlaSDM<-function(dataframe,
                             A = list(1), 
                             effects = list(data.frame(Intercept = 1, dataf1@data[, names(dataf1) != y, drop = FALSE])),
                             tag = 'est')
-      
-      
-      # and the stack data is defined to include effects IMPORTANT they have same names as columns so the formula below will work
-      # Todo W  hat is this for!
-      # Guessing it's supposed to be the test data? But not defined while taking into account the cross_validation groups above
-# 
-#       stk.val <- inla.stack(data = list(y = NA),
-#                             A = list(1),
-#                             effects = list(data.frame(Intercept = 1, dataf1@data[, names(dataf1) != y])),
-#                             tag = 'val')
-      
       
 
     }
@@ -299,29 +269,7 @@ inlaSDM<-function(dataframe,
     res1 <- data.frame(row.names=rownames(res5$summary.fixed),res5$summary.fixed)
     res1$sig <- "non-sig"##is a term significant? i.e. does it include 0 in distribution
     res1$sig[(res1$X0.025quant<0 & res1$X0.975quant<0)|(res1$X0.025quant>0 & res1$X0.975quant>0)]<-"sig"
-    #res1<-res1[res1$sig=="sig",]
-    
-    #predicted.p.value<-c()
-    #n<-length(dataf1@data[,1])
-    #for(i in (1:n)){
-    #predicted.p.value[i]<-inla.pmarginal(q=dataf1$Presence[i],marginal=res5$marginals.fitted.values[[i]])}
-    #check1<-data.frame(dataf1$Presence,res5$summary.fitted.values$mean[1:length(dataf1$p)])
-    #plot(dataf1$Presence,res5$summary.fitted.values$mean[1:length(dataf1$p)],xlab="Observed",ylab="Fitted")
-    #hist(predicted.p.value)
-    #dim(predict_rast@data)
-    #graphics.off()
-    #U-shaped histograms indicate under-dispersed predictive distributions, hump or inverse-U shaped histograms point at overdispersion, and skewed histograms occur when central tendencies are biased
-    
-    # recently in.
-    #dataf1@data <- cbind(dataf1@data[,1:ncol(dataf1)],
-    #                     res5$summary.fitted.values[(nrow(dataf1)+1):(nrow(dataf1) + nrow(dataf1)),])
-    
-    
-    #predict_rast@data$antimean<-exp(exp(predict_rast@data$mean)+1)-1
-    #head(res5$summary.fitted.values[(nrow(dataf1)+1):(nrow(dataf1)+nrow(predict_rast)),])
-    
-    # test1<-rasterize(predict_rast2,predictxm2,field="mean",mean)
-    # names(test1)<-paste("Quarter_",QQ,"_ONI_",ONI,sep="")
+
     
     if(cross_validation == TRUE){
       c3 <- as.data.frame(res5$summary.fitted.values[1:nrow(dataf1), c("mean", "sd") ])
@@ -341,12 +289,8 @@ inlaSDM<-function(dataframe,
     }
     
     model_res[cv, ] <- c(replicate=cv,
-                         #sens_run=xx,
-                         #layersx[1,],
                          AUC = e5b,
                          WAIC = res5$waic$waic,
-                         #arguements=paste(args1,collapse=" "),
-                         #beta=beta1,
                          comp_time=inla.time[['Total']])
                         
     models[[cv]] <- res5

@@ -39,19 +39,7 @@ test_that('Basic usage works', {
   dataf1 = sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = PA, x))
   invariant = "0 + Intercept"
 
-  # 
-  # ###add training data and testing data (NAs) together
-  # sss <- as.data.frame(raster::extract(predictors[[include]], dataf1))
-  # # If there's only 1 predictor, we end up with funny names.
-  # if(NCOL(sss) == 1) colnames(sss) <- names(predictors[[include]])
-  # 
-  # sss <- cbind(sss, dataf1@data[, y])
-  # names(sss)[NCOL(sss)] <- y
-  # 
-  # # Why?
-  # # sss <- sss[complete.cases(sss), ]
-  # dataf1@data <- sss
-  # 
+  
   # Organise the data
   ##make mesh
   mesh5 <- inla.mesh.2d(loc = sp::coordinates(dataf1), 
@@ -83,16 +71,14 @@ test_that('Basic usage works', {
                            dataf1,
                            in_stack = stk.est,
                            spde = spde,
-                           invariant = "0 + Intercept", # +  f(i, model=spde)",
+                           invariant = "0 + Intercept +  f(i, model=spde)",
                            direction = 'backwards',
                            include = 2:3,
                            y = y,
                            y2 = y,
                            powerl = 1,
                            inter = 1,
-                           thresh = 2,
-                           Ntrials = NULL,
-                           num.threads = num.threads)
+                           thresh = 2)
     ),
     NA
   )
