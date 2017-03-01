@@ -27,7 +27,8 @@
 #'library(INLA)
 #'set.seed(6)
 #'
-#'# Create locations, presence absence points and covariates with spatial and environmental relationships
+#'# Create locations, presence absence points and covariates 
+#'#   with spatial and environmental relationships
 #'coords <- data.frame(long = c(rnorm(70), rnorm(30, 3)), lat = rnorm(100))
 #'PA <- rep(c(0, 1), each = 50)
 #'x <- data.frame(x1 = rnorm(100), # no relationship
@@ -61,9 +62,9 @@
 #'ycells <- res * (yrange[2] - yrange[1])
 #'
 #'# Create an empty raster of correct dims
-#'#print(c(ycells, xcells, xrange, yrange))
 #'suppressWarnings(
-#'  raster <- raster::raster(matrix(NA, ncol = ycells, nrow = xcells), xmn = xrange[1], xmx = xrange[2], ymn = yrange[1], ymx = yrange[2])
+#'  raster <- raster::raster(matrix(NA, ncol = ycells, nrow = xcells), 
+#'    xmn = xrange[1], xmx = xrange[2], ymn = yrange[1], ymx = yrange[2])
 #')
 #'# Add dataframe data to rasters, then fill gaps with random data.
 #'x1 <- raster::rasterize(coords, raster, x$x1)

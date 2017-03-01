@@ -45,11 +45,11 @@ Chose the level of interactions and power terms
 Force part of the model to remain in the model (e.g. the spatial term and intercept).
 }
 \examples{
-
+  library(INLA)
   data(Epil)
-  stack <- inla.stack(data = list(y = Epil$y),
-                      A = list(1),
-                      effects = list(data.frame(Intercept = 1, Epil[3:5])))
+  stack <- INLA::inla.stack(data = list(y = Epil$y),
+                           A = list(1),
+                           effects = list(data.frame(Intercept = 1, Epil[3:5])))
                       
   result <- INLAstep(fam1 = "poisson", 
                      Epil,

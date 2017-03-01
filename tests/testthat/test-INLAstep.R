@@ -93,7 +93,7 @@ test_that('Basic usage works', {
   expect_error(
     suppressMessages(
       INLAstep.out2 <- INLAstep(fam1 = "binomial", 
-                               dataf1,
+                               dataframe,
                                in_stack = stk.est,
                                invariant = "0 + Intercept",
                                direction = 'backwards',
