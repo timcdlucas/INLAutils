@@ -63,6 +63,13 @@ INLAstep<-function(fam1 = "gaussian",
     stop("in_stack is not an inla.stack object")
   }
   
+  if (!is.null(spde) &
+      !grepl('model = spde', invariant)) {
+    warning('You have included an spde object, but not included it in the invariant part of the formula 
+      \n e.g. invariant = "0 + Intercept + f(spatial.field, model=spde)"')
+ 
+  }
+  
 
   # Get indices of all fixed effects (i.e. remove respose columns.
   if (is.null(include))

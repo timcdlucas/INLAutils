@@ -71,7 +71,7 @@ test_that('Basic usage works', {
                            dataf1,
                            in_stack = stk.est,
                            spde = spde,
-                           invariant = "0 + Intercept +  f(spatial.field, model=spde)",
+                           invariant = "0 + Intercept + f(spatial.field, model=spde)",
                            direction = 'backwards',
                            include = 2:3,
                            y = 'y',
@@ -83,14 +83,17 @@ test_that('Basic usage works', {
     NA
   )
   
-  expect_error(INLAstep.out, NA)
+  expect_true(is(INLAstep.out$best_model, 'inla'))
+  expect_true(length(INLAstep.out$best_model$summary.random) == 1)
+  
+  
+  
   # nonspatial
   expect_error(
     suppressMessages(
-      INLAstep.out <- INLAstep(fam1 = "binomial", 
+      INLAstep.out2 <- INLAstep(fam1 = "binomial", 
                                dataf1,
                                in_stack = stk.est,
-                               spde = spde,
                                invariant = "0 + Intercept",
                                direction = 'backwards',
                                include = 2:3,
@@ -103,6 +106,8 @@ test_that('Basic usage works', {
     NA
   )
   
+  expect_true(is(INLAstep.out2$best_model, 'inla'))
+  expect_true(length(INLAstep.out2$best_model$summary.random) == 0)
   
   
 })
