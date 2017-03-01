@@ -47,9 +47,9 @@ test_that('Basic usage works', {
   xcells <- res * (xrange[2] - xrange[1])
   ycells <- res * (yrange[2] - yrange[1])
   
-  
-  raster <- raster::raster(matrix(NA, ncol = ycells, nrow = xcells), xmn = xrange[1], xmx = xrange[2], ymn = yrange[1], ymx = yrange[2])
-  
+  suppressWarnings(
+    raster <- raster::raster(matrix(NA, ncol = ycells, nrow = xcells), xmn = xrange[1], xmx = xrange[2], ymn = yrange[1], ymx = yrange[2])
+  )
   x1 <- raster::rasterize(coords, raster, x$x1)
   x1[is.na(x1)] <- rnorm(sum(is.na(raster::getValues(x1))))
   
@@ -162,22 +162,22 @@ test_that('Basic usage works', {
     #   ntt=dataf1$trials
     # }
     
-    
-    stepINLA.out <- stepINLA(fam1 = "binomial", 
-                         dataf1,
-                         in_stack = stk.est,
-                         spde = spde,
-                         invariant = "0 + Intercept", # +  f(i, model=spde)",
-                         direction = 'backwards',
-                         include = 1:2,
-                         y = y,
-                         y2 = y,
-                         powerl = 1,
-                         inter = 1,
-                         thresh = 2,
-                         Ntrials = NULL,
-                         num.threads = num.threads)
-    
+    suppressMessages(
+      stepINLA.out <- stepINLA(fam1 = "binomial", 
+                           dataf1,
+                           in_stack = stk.est,
+                           spde = spde,
+                           invariant = "0 + Intercept", # +  f(i, model=spde)",
+                           direction = 'backwards',
+                           include = 1:2,
+                           y = y,
+                           y2 = y,
+                           powerl = 1,
+                           inter = 1,
+                           thresh = 2,
+                           Ntrials = NULL,
+                           num.threads = num.threads)
+    )
     
   
   
