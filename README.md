@@ -108,6 +108,73 @@ There are also functions for plotting more diagnostic plots.
 ![plot of chunk plot_residuals](figure/plot_residuals-2.png)
 
 
+### Analysis
+
+There are some helper functions for general analyses.
+
+
+`INLAstep` runs stepwise variable selection with INLA.
+
+
+```r
+  data(Epil)
+  stack <- inla.stack(data = list(y = Epil$y),
+                      A = list(1),
+                      effects = list(data.frame(Intercept = 1, Epil[3:5])))
+                      
+  result <- INLAstep(fam1 = "poisson", 
+                     Epil,
+                     in_stack = stack,
+                     invariant = "0 + Intercept",
+                     direction = 'backwards',
+                     include = 3:5,
+                     y = 'y',
+                     y2 = 'y',
+                     powerl = 1,
+                     inter = 1,
+                     thresh = 2)
+  
+  result$best_formula
+```
+
+```
+## y ~ 0 + Intercept + Base + Age + V4
+## <environment: 0x000000002e79f078>
+```
+
+```r
+  autoplot(result$best_model, which = 1)
+```
+
+![plot of chunk INLAstep](figure/INLAstep-1.png)
+
+
+
+`makeGAM` helps create a function object for fitting GAMs with INLA.
+
+
+```r
+ data(Epil)
+ formula <- makeGAM('Age', invariant = '', linear = c('Age', 'Trt', 'V4'), returnstring = FALSE)
+ formula
+```
+
+```
+## y ~ +Age + Trt + V4 + f(inla.group(Age), model = "rw2")
+## <environment: 0x0000000020663a88>
+```
+
+```r
+ result = inla(formula, family="poisson", data = Epil)
+```
+
+
+
+
+
+### Domain specific applications
+
+
 
 To do list
 ----------
