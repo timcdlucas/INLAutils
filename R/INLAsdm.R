@@ -84,7 +84,6 @@
 #'autoplot(model$models[[1]])
 #'
 
-##without dismo
 inlaSDM<-function(dataframe,
                   predictors, 
                   include = 1:raster::nlayers(predictors),
@@ -163,29 +162,7 @@ inlaSDM<-function(dataframe,
     # sss <- sss[complete.cases(sss), ]
     dataf1@data <- sss
     
-    if(step == TRUE){
-      # Data is a raster (or at least some s4 thing).
-      stepINLA <- stepINLA(fam1 = "binomial", #?
-                          dataf1,
-                          invariant = invariant,
-                          direction = 'backwards',
-                          include = 1:ncol(dataf1),
-                          y = y,
-                          y2 = y,
-                          in_stack = NULL,
-                          powerl = 1,
-                          inter = 1,
-                          thresh = 2,
-                          Ntrials = ,
-                          num.threads = num.threads)
-      
-      form1 <- paste0(as.character(stepINLA$best.formula), collapse = FALSE)
-      
-    } else {
-      # Make formula of all covariates but not
-      form1 <- paste0(y, ' ~ ', invariant, ' + ', paste(names(predictors[[include]]), collapse = ' + '))
-    }
-    
+    # Organise the data
     if(spatial==TRUE){
       ##make mesh
       mesh5 <- inla.mesh.2d(loc = sp::coordinates(dataf1), 
@@ -233,20 +210,6 @@ inlaSDM<-function(dataframe,
       #   ntt=dataf1$trials
       # }
       
-      # Create formula object adding the spatial.field random effect
-      form1 <- formula(paste(form1, ' + f(spatial.field, model = spde)'))
-      
-      # Fit spatial inla model.
-      res5<-inla(form1,
-                 data=inla.stack.data(stk.est, spde=spde),
-                 family="binomial",
-                 Ntrials=ntt,
-                 control.predictor=list(A=inla.stack.A(stk.est),compute=TRUE),
-                 control.compute=list(cpo=TRUE,waic=TRUE,dic=TRUE),
-                 control.fixed = list(expand.factor.strategy = "inla"),
-                 num.threads=num.threads,
-                 silent=TRUE)
-      
       
     }else{
       
@@ -268,6 +231,55 @@ inlaSDM<-function(dataframe,
       
       
       ntt <- rep(1, nrow(dataf1))
+     
+    }
+    
+    
+    # Create the formula.
+    if(step == TRUE){
+      # Data is a raster (or at least some s4 thing).
+      stepINLA <- stepINLA(fam1 = "binomial", #?
+                           dataf1,
+                           in_stack = stk.est,
+                           spde = spde,
+                           invariant = invariant,
+                           direction = 'backwards',
+                           include = 1:ncol(dataf1),
+                           y = y,
+                           y2 = y,
+                           in_stack = NULL,
+                           powerl = 1,
+                           inter = 1,
+                           thresh = 2,
+                           Ntrials = ,
+                           num.threads = num.threads)
+      
+      form1 <- paste0(as.character(stepINLA$best.formula), collapse = FALSE)
+      
+    } else {
+      # Make formula of all covariates but not
+      form1 <- paste0(y, ' ~ ', invariant, ' + ', paste(names(predictors[[include]]), collapse = ' + '))
+    }
+    
+    
+    # Fit the model
+    if(spatial == TRUE){
+      
+      # Create formula object adding the spatial.field random effect
+      form1 <- formula(paste(form1, ' + f(spatial.field, model = spde)'))
+      
+      # Fit spatial inla model.
+      res5<-inla(form1,
+                 data=inla.stack.data(stk.est, spde=spde),
+                 family="binomial",
+                 Ntrials=ntt,
+                 control.predictor=list(A=inla.stack.A(stk.est),compute=TRUE),
+                 control.compute=list(cpo=TRUE,waic=TRUE,dic=TRUE),
+                 control.fixed = list(expand.factor.strategy = "inla"),
+                 num.threads=num.threads,
+                 silent=TRUE)
+      
+    } else {
       
       # Create formula object
       form1 <- formula(form1)
@@ -280,6 +292,7 @@ inlaSDM<-function(dataframe,
                  control.fixed = list(expand.factor.strategy = "inla"),
                  num.threads = num.threads,
                  silent = TRUE)
+      
     }
     
     
