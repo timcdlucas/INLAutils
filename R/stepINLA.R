@@ -114,7 +114,7 @@ stepINLA<-function(fam1="gaussian",
       if(is.null(chosen)){
         if(length(expl[ii]) > 0){
           formula2 <- formula(paste(y,"~",invariant,"+",paste(expl[ii],collapse="+"),sep=""))
-        } else {
+        } else {          
           formula2 <- formula(paste(y,"~",invariant))
         }
       } else{
