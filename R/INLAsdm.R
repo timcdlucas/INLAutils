@@ -236,7 +236,7 @@ inlaSDM<-function(dataframe,
     # Create the formula.
     if(step == TRUE){
       # Data is a raster (or at least some s4 thing).
-      stepINLA <- stepINLA(fam1 = "binomial", #?
+      INLAstep <- stepINLA(fam1 = "binomial", #?
                            dataf1,
                            in_stack = stk.est,
                            spde = spde,

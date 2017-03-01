@@ -6,7 +6,7 @@
 #' Chose the level of interactions and power terms
 #' Force part of the model to remain in the model (e.g. the spatial term and intercept).
 #' 
-#'@name stepINLA
+#'@name INLAstep
 #'@param fam1 String defining the likelihood familiy
 #'@param dataf A SpatialPointsDataFrame including covariates and response data.
 #'@param spde An spde model object for the spatial component
@@ -25,7 +25,7 @@
 #'@export
 #@examples todo
 
-stepINLA<-function(fam1 = "gaussian",
+INLAstep<-function(fam1 = "gaussian",
                    dataf,
                    spde = NULL,
                    in_stack = NULL,
