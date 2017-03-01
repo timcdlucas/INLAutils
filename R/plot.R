@@ -397,42 +397,42 @@ evalPriors <- function(x, allMarginals, priors){
 
 
 
-
-
-# Get the priors out of the inla object and into a dta.frame
-extractHyperPriors <- function(x){
-  priors <- data.frame(var = x$names.fixed, mean = NA, prec = NA)
-  row.names(priors) <- x$names.fixed
-  priors['(Intercept)', 2:3] <- c(x$.args$control.fixed$mean.intercept, x$.args$control.fixed$prec.intercept)
-
-  # find and combine prior means    
-  if(length(x$.args$control.fixed$mean) == 1){
-    priors$mean[!priors$var == '(Intercept)'] <- x$.args$control.fixed$mean
-  } else if(length(x$.args$control.fixed$mean) == length(x$names.fixed) - 1) {
-    priors$mean[names(x$.args$control.fixed$mean)] <- unlist(x$.args$control.fixed$mean)
-  } else {
-    priors$mean[!priors$var == '(Intercept)'] <- x$.args$control.fixed$mean$default
-    # Take mean values that are not defulat
-    nondef <- unlist(x$.args$control.fixed$mean)[names(x$.args$control.fixed$mean) != 'default']
-    priors[names(nondef), 'mean'] <- x$.args$control.fixed$mean[[1]]
-  }
-
-  # find and combine prior prec
-  if(length(x$.args$control.fixed$prec) == 1){
-    priors$prec[!priors$var == '(Intercept)'] <- x$.args$control.fixed$prec
-  } else if(length(x$.args$control.fixed$prec) == length(x$names.fixed) - 1) {
-    priors$prec[names(x$.args$control.fixed$prec)] <- unlist(x$.args$control.fixed$prec)
-  } else {
-    priors$prec[!priors$var == '(Intercept)'] <- x$.args$control.fixed$prec$default
-    # Take mean values that are not defulat
-    nondef <- unlist(x$.args$control.fixed$prec)[names(x$.args$control.fixed$prec) != 'default']
-    priors[names(nondef), 'mean'] <- x$.args$control.fixed$prec[[1]]
-  }
-
-
-  
-  return(priors)
-}
-
-
+# 
+# 
+# # Get the priors out of the inla object and into a dta.frame
+# extractHyperPriors <- function(x){
+#   priors <- data.frame(var = x$names.fixed, mean = NA, prec = NA)
+#   row.names(priors) <- x$names.fixed
+#   priors['(Intercept)', 2:3] <- c(x$.args$control.fixed$mean.intercept, x$.args$control.fixed$prec.intercept)
+# 
+#   # find and combine prior means    
+#   if(length(x$.args$control.fixed$mean) == 1){
+#     priors$mean[!priors$var == '(Intercept)'] <- x$.args$control.fixed$mean
+#   } else if(length(x$.args$control.fixed$mean) == length(x$names.fixed) - 1) {
+#     priors$mean[names(x$.args$control.fixed$mean)] <- unlist(x$.args$control.fixed$mean)
+#   } else {
+#     priors$mean[!priors$var == '(Intercept)'] <- x$.args$control.fixed$mean$default
+#     # Take mean values that are not defulat
+#     nondef <- unlist(x$.args$control.fixed$mean)[names(x$.args$control.fixed$mean) != 'default']
+#     priors[names(nondef), 'mean'] <- x$.args$control.fixed$mean[[1]]
+#   }
+# 
+#   # find and combine prior prec
+#   if(length(x$.args$control.fixed$prec) == 1){
+#     priors$prec[!priors$var == '(Intercept)'] <- x$.args$control.fixed$prec
+#   } else if(length(x$.args$control.fixed$prec) == length(x$names.fixed) - 1) {
+#     priors$prec[names(x$.args$control.fixed$prec)] <- unlist(x$.args$control.fixed$prec)
+#   } else {
+#     priors$prec[!priors$var == '(Intercept)'] <- x$.args$control.fixed$prec$default
+#     # Take mean values that are not defulat
+#     nondef <- unlist(x$.args$control.fixed$prec)[names(x$.args$control.fixed$prec) != 'default']
+#     priors[names(nondef), 'mean'] <- x$.args$control.fixed$prec[[1]]
+#   }
+# 
+# 
+#   
+#   return(priors)
+# }
+# 
+# 
 
