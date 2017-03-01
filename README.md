@@ -92,7 +92,7 @@ There are also functions for plotting more diagnostic plots.
           f(Ind, model="iid") + f(rand,model="iid")
  result = inla(formula, family="poisson", data = Epil,
                control.predictor = list(compute = TRUE, link = 1))
- ggplot_inla_residuals(result, observed, binwidth = 10)
+ ggplot_inla_residuals(result, observed, binwidth = 0.1)
 ```
 
 ![plot of chunk plot_residuals](figure/plot_residuals-1.png)
