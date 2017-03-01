@@ -207,7 +207,7 @@ inlaSDM<-function(dataframe,
     # Create the formula.
     if(step == TRUE){
       # Data is a raster (or at least some s4 thing).
-      INLAstep <- stepINLA(fam1 = "binomial", #?
+      INLAstep_model <- INLAstep(fam1 = "binomial", #?
                            dataf1,
                            in_stack = stk.est,
                            spde = spde,
@@ -221,7 +221,7 @@ inlaSDM<-function(dataframe,
                            thresh = 2,
                            num.threads = num.threads)
       
-      form1 <- paste0(as.character(stepINLA$best.formula), collapse = FALSE)
+      form1 <- paste0(as.character(INLAstep_model$best.formula), collapse = FALSE)
       
     } else {
       # Make formula of all covariates but not
