@@ -187,8 +187,7 @@ INLAstep<-function(fam1 = "gaussian",
           formula2 <- formula(paste(y, "~", invariant, "+", chosen))
         }
       }
-      cat(deparse(formula2))
-      #print(formula2)
+
       result2 <- INLA::inla(
         formula2,
         family = fam1,
@@ -286,7 +285,7 @@ INLAstep<-function(fam1 = "gaussian",
     progress = progress,
     best_model = result2
   )
-  class(output) <- 'stepINLA'
+  class(output) <- 'INLAstep'
   
   return(output)
   

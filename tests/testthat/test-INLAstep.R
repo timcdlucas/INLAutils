@@ -42,40 +42,40 @@ test_that('Basic usage works', {
   
   # Organise the data
   ##make mesh
-  mesh5 <- inla.mesh.2d(loc = sp::coordinates(dataf1), 
-                        max.edge = c(meshvals_complete$minME, meshvals_complete$maxME), 
-                        cutoff = meshvals_complete$co, 
-                        offset = c(meshvals_complete$minOS, meshvals_complete$maxOS))
+
+  mesh5 <- INLA::inla.mesh.2d(loc = sp::coordinates(dataf1), 
+                        max.edge = c(3, 3), 
+                        cutoff = 1.3)
   
   ####The SPDE model is defined 
-  spde <- inla.spde2.matern(mesh5, alpha=2)
+  spde <- INLA::inla.spde2.matern(mesh5, alpha=2)
   
   ###projector matrix for known
-  A <- inla.spde.make.A(mesh5, loc = sp::coordinates(dataf1))
+  A <- INLA::inla.spde.make.A(mesh5, loc = sp::coordinates(dataf1))
   
   ###make index for spatial field
-  s.index<-inla.spde.make.index(name="spatial.field",n.spde=spde$n.spde)
+  s.index <- INLA::inla.spde.make.index(name="spatial.field",n.spde=spde$n.spde)
   
   # Assumes invariant has `Intercept`
-  stk.est <- inla.stack(data = list(y = dataf1$y),
+  stk.est <- INLA::inla.stack(data = list(y = dataf1$y),
                         A = list(A, 1), 
                         effects = list(c(s.index,list(Intercept = 1)),
-                                       list(dataf1@data[, names(dataf1) != y, drop = FALSE])),
+                                       list(dataf1@data[, names(dataf1) != 'y', drop = FALSE])),
                         tag = 'est')
   
 
-
+  # spatial
   expect_error(
     suppressMessages(
       INLAstep.out <- INLAstep(fam1 = "binomial", 
                            dataf1,
                            in_stack = stk.est,
                            spde = spde,
-                           invariant = "0 + Intercept +  f(i, model=spde)",
+                           invariant = "0 + Intercept +  f(spatial.field, model=spde)",
                            direction = 'backwards',
                            include = 2:3,
-                           y = y,
-                           y2 = y,
+                           y = 'y',
+                           y2 = 'y',
                            powerl = 1,
                            inter = 1,
                            thresh = 2)
@@ -83,7 +83,27 @@ test_that('Basic usage works', {
     NA
   )
   
-
+  expect_error(INLAstep.out, NA)
+  # nonspatial
+  expect_error(
+    suppressMessages(
+      INLAstep.out <- INLAstep(fam1 = "binomial", 
+                               dataf1,
+                               in_stack = stk.est,
+                               spde = spde,
+                               invariant = "0 + Intercept",
+                               direction = 'backwards',
+                               include = 2:3,
+                               y = 'y',
+                               y2 = 'y',
+                               powerl = 1,
+                               inter = 1,
+                               thresh = 2)
+    ),
+    NA
+  )
+  
+  
   
 })
 
@@ -102,6 +122,13 @@ test_that('Spatial and nonspatial works steping through fixed effects and spatia
 
 
 test_that('Feature engineering works', {
+  # Hopefully this will include refectored functions.
+  
+})
+
+
+
+test_that('Forwards and backwards works', {
   # Hopefully this will include refectored functions.
   
 })
