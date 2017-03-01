@@ -125,7 +125,7 @@ stepINLA<-function(fam1="gaussian",
         }
       }
       
-      print(formula2)
+      #print(formula2)
       result2 <- INLA::inla(formula2,
                             family=fam1,
                             num.threads=num.threads,
@@ -163,7 +163,7 @@ stepINLA<-function(fam1="gaussian",
       progress<-rbind(progress,choice[choice$var==new1,])
     }
     
-    print(paste(new1," - ",min(choice$aic,na.rm=TRUE)),sep="")
+    message(paste(new1," - ",min(choice$aic,na.rm=TRUE)),sep="")
     choice<-NULL
     if(dicloss>thresh){
       if(direction=="backwards"){expl<-expl[!expl==new1]}

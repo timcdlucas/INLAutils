@@ -1,7 +1,7 @@
 Package: INLAutils
 Type: Package
 Title: Utility Functions for INLA: Additional Plots and Support for ggplot2
-Version: 0.0.1
+Version: 0.0.2
 Date: 11/06/15
 Authors@R: as.person(c(
     "Tim Lucas <timcdlucas@gmail.com> [aut, cre]", 
