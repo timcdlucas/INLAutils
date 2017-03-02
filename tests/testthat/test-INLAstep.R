@@ -258,7 +258,7 @@ test_that('Forwards and backwards works', {
                      Epil,
                      in_stack = stack,
                      invariant = "0 + Intercept",
-                     direction = 'forwads',
+                     direction = 'forwards',
                      include = 3:5,
                      y = 'y',
                      y2 = 'y',

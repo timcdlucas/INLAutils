@@ -139,7 +139,6 @@ INLAstep<-function(fam1 = "gaussian",
         }
       }
       
-      #print(ii)
       # Refactor function(chose, invariant, expl, ii) return(formula2)
       if (is.null(chosen)) {
         if (length(expl[ii]) > 0) {
@@ -158,8 +157,6 @@ INLAstep<-function(fam1 = "gaussian",
         }
       }
       
-      print(deparse(formula2))
-
       result2 <- INLA::inla(
         formula2,
         family = fam1,
@@ -179,7 +176,6 @@ INLAstep<-function(fam1 = "gaussian",
           dataf[, y2] - result2$summary.fitted.values$mean[1:nrow(dataf)]
         ) ^ 2, na.rm = TRUE))
       sumcpo <- sum(log(result2$cpo$cpo), na.rm = TRUE)
-      print(sumcpo)
       if (length(ii) > 1) {
         var1 <- paste(expl[ii], collapse = "+")
       } else{
@@ -207,25 +203,27 @@ INLAstep<-function(fam1 = "gaussian",
             )
           )
       }
-      
     }##end of run through
     
-    new1 <- choice[choice$aic == min(choice$aic, na.rm = TRUE)[1], 1][1]
+    new1 <- choice[which.min(choice$aic), 1]
+    # If not the first time through, calculate dic loss
     if (!is.null(dicold)) {
-      dicloss <- dicold - (min(choice$aic, na.rm = TRUE)[1])
+      dicloss <- dicold - min(choice$aic, na.rm = TRUE)[1]
     }
-    dicold <- choice[choice$aic == min(choice$aic, na.rm = TRUE)[1], 2]
+    # Update dic old 
+    dicold <- choice[which.min(choice$aic), 2]
     
     if (is.null(z)) {
       progress <- choice[choice$var == new1, ]
       z <- 1
-    } else{
+    } else {
       progress <- rbind(progress, choice[choice$var == new1, ])
     }
     
     message(paste(new1, " - ", min(choice$aic, na.rm = TRUE)), sep = "")
     choice <- NULL
     if (dicloss > thresh) {
+
       if (direction == "backwards") {
         expl <- expl[!expl == new1]
       }

@@ -40,8 +40,9 @@ INLAstep(fam1 = "gaussian", dataf, spde = NULL, in_stack = NULL,
 }
 \description{
 Run forwards or backwards stepwise variable selection with INLA regression.
-Use hold data to test new models.
-Chose the level of interactions and power terms
+Only fixed effects will be considered  for removal.
+Use holdout data or within sample data to test new models.
+Choose the level of interactions and power terms to expand the model formula to.
 Force part of the model to remain in the model (e.g. the spatial term and intercept).
 }
 \examples{

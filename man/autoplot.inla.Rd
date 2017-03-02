@@ -55,5 +55,8 @@ The plot types are
  p[1] <- p[1] + facet_wrap('var', scale = 'free_y')
  p
 
+# Change colours etc.
+p[[1]]$layers[[1]] <- geom_line(colour = 'red', linetype = 2)
+
 }
 
