@@ -7,7 +7,7 @@ INLAutils
 
 A package containing utility functions for the `R-INLA` package.
 
-There's a fair bit of overlap with [inlabru](www.github.com/fbachl/inlabru).
+There's a fair bit of overlap with [inlabru](http://www.github.com/fbachl/inlabru).
 
 
 Installation
@@ -61,7 +61,7 @@ So `INLAutils` provides an `autoplot` method for INLA objects.
 ```
 
 
-There is also an autoplot method for INLA SPDE meshes.
+There is an autoplot method for INLA SPDE meshes.
 
 ```{r autoplot_mesh, eval = TRUE, echo = TRUE}
 
@@ -77,7 +77,7 @@ There is also an autoplot method for INLA SPDE meshes.
 ```
 
 
-There are also functions for plotting more diagnostic plots.
+There are functions for plotting more diagnostic plots.
 
 ```{r plot_residuals, eval = TRUE, echo = TRUE}
 
@@ -95,6 +95,29 @@ There are also functions for plotting more diagnostic plots.
 
 ```
 
+Finally there is a function for combining shapefiles, rasters (or INLA projections) and meshes.
+For more fine grained control the geoms defined in [inlabru](http://www.github.com/fbachl/inlabru) might be useful.
+
+```{r shapefileraster,eval = TRUE, echo = TRUE, message = FALSE}
+# Create inla projector
+n <- 20
+loc <- matrix(runif(n*2), n, 2)
+mesh <- inla.mesh.create(loc, refine=list(max.edge=0.05))
+projector <- inla.mesh.projector(mesh)
+
+field <- cos(mesh$loc[,1]*2*pi*3)*sin(mesh$loc[,2]*2*pi*7)
+projection <- inla.mesh.project(projector, field)
+
+# And a shape file
+crds <- loc[chull(loc), ]
+SPls <- SpatialPolygons(list(Polygons(list(Polygon(crds)), ID = 'a')))
+
+# plot
+ggplot_projection_shapefile(projection, projector, SPls, mesh)
+
+
+
+```
 
 ### Analysis
 

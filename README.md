@@ -7,7 +7,7 @@ INLAutils
 
 A package containing utility functions for the `R-INLA` package.
 
-There's a fair bit of overlap with [inlabru](www.github.com/fbachl/inlabru).
+There's a fair bit of overlap with [inlabru](http://www.github.com/fbachl/inlabru).
 
 
 Installation
@@ -61,7 +61,7 @@ So `INLAutils` provides an `autoplot` method for INLA objects.
 ![plot of chunk autoplot](figure/autoplot-1.png)
 
 
-There is also an autoplot method for INLA SPDE meshes.
+There is an autoplot method for INLA SPDE meshes.
 
 
 ```r
@@ -79,7 +79,7 @@ There is also an autoplot method for INLA SPDE meshes.
 ![plot of chunk autoplot_mesh](figure/autoplot_mesh-1.png)
 
 
-There are also functions for plotting more diagnostic plots.
+There are functions for plotting more diagnostic plots.
 
 
 ```r
@@ -107,6 +107,29 @@ There are also functions for plotting more diagnostic plots.
 
 ![plot of chunk plot_residuals](figure/plot_residuals-2.png)
 
+Finally there is a function for combining shapefiles, rasters (or INLA projections) and meshes.
+For more fine grained control the geoms defined in [inlabru](http://www.github.com/fbachl/inlabru) might be useful.
+
+
+```r
+# Create inla projector
+n <- 20
+loc <- matrix(runif(n*2), n, 2)
+mesh <- inla.mesh.create(loc, refine=list(max.edge=0.05))
+projector <- inla.mesh.projector(mesh)
+
+field <- cos(mesh$loc[,1]*2*pi*3)*sin(mesh$loc[,2]*2*pi*7)
+projection <- inla.mesh.project(projector, field)
+
+# And a shape file
+crds <- loc[chull(loc), ]
+SPls <- SpatialPolygons(list(Polygons(list(Polygon(crds)), ID = 'a')))
+
+# plot
+ggplot_projection_shapefile(projection, projector, SPls, mesh)
+```
+
+![plot of chunk shapefileraster](figure/shapefileraster-1.png)
 
 ### Analysis
 
@@ -139,7 +162,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ 0 + Intercept + Base + Age + V4
-## <environment: 0x000000002e79f078>
+## <environment: 0x1094d8e0>
 ```
 
 ```r
@@ -161,7 +184,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ +Age + Trt + V4 + f(inla.group(Age), model = "rw2")
-## <environment: 0x0000000020663a88>
+## <environment: 0x134fc610>
 ```
 
 ```r
