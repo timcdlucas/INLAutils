@@ -161,7 +161,7 @@ test_that('Spatial and nonspatial works steping through fixed effects and spatia
 test_that('Feature engineering works. expandExplanatoryVars', {
   # Hopefully this will include refectored functions.
   expl <- c('a', 'b')
-  explF <- explF
+  explF <- expl
   facts <- c(FALSE, FALSE)
   newexpl1 <- expandExplanatoryVars(expl, explF, facts, 1, 1)
   
@@ -178,7 +178,7 @@ test_that('Feature engineering works. expandExplanatoryVars', {
   
   
   expl2 <- letters[1:3]
-  explF <- explF
+  explF <- expl2
   facts <- c(FALSE, FALSE, FALSE)
   
   longexpl <- expandExplanatoryVars(expl2, explF, facts, inter = 3, powerl = 1)
@@ -208,33 +208,17 @@ test_that('Feature engineering works. Whole models.', {
                      Epil,
                      in_stack = stack,
                      invariant = "0 + Intercept",
-                     direction = 'backwards',
+                     direction = 'forwards',
                      include = 3:5,
                      y = 'y',
                      y2 = 'y',
-                     powerl = 3,
+                     powerl = 2,
                      inter = 2,
                      thresh = 2)
   # best_formula and best_model should match
-  varsInFormula <- sapply(result$best_model$names.fixed, function(x) grepl(x, as.character(result$best_formula)[3]))
-  expect_true(all(varsInFormula))
+  nvars <- length(strsplit(as.character(result$best_formula)[3], '+', fixed = TRUE)[[1]]) - 1
+  expect_true(length(result$best_model$names.fixed) == nvars)
   
-  
-  result1 <- INLAstep(fam1 = "poisson", 
-                      Epil,
-                      in_stack = stack,
-                      invariant = "0 + Intercept",
-                      direction = 'forwads',
-                      include = 3:5,
-                      y = 'y',
-                      y2 = 'y',
-                      powerl = 1,
-                      inter = 1,
-                      thresh = 2)
-  
-  # best_formula and best_model should match
-  varsInFormula <- sapply(result1$best_model$names.fixed, function(x) grepl(x, as.character(result1$best_formula)[3]))
-  expect_true(all(varsInFormula))
   
   # Not sure good ways of testing this
   # Given the set seed, and having looked at the answer, I know that the final model
@@ -252,7 +236,7 @@ test_that('Feature engineering works. Whole models.', {
 
 
 test_that('Forwards and backwards works', {
-
+  set.seed(20)
   data(Epil)
   stack <- inla.stack(data = list(y = Epil$y),
                       A = list(1),
@@ -273,33 +257,7 @@ test_that('Forwards and backwards works', {
   varsInFormula <- sapply(result1$best_model$names.fixed, function(x) grepl(x, as.character(result1$best_formula)[3]))
   expect_true(all(varsInFormula))
   
-  
-  # Try and make a dataset where a variable WILL get added.
-  Epil2 <- Epil
-  Epil2$Base <- Epil$y + rnorm(nrow(Epil), sd = 0.01)
-  Epil2$Age <- Epil$y + rnorm(nrow(Epil), sd = 0.01)
-  
-  stack2 <- inla.stack(data = list(y = Epil2$y),
-                      A = list(1),
-                      effects = list(data.frame(Intercept = 1, Epil2[3:5])))
-  
-  result2 <- INLAstep(fam1 = "poisson", 
-                      Epil2,
-                      in_stack = stack2,
-                      invariant = "0 + Intercept",
-                      direction = 'forwads',
-                      include = 3:5,
-                      y = 'y',
-                      y2 = 'y',
-                      powerl = 1,
-                      inter = 1,
-                      thresh = 0.01)
-  
-  # test that best_formula and best_model match.
-  varsInFormula <- sapply(result2$best_model$names.fixed, function(x) grepl(x, as.character(result2$best_formula)[3]))
-  expect_true(all(varsInFormula))
-  
-  expect_true(all(c('Base', 'Age') %in% result2$best_model$names.fixed))
+  expect_true(all(c('Base', 'Age') %in% result1$best_model$names.fixed))
   
   
   
@@ -319,13 +277,13 @@ test_that('Forwards and backwards works', {
                       Epil3,
                       in_stack = stack3,
                       invariant = "0 + Intercept",
-                      direction = 'forwads',
+                      direction = 'forwards',
                       include = 3:5,
                       y = 'y',
                       y2 = 'y',
                       powerl = 1,
                       inter = 1,
-                      thresh = 0.01)
+                      thresh = 999)
   
   # test that best_formula and best_model match.
   varsInFormula <- sapply(result2$best_model$names.fixed, function(x) grepl(x, as.character(result2$best_formula)[3]))
