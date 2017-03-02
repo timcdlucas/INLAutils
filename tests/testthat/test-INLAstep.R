@@ -296,4 +296,36 @@ test_that('Forwards and backwards works', {
   
   expect_true(all(c('Base', 'Age') %in% result2$best_model$names.fixed))
   
+  
+  
+  
+  # Try and make a dataset where no variables retained
+  Epil3 <- Epil
+  Epil2$Base <- rnorm(nrow(Epil), sd = 0.01)
+  Epil2$Age <- rnorm(nrow(Epil), sd = 0.01)
+  Epil2$V4 <- rnorm(nrow(Epil), sd = 0.01)
+  
+  
+  stack2 <- inla.stack(data = list(y = Epil2$y),
+                       A = list(1),
+                       effects = list(data.frame(Intercept = 1, Epil2[3:5])))
+  
+  result2 <- INLAstep(fam1 = "poisson", 
+                      Epil2,
+                      in_stack = stack2,
+                      invariant = "0 + Intercept",
+                      direction = 'forwads',
+                      include = 3:5,
+                      y = 'y',
+                      y2 = 'y',
+                      powerl = 1,
+                      inter = 1,
+                      thresh = 0.01)
+  
+  # test that best_formula and best_model match.
+  varsInFormula <- sapply(result2$best_model$names.fixed, function(x) grepl(x, as.character(result2$best_formula)[3]))
+  expect_true(all(varsInFormula))
+  
+  expect_true(all(!c('Base', 'Age', 'V4') %in% result2$best_model$names.fixed))
+  
 })
