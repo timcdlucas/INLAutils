@@ -252,7 +252,7 @@ INLAstep<-function(fam1 = "gaussian",
       formulax <- formula(paste(y, "~", invariant, sep = ""))
     }
   }
-  print(formulax)
+  #print(formulax)
   
   result2 <- INLA::inla(
     formulax,
