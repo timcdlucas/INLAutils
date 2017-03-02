@@ -2,8 +2,9 @@
 #' Perform stepwise variable selection with INLA
 #' 
 #' Run forwards or backwards stepwise variable selection with INLA regression.
-#' Use hold data to test new models.
-#' Chose the level of interactions and power terms
+#' Only fixed effects will be considered  for removal.
+#' Use holdout data or within sample data to test new models.
+#' Choose the level of interactions and power terms to expand the model formula to.
 #' Force part of the model to remain in the model (e.g. the spatial term and intercept).
 #' 
 #'@name INLAstep
@@ -108,67 +109,7 @@ INLAstep<-function(fam1 = "gaussian",
   # Sort and combine all different variable types (should refactor and then test nicely.)
   #   Think its function(expl, powerl, inter) return(expl)
   
-  
-  if (length(expl) > 0) {
-    if (powerl == 2) {
-      expl2 <-
-        paste("I(", expl, "^2)", sep = "")
-      expl3 <- NULL
-      expl4 <- NULL
-      explX <- c(expl, expl2, expl3, expl4)
-    }
-    if (powerl == 3) {
-      expl2 <-
-        paste("I(", expl, "^2)", sep = "")
-      expl3 <-
-        paste("I(", expl, "^3)", sep = "")
-      expl4 <- NULL
-      explX <- c(expl, expl2, expl3, expl4)
-    }
-    if (powerl >= 4) {
-      expl2 <-
-        paste("I(", expl, "^2)", sep = "")
-      expl3 <-
-        paste("I(", expl, "^3)", sep = "")
-      expl4 <-
-        paste("I(", expl, "^4)", sep = "")
-      explX <- c(expl, expl2, expl3, expl4)
-    }
-    if (powerl > 1) {
-      expl <- explX
-    }
-    if (inter >= 2) {
-      lvls <- data.frame(p1 = utils::combn(expl, 2)[1, ],
-                         p2 = utils::combn(expl, 2)[2, ])
-      lvls2 <- do.call(paste, c(lvls[names(lvls)], sep = ":"))
-      expl2 <- c(expl, lvls2)
-    }
-    if (inter >= 3) {
-      lvls <- data.frame(
-        p1 = utils::combn(expl, 3)[1, ],
-        p2 = utils::combn(expl, 3)[2, ],
-        p3 = utils::combn(expl, 3)[3, ]
-      )
-      lvls3 <- do.call(paste, c(lvls[names(lvls)], sep = ":"))
-      expl2 <- c(expl2, lvls3)
-    }
-    if (inter >= 4) {
-      lvls <- data.frame(
-        p1 = utils::combn(expl, 4)[1, ],
-        p2 = utils::combn(expl, 4)[2, ],
-        p3 = utils::combn(expl, 4)[3, ],
-        p4 = utils::combn(expl, 4)[4, ]
-      )
-      lvls4 <- do.call(paste, c(lvls[names(lvls)], sep = ":"))
-      expl2 <- c(expl2, lvls4)
-    }
-    if (inter > 1) {
-      expl <- expl2
-    }
-  }
-  if (length(explF[facts]) > 0) {
-    expl <- c(expl, explF[facts])
-  }
+  expl <- expandExplanatoryVars(expl, powerl, inter)
   
   choice <- NULL
   chosen <- NULL
@@ -319,3 +260,72 @@ INLAstep<-function(fam1 = "gaussian",
   return(output)
   
 }##end of function
+
+
+
+
+expandExplanatoryVars <- function(expl, powerl, inter){
+  
+  if (length(expl) > 0) {
+    if (powerl == 2) {
+      expl2 <-
+        paste("I(", expl, "^2)", sep = "")
+      expl3 <- NULL
+      expl4 <- NULL
+      explX <- c(expl, expl2, expl3, expl4)
+    }
+    if (powerl == 3) {
+      expl2 <-
+        paste("I(", expl, "^2)", sep = "")
+      expl3 <-
+        paste("I(", expl, "^3)", sep = "")
+      expl4 <- NULL
+      explX <- c(expl, expl2, expl3, expl4)
+    }
+    if (powerl >= 4) {
+      expl2 <-
+        paste("I(", expl, "^2)", sep = "")
+      expl3 <-
+        paste("I(", expl, "^3)", sep = "")
+      expl4 <-
+        paste("I(", expl, "^4)", sep = "")
+      explX <- c(expl, expl2, expl3, expl4)
+    }
+    if (powerl > 1) {
+      expl <- explX
+    }
+    if (inter >= 2) {
+      lvls <- data.frame(p1 = utils::combn(expl, 2)[1, ],
+                         p2 = utils::combn(expl, 2)[2, ])
+      lvls2 <- do.call(paste, c(lvls[names(lvls)], sep = ":"))
+      expl2 <- c(expl, lvls2)
+    }
+    if (inter >= 3) {
+      lvls <- data.frame(
+        p1 = utils::combn(expl, 3)[1, ],
+        p2 = utils::combn(expl, 3)[2, ],
+        p3 = utils::combn(expl, 3)[3, ]
+      )
+      lvls3 <- do.call(paste, c(lvls[names(lvls)], sep = ":"))
+      expl2 <- c(expl2, lvls3)
+    }
+    if (inter >= 4) {
+      lvls <- data.frame(
+        p1 = utils::combn(expl, 4)[1, ],
+        p2 = utils::combn(expl, 4)[2, ],
+        p3 = utils::combn(expl, 4)[3, ],
+        p4 = utils::combn(expl, 4)[4, ]
+      )
+      lvls4 <- do.call(paste, c(lvls[names(lvls)], sep = ":"))
+      expl2 <- c(expl2, lvls4)
+    }
+    if (inter > 1) {
+      expl <- expl2
+    }
+  }
+  if (length(explF[facts]) > 0) {
+    expl <- c(expl, explF[facts])
+  }
+  return(expl)
+}
+
