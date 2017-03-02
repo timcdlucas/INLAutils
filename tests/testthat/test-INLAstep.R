@@ -161,27 +161,32 @@ test_that('Spatial and nonspatial works steping through fixed effects and spatia
 test_that('Feature engineering works. expandExplanatoryVars', {
   # Hopefully this will include refectored functions.
   expl <- c('a', 'b')
-  newexpl1 <- expandExplanatoryVars(expl, 1, 1)
+  explF <- explF
+  facts <- c(FALSE, FALSE)
+  newexpl1 <- expandExplanatoryVars(expl, explF, facts, 1, 1)
   
   expect_equal(expl, newexpl1)
   
   
-  newexpl2 <- expandExplanatoryVars(expl, inter = 2, powerl = 1)
+  newexpl2 <- expandExplanatoryVars(expl, explF, facts, inter = 2, powerl = 1)
   
   expect_equal(newexpl2, c('a', 'b', 'a:b'))
   
-  newexpl3 <- expandExplanatoryVars(expl, inter = 1, powerl = 2)
+  newexpl3 <- expandExplanatoryVars(expl, explF, facts, inter = 1, powerl = 2)
   
   expect_equal(newexpl3, c('a', 'b', 'I(a^2)',  'I(b^2)'))
   
   
   expl2 <- letters[1:3]
-  longexpl <- expandExplanatoryVars(expl2, inter = 3, powerl = 1)
+  explF <- explF
+  facts <- c(FALSE, FALSE, FALSE)
+  
+  longexpl <- expandExplanatoryVars(expl2, explF, facts, inter = 3, powerl = 1)
   expect_equal(length(longexpl), 3 + 3 + 1)
   
-  longexpl2 <- expandExplanatoryVars(expl, inter = 1, powerl = 3)
+  longexpl2 <- expandExplanatoryVars(expl, explF, facts, inter = 1, powerl = 3)
   expect_equal(length(longexpl2), 2 * 3)
-  longexpl2 <- expandExplanatoryVars(expl, inter = 1, powerl = 4)
+  longexpl2 <- expandExplanatoryVars(expl, explF, facts, inter = 1, powerl = 4)
   expect_equal(length(longexpl2), 2 * 4)
   
   
@@ -301,18 +306,18 @@ test_that('Forwards and backwards works', {
   
   # Try and make a dataset where no variables retained
   Epil3 <- Epil
-  Epil2$Base <- rnorm(nrow(Epil), sd = 0.01)
-  Epil2$Age <- rnorm(nrow(Epil), sd = 0.01)
-  Epil2$V4 <- rnorm(nrow(Epil), sd = 0.01)
+  Epil3$Base <- rnorm(nrow(Epil), sd = 0.01)
+  Epil3$Age <- rnorm(nrow(Epil), sd = 0.01)
+  Epil3$V4 <- rnorm(nrow(Epil), sd = 0.01)
   
   
-  stack2 <- inla.stack(data = list(y = Epil2$y),
+  stack3 <- inla.stack(data = list(y = Epil3$y),
                        A = list(1),
-                       effects = list(data.frame(Intercept = 1, Epil2[3:5])))
+                       effects = list(data.frame(Intercept = 1, Epil3[3:5])))
   
   result2 <- INLAstep(fam1 = "poisson", 
-                      Epil2,
-                      in_stack = stack2,
+                      Epil3,
+                      in_stack = stack3,
                       invariant = "0 + Intercept",
                       direction = 'forwads',
                       include = 3:5,
