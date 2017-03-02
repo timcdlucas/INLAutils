@@ -109,7 +109,7 @@ INLAstep<-function(fam1 = "gaussian",
   # Sort and combine all different variable types (should refactor and then test nicely.)
   #   Think its function(expl, powerl, inter) return(expl)
   
-  expl <- expandExplanatoryVars(expl, powerl, inter)
+  expl <- expandExplanatoryVars(expl, explF, facts, powerl, inter)
   
   choice <- NULL
   chosen <- NULL
@@ -157,6 +157,8 @@ INLAstep<-function(fam1 = "gaussian",
           formula2 <- formula(paste(y, "~", invariant, "+", chosen))
         }
       }
+      
+      print(deparse(formula2))
 
       result2 <- INLA::inla(
         formula2,
@@ -171,13 +173,13 @@ INLAstep<-function(fam1 = "gaussian",
                                  compute = TRUE),
         control.fixed = list(expand.factor.strategy = "inla")
       )
-      
-      rmse <-
+
+            rmse <-
         sqrt(mean((
           dataf[, y2] - result2$summary.fitted.values$mean[1:nrow(dataf)]
         ) ^ 2, na.rm = TRUE))
       sumcpo <- sum(log(result2$cpo$cpo), na.rm = TRUE)
-      
+      print(sumcpo)
       if (length(ii) > 1) {
         var1 <- paste(expl[ii], collapse = "+")
       } else{
@@ -231,7 +233,7 @@ INLAstep<-function(fam1 = "gaussian",
         if (is.null(chosen)) {
           chosen <- new1
           expl <- expl[!expl == new1]
-        } else{
+        } else {
           chosen <- paste(chosen, " + ", new1, sep = "")
           expl <- expl[!expl == new1]
         }
@@ -246,8 +248,28 @@ INLAstep<-function(fam1 = "gaussian",
     formulax <-
       formula(paste(y, "~", invariant, "+", paste(expl[ii], collapse = "+"), sep = ""))
   } else {
-    formulax <- formula(paste(y, "~", invariant, "+", chosen, sep = ""))
+    if(!is.null(chosen)){
+      formulax <- formula(paste(y, "~", invariant, "+", chosen, sep = ""))
+    } else {
+      formulax <- formula(paste(y, "~", invariant, sep = ""))
+    }
   }
+  
+  
+  result2 <- INLA::inla(
+    formulax,
+    family = fam1,
+    num.threads = num.threads,
+    control.compute = list(cpo = TRUE, 
+                           dic = TRUE, 
+                           waic = TRUE),
+    verbose = FALSE,
+    data = inla.stack.data(in_stack, spde = spde),
+    control.predictor = list(A = inla.stack.A(in_stack), 
+                             compute = TRUE),
+    control.fixed = list(expand.factor.strategy = "inla")
+  )
+  
   
   output <- list(
     best_formula = formulax,
@@ -264,7 +286,7 @@ INLAstep<-function(fam1 = "gaussian",
 
 
 
-expandExplanatoryVars <- function(expl, powerl, inter){
+expandExplanatoryVars <- function(expl, explF, facts, powerl, inter){
   
   if (length(expl) > 0) {
     if (powerl == 2) {
