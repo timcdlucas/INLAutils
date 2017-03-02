@@ -18,7 +18,7 @@
 #' set.seed(2)
 #' library(INLA)
 #' 
-#' # Create inla project
+#' # Create inla projector
 #' n <- 20
 #' loc <- matrix(runif(n*2), n, 2)
 #' mesh <- inla.mesh.create(loc, refine=list(max.edge=0.05))
