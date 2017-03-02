@@ -190,6 +190,13 @@ test_that('Feature engineering works. expandExplanatoryVars', {
   expect_equal(length(longexpl2), 2 * 4)
   
   
+  
+  expl2 <- letters[1:4]
+  explF <- expl2
+  facts <- c(FALSE, FALSE, FALSE, FALSE)
+  
+  longexpl <- expandExplanatoryVars(expl2, explF, facts, inter = 4, powerl = 1)
+  expect_equal(length(longexpl), 1 + 4 + 6 + 4 )
 })
 
 
