@@ -45,6 +45,9 @@
 #'  p[1] <- p[1] + facet_wrap('var', scale = 'free_y')
 #'  p
 #'
+#' # Change colours etc.
+#' p[[1]]$layers[[1]] <- geom_line(colour = 'red', linetype = 2)
+#' 
 
 
 autoplot.inla <- function(object, which = c(1:3, 5), priors = FALSE, CI = FALSE, ...){
