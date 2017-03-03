@@ -100,7 +100,7 @@ test_that('All basic INLAsdm options return at least reasonable', {
       
       expect_true(class(model_nospace_nocv) == 'inlaSDM')
       expect_true(all(sapply(model_nospace_nocv$models, class) == 'inla'))
-      expect_true(length(model_nospace_nocv[[2]][[1]]$summary.random) == 0)
+      expect_true(length(model_nospace_nocv[[2]][[1]]$summary.random) != 0)
       
   
 

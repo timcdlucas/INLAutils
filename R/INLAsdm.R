@@ -306,7 +306,7 @@ inlaSDM<-function(dataframe,
       absencePreds <- linearpredictor[group == cv & dataframe$y == 0, 'mean']
       auc <- dismo::evaluate(presencePreds, absencePreds)@auc
     } else {
-      e5b <- NA
+      auc <- NA
     }
     
     model_res[cv,] <- c(
