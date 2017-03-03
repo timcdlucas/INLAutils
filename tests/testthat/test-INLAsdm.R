@@ -108,12 +108,24 @@ test_that('stepwise SDM works', {
   # Step non spatial
   model_nospace_nocv <- inlaSDM(dataframe, predictors, step = TRUE, spatial = FALSE, cross_validation = FALSE)
   
+  expect_true(class(model_nospace_nocv) == 'inlaSDM')
+  expect_true(class(model_nospace_nocv[[2]][[1]]) == 'inla')
+  expect_true(length(model_nospace_nocv[[2]][[1]]$summary.random) == 0)
+
+  
   # CV
   
   # step spatial
+  model_space_nocv <- inlaSDM(dataframe, predictors, step = TRUE, spatial = TRUE, 
+                              cross_validation = FALSE, meshvals = list(co = 1.2))
   
-  # CV
+
+  expect_true(class(model_space_nocv) == 'inlaSDM')
+  expect_true(class(model_space_nocv[[2]][[1]]) == 'inla')
+  expect_true(class(model_space_nocv$mesh[[1]]) == 'inla.mesh')
   
+  expect_true(length(model_space_nocv[[2]][[1]]$summary.random) != 0)
+
   
 })
 
@@ -194,7 +206,8 @@ test_that('INLAsdm include works', {
   # Check this works in spatial as well. There's some code duplication.
   
   
-  model_nospace_nocv <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, meshvals = list(co = 1.2))
+  model_nospace_nocv <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, 
+                                meshvals = list(co = 1.2))
 
   expect_true(class(model_nospace_nocv) == 'inlaSDM')
   expect_true(class(model_nospace_nocv[[2]][[1]]) == 'inla')
