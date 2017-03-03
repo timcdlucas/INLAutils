@@ -230,7 +230,9 @@ inlaSDM<-function(dataframe,
                            thresh = 2,
                            num.threads = num.threads)
       
-      form1 <- INLAstep_model$best.formula
+      form1 <- deparse(INLAstep_model$best_formula)
+      # Remove the spatial field. This gets added back in later.
+      form1 <- gsub(' + f(spatial.field, model = spde)', '', form1)
       
     } else {
       # Make formula of all covariates but not
@@ -245,27 +247,32 @@ inlaSDM<-function(dataframe,
       form1 <- formula(paste(form1, ' + f(spatial.field, model = spde)'))
       
       # Fit spatial inla model.
-      res5<-inla(form1,
-                 data=inla.stack.data(stk.est, spde=spde),
-                 family="binomial",
-                 control.predictor=list(A=inla.stack.A(stk.est),compute=TRUE),
-                 control.compute=list(cpo=TRUE,waic=TRUE,dic=TRUE),
-                 control.fixed = list(expand.factor.strategy = "inla"),
-                 num.threads=num.threads,
-                 silent=TRUE)
+      res5 <- inla(
+        form1,
+        data = inla.stack.data(stk.est, spde = spde),
+        family = "binomial",
+        control.predictor = list(A = inla.stack.A(stk.est), compute =
+                                   TRUE),
+        control.compute = list(cpo = TRUE, waic = TRUE, dic = TRUE),
+        control.fixed = list(expand.factor.strategy = "inla"),
+        num.threads = num.threads,
+        silent = TRUE
+      )
       
     } else {
       
       # Create formula object
       form1 <- formula(form1)
       # Fit unspatial inla model
-      res5<-inla(form1,
-                 data = inla.stack.data(stk.est),
-                 family = "binomial",
-                 control.compute = list(cpo = TRUE, waic = TRUE, dic = TRUE),
-                 control.fixed = list(expand.factor.strategy = "inla"),
-                 num.threads = num.threads,
-                 silent = TRUE)
+      res5 <- inla(
+        form1,
+        data = inla.stack.data(stk.est),
+        family = "binomial",
+        control.compute = list(cpo = TRUE, waic = TRUE, dic = TRUE),
+        control.fixed = list(expand.factor.strategy = "inla"),
+        num.threads = num.threads,
+        silent = TRUE
+      )
       
     }
     
@@ -273,35 +280,45 @@ inlaSDM<-function(dataframe,
     inla.time <- (res5$cpu.used)
     waic <- (res5$waic$waic)
     dic <- (res5$dic$dic)
-    cpo.fit <- (sum(log(res5$cpo$cpo),na.rm=T))
+    cpo.fit <- (sum(log(res5$cpo$cpo), na.rm = T))
     
     ##put it all together ## replace with function!!!!
-    res1 <- data.frame(row.names=rownames(res5$summary.fixed),res5$summary.fixed)
-    res1$sig <- "non-sig"##is a term significant? i.e. does it include 0 in distribution
-    res1$sig[(res1$X0.025quant<0 & res1$X0.975quant<0)|(res1$X0.025quant>0 & res1$X0.975quant>0)]<-"sig"
-
+    res1 <-
+      data.frame(row.names = rownames(res5$summary.fixed), res5$summary.fixed)
+    res1$sig <-
+      "non-sig"##is a term significant? i.e. does it include 0 in distribution
+    res1$sig[(res1$X0.025quant < 0 &
+                res1$X0.975quant < 0) |
+               (res1$X0.025quant > 0 & res1$X0.975quant > 0)] <- "sig"
     
-    if(cross_validation == TRUE){
-      c3 <- as.data.frame(res5$summary.fitted.values[1:nrow(dataf1), c("mean", "sd") ])
+    
+    if (cross_validation == TRUE) {
+      c3 <-
+        as.data.frame(res5$summary.fitted.values[1:nrow(dataf1), c("mean", "sd")])
       
       
       
       
       
       c3$p_pred <- c3$mean #round(c3$mean,0)
-      c3$p_real <- rbind(pres_train, backg_train, pres_test, backg_test, datat, datatb)$Presence
+      c3$p_real <-
+        rbind(pres_train, backg_train, pres_test, backg_test, datat, datatb)$Presence
       ###internal testing points
-      c5 <- c3[(nrow(pres_train) + nrow(backg_train)) + 1:(nrow(pres_train) + nrow(backg_train) + nrow(pres_test) + nrow(backg_test)), ]
+      c5 <-
+        c3[(nrow(pres_train) + nrow(backg_train)) + 1:(nrow(pres_train) + nrow(backg_train) + nrow(pres_test) + nrow(backg_test)),]
       ##evaluate INLA output ## full predict
-      e5b <- dismo::evaluate(p = c5[c5$p_real == 1, "p_pred"], a = c5[c5$p_real == 0, "p_pred"])
+      e5b <-
+        dismo::evaluate(p = c5[c5$p_real == 1, "p_pred"], a = c5[c5$p_real == 0, "p_pred"])
     } else {
       e5b <- NA
     }
     
-    model_res[cv, ] <- c(replicate=cv,
-                         AUC = e5b,
-                         WAIC = res5$waic$waic,
-                         comp_time=inla.time[['Total']])
+    model_res[cv,] <- c(
+      replicate = cv,
+      AUC = e5b,
+      WAIC = res5$waic$waic,
+      comp_time = inla.time[['Total']]
+    )
                         
     models[[cv]] <- res5
     if(spatial){
