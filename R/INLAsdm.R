@@ -131,6 +131,7 @@ inlaSDM<-function(dataframe,
   names(model_res) <- c('replicate', 'AUC', 'WAIC', 'comp_time')
   # Empty list for meshes
   meshes <- list()
+  formulas <- list()
   
     
   for(cv in cv_folds){
@@ -324,9 +325,11 @@ inlaSDM<-function(dataframe,
     if(spatial){
       meshes[[cv]] <- mesh5
     }
+    
+    formulas[[cv]] <- form1
   }## end cv
   
-  output <- list(result_summary = model_res, models = models, mesh = meshes)
+  output <- list(result_summary = model_res, models = models, mesh = meshes, formula = formulas)
   class(output) <- 'inlaSDM'
 
   return(output)
