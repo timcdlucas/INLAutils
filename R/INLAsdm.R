@@ -192,28 +192,37 @@ inlaSDM<-function(dataframe,
       A.val <- inla.spde.make.A(mesh5, loc = sp::coordinates(dataf1))
       
       
-    }else{
-      
+    } else {
       # Assumes invariant has `Intercept`
       stk.est <- inla.stack(data = list(y = dataf1$y),
                             A = list(1), 
                             effects = list(data.frame(Intercept = 1, dataf1@data[, names(dataf1) != y, drop = FALSE])),
                             tag = 'est')
       
-
+      spde = NULL # Set this NULL so INLAstep know what to do.
+      
     }
     
     
     # Create the formula.
     if(step == TRUE){
+      
+      if(spatial){
+        invariantStep <- paste(invariant, ' + f(spatial.field, model = spde)')
+      } else {
+        invariantStep <- invariant
+      }
+      
+      includeStep <- which(names(dataf1) != y)
+      
       # Data is a raster (or at least some s4 thing).
       INLAstep_model <- INLAstep(fam1 = "binomial", #?
-                           dataf1,
+                           dataf1@data,
                            in_stack = stk.est,
                            spde = spde,
-                           invariant = invariant,
+                           invariant = invariantStep,
                            direction = 'backwards',
-                           include = 1:ncol(dataf1),
+                           include = includeStep,
                            y = y,
                            y2 = y,
                            powerl = 1,
@@ -221,7 +230,7 @@ inlaSDM<-function(dataframe,
                            thresh = 2,
                            num.threads = num.threads)
       
-      form1 <- paste0(as.character(INLAstep_model$best.formula), collapse = FALSE)
+      form1 <- INLAstep_model$best.formula
       
     } else {
       # Make formula of all covariates but not

@@ -10,19 +10,20 @@ PA <- rep(c(0, 1), each = 50)
 x <- data.frame(x1 = rnorm(100), # no relationship
                 x2 = c(rnorm(70), rnorm(30, 5))) # positive relationship
 
-# Have a look
-ggplot(cbind(x, PA), aes(x1, PA)) + 
-  geom_point() +
-  geom_smooth(method = 'glm', method.args = list(family = 'binomial'))
-
-
-ggplot(cbind(x, PA), aes(x2, PA)) + 
-  geom_point() +
-  geom_smooth(method = 'glm', method.args = list(family = 'binomial'))
-
-
-ggplot(cbind(coords, PA), aes(long, lat, colour = PA)) + geom_point()
-
+if(FALSE){
+  # Have a look
+  ggplot(cbind(x, PA), aes(x1, PA)) + 
+    geom_point() +
+    geom_smooth(method = 'glm', method.args = list(family = 'binomial'))
+  
+  
+  ggplot(cbind(x, PA), aes(x2, PA)) + 
+    geom_point() +
+    geom_smooth(method = 'glm', method.args = list(family = 'binomial'))
+  
+  
+  ggplot(cbind(coords, PA), aes(long, lat, colour = PA)) + geom_point()
+}
 
 # Set raster resolution
 res <- 50
@@ -54,6 +55,8 @@ predictors <- raster::stack(x1, x2)
 
 # Pull together coordinates and PA data into SpatialPointsDataFrame
 dataframe = sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = PA))
+
+
 
 
 test_that('All basic INLAsdm options return at least reasonable', {
@@ -94,18 +97,26 @@ test_that('All basic INLAsdm options return at least reasonable', {
   
     # CV
   
-  # Step non spatial
-  
-    # CV
-  
-  # step spatial
-    
-    # CV
-
   
 
   
 })
+
+
+test_that('stepwise SDM works', {
+  
+  # Step non spatial
+  model_nospace_nocv <- inlaSDM(dataframe, predictors, step = TRUE, spatial = FALSE, cross_validation = FALSE)
+  
+  # CV
+  
+  # step spatial
+  
+  # CV
+  
+  
+})
+
 
 
 test_that('INLAsdm invariant works', { 
