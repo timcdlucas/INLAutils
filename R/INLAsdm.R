@@ -133,13 +133,16 @@ inlaSDM<-function(dataframe,
   meshes <- list()
   formulas <- list()
   
+  
+  group <- dismo::kfold(dataframe, cv_folds, by = dataframe$y)
+  
+  
+  
+  
     
-  for(cv in cv_folds){
-      
-    
+  for(cv in 1:cv_folds){
     
     if(cross_validation == TRUE){
-      group <- dismo::kfold(dataframe, cv_folds, by = dataframe$y)
       train <- dataframe[group != cv, ]
       test  <- dataframe[group == cv, ]
       test@data[, y] <- NA
@@ -148,8 +151,7 @@ inlaSDM<-function(dataframe,
       dataf1 <- dataframe
     }
     
-      
-      
+    
     
     
     ###add training data and testing data (NAs) together
@@ -295,10 +297,7 @@ inlaSDM<-function(dataframe,
     
     
     if (cross_validation == TRUE) {
-      
-      
-      
-      
+
       linearpredictor <-
         as.data.frame(res5$summary.fitted.values[1:nrow(dataf1), c("mean", "sd")])
       
