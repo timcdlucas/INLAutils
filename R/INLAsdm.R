@@ -181,7 +181,8 @@ inlaSDM<-function(dataframe,
       A <- inla.spde.make.A(mesh5, loc = sp::coordinates(dataf1))
       
       ###make index for spatial field
-      s.index<-inla.spde.make.index(name="spatial.field",n.spde=spde$n.spde)
+      s.index <-
+        inla.spde.make.index(name = "spatial.field", n.spde = spde$n.spde)
       
 
       # Assumes invariant has `Intercept`
