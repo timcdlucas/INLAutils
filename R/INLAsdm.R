@@ -9,7 +9,7 @@
 
 #' Fit INLA species distribution models.
 #' 
-#'@param dataframe A \code{\link[sp]{SpatialPointsDataFrame}}
+#'@param dataframe A \code{\link[sp]{SpatialPointsDataFrame}} containing the presence absence values
 #'@param predictors Raster of predictors (covariates)
 #'@param include Vector of integers describing which covariates to include in the model
 #'@param step Logical indicating whether to run stepwise elimination of variables.
@@ -271,6 +271,7 @@ inlaSDM<-function(dataframe,
         family = "binomial",
         control.compute = list(cpo = TRUE, waic = TRUE, dic = TRUE),
         control.fixed = list(expand.factor.strategy = "inla"),
+        control.predictor = list(compute = TRUE, link = 1),
         num.threads = num.threads,
         silent = TRUE
       )
@@ -294,29 +295,23 @@ inlaSDM<-function(dataframe,
     
     
     if (cross_validation == TRUE) {
-      c3 <-
+      
+      
+      
+      
+      linearpredictor <-
         as.data.frame(res5$summary.fitted.values[1:nrow(dataf1), c("mean", "sd")])
       
-      
-      
-      
-      
-      c3$p_pred <- c3$mean #round(c3$mean,0)
-      c3$p_real <-
-        rbind(pres_train, backg_train, pres_test, backg_test, datat, datatb)$Presence
-      ###internal testing points
-      c5 <-
-        c3[(nrow(pres_train) + nrow(backg_train)) + 1:(nrow(pres_train) + nrow(backg_train) + nrow(pres_test) + nrow(backg_test)),]
-      ##evaluate INLA output ## full predict
-      e5b <-
-        dismo::evaluate(p = c5[c5$p_real == 1, "p_pred"], a = c5[c5$p_real == 0, "p_pred"])
+      presencePreds <- linearpredictor[group == cv & dataframe$y == 1, 'mean']
+      absencePreds <- linearpredictor[group == cv & dataframe$y == 0, 'mean']
+      auc <- dismo::evaluate(presencePreds, absencePreds)@auc
     } else {
       e5b <- NA
     }
     
     model_res[cv,] <- c(
       replicate = cv,
-      AUC = e5b,
+      AUC = auc,
       WAIC = res5$waic$waic,
       comp_time = inla.time[['Total']]
     )
