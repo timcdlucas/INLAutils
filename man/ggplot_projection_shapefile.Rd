@@ -50,4 +50,3 @@ extent(raster) <- c(range(projector$x), range(projector$y))
 ggplot_projection_shapefile(raster, spatialpolygons = SPls)
 
 }
-

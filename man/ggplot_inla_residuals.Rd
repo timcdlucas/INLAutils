@@ -43,4 +43,3 @@ Plot residuals of observed vs predicted values for INLA model using ggplot2
                   control.predictor = list(compute = TRUE, link = 1))
  ggplot_inla_residuals(mod.seeds, na.omit(Seeds$r / Seeds$n))
 }
-

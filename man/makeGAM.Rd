@@ -48,4 +48,3 @@ as random effects are yet to be added).
  ggplot_inla_residuals(result, observed, binwidth = 0.2)
  autoplot(result)
 }
-

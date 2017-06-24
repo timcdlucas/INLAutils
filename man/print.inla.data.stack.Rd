@@ -23,4 +23,3 @@
 \description{
 These are print methods for a number of inla objects that do not have print methods in the INLA package
 }
-

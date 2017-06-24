@@ -57,4 +57,3 @@ library(ggalt)
 p + ggalt::coord_proj("+proj=wintri")
 }
 }
-

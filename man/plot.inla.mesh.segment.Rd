@@ -16,4 +16,3 @@
 \description{
 These are plot methods for a number of inla objects that do not have plot methods in the INLA package
 }
-

@@ -14,7 +14,6 @@
 #'@importFrom utils globalVariables 
 #'@importFrom stats complete.cases
 #'@importFrom assertthat assert_that
-#'@import INLA
 NULL
 
 

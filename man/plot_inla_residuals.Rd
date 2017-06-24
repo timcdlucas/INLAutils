@@ -39,4 +39,3 @@ Plot residuals of observed vs predicted values for INLA model
                   control.predictor = list(compute = TRUE, link = 1))
  plot_inla_residuals(mod.seeds, na.omit(Seeds$r / Seeds$n))
 }
-

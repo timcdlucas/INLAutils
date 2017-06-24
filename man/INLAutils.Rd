@@ -14,4 +14,3 @@ as.person(c(
    "Dave Redding <dwredding@gmail.com> [aut]"
  ))
 }
-

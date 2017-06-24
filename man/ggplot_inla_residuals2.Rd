@@ -49,4 +49,3 @@ Plot residuals against covariate values for INLA model using ggplot2
                   control.predictor = list(compute = TRUE, link = 1))
  ggplot_inla_residuals2(mod.seeds, na.omit(Seeds$r / Seeds$n), method = 'lm')
 }
-

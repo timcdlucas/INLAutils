@@ -66,4 +66,3 @@ Force part of the model to remain in the model (e.g. the spatial term and interc
 
 autoplot(result$best_model, which = c(1, 5), CI = TRUE)
 }
-

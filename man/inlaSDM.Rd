@@ -11,7 +11,7 @@ inlaSDM(dataframe, predictors, include = 1:raster::nlayers(predictors),
   co = 0, minOS = -0.1, maxOS = -0.3))
 }
 \arguments{
-\item{dataframe}{A \code{\link[sp]{SpatialPointsDataFrame}}}
+\item{dataframe}{A \code{\link[sp]{SpatialPointsDataFrame}} containing the presence absence values}
 
 \item{predictors}{Raster of predictors (covariates)}
 
@@ -100,4 +100,3 @@ autoplot(model$mesh[[1]])
 autoplot(model$models[[1]])
 
 }
-

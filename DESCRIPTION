@@ -12,25 +12,24 @@ Description: A number of utility functions for INLA. Additional diagnostic plots
   and others.
 License: MIT + file LICENSE
 Imports:
-    INLA,
     ggfortify,
     assertthat,
     raster,
     methods,
     RColorBrewer,
     sp,
-    reshape2,
-    foreach,
-    doSNOW,
-    snow,
-    dismo
+    reshape2
 Depends:
     ggplot2
 Suggests:
     knitr,
-    testthat
+    testthat,
+    INLA,
+    doSNOW,
+    snow,
+    dismo
 VignetteBuilder: knitr
 LazyData: true
 URL: https://github.com/timcdlucas/INLAutils
 BugReports: https://github.com/timcdlucas/INLAutils/issues
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
