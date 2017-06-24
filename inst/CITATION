@@ -1,0 +1,13 @@
+citHeader("To cite INLAutils in publications, please use:")
+
+citEntry(entry = "Article",
+         author = as.person(c(
+           "Tim C D Lucas <timcdlucas@gmail.com> [aut, cre]", 
+           "Dave W Redding <dwredding@gmail.com> [aut]"
+         )),
+         title = "Evaluating Bayesian spatial methods for modelling species distributions with clumped and restricted occurrence data",
+         journal = "bioRxiv",
+         year = "2017",
+         url = "http://biorxiv.org/content/early/2017/02/06/105742",
+         textVersion = "Redding, D. W., Lucas, T., Blackburn, T., & Jones, K. E. (2017). Evaluating Bayesian spatial methods for modelling species distributions with clumped and restricted occurrence data. bioRxiv, 105742."
+)
