@@ -169,36 +169,36 @@ inlaSDM<-function(dataframe,
     # Organise the data
     if(spatial == TRUE){
       ##make mesh
-      mesh5 <- inla.mesh.2d(loc = sp::coordinates(dataf1), 
+      mesh5 <- INLA::inla.mesh.2d(loc = sp::coordinates(dataf1), 
                             max.edge = c(meshvals_complete$minME, meshvals_complete$maxME), 
                             cutoff = meshvals_complete$co, 
                             offset = c(meshvals_complete$minOS, meshvals_complete$maxOS))
       
       ####The SPDE model is defined 
-      spde <- inla.spde2.matern(mesh5, alpha=2)
+      spde <- INLA::inla.spde2.matern(mesh5, alpha=2)
       
       ###projector matrix for known
-      A <- inla.spde.make.A(mesh5, loc = sp::coordinates(dataf1))
+      A <- INLA::inla.spde.make.A(mesh5, loc = sp::coordinates(dataf1))
       
       ###make index for spatial field
       s.index <-
-        inla.spde.make.index(name = "spatial.field", n.spde = spde$n.spde)
+        INLA::inla.spde.make.index(name = "spatial.field", n.spde = spde$n.spde)
       
 
       # Assumes invariant has `Intercept`
-      stk.est <- inla.stack(data = list(y = dataf1$y),
+      stk.est <- INLA::inla.stack(data = list(y = dataf1$y),
                             A = list(A, 1), 
                             effects = list(c(s.index,list(Intercept = 1)),
                                          list(dataf1@data[, names(dataf1) != y, drop = FALSE])),
                             tag = 'est')
       
       ###projector matrix for known
-      A.val <- inla.spde.make.A(mesh5, loc = sp::coordinates(dataf1))
+      A.val <- INLA::inla.spde.make.A(mesh5, loc = sp::coordinates(dataf1))
       
       
     } else {
       # Assumes invariant has `Intercept`
-      stk.est <- inla.stack(data = list(y = dataf1$y),
+      stk.est <- INLA::inla.stack(data = list(y = dataf1$y),
                             A = list(1), 
                             effects = list(data.frame(Intercept = 1, dataf1@data[, names(dataf1) != y, drop = FALSE])),
                             tag = 'est')
@@ -251,11 +251,11 @@ inlaSDM<-function(dataframe,
       form1 <- formula(paste(form1, ' + f(spatial.field, model = spde)'))
       
       # Fit spatial inla model.
-      res5 <- inla(
+      res5 <- INLA::inla(
         form1,
-        data = inla.stack.data(stk.est, spde = spde),
+        data = INLA::inla.stack.data(stk.est, spde = spde),
         family = "binomial",
-        control.predictor = list(A = inla.stack.A(stk.est), compute =
+        control.predictor = list(A = INLA::inla.stack.A(stk.est), compute =
                                    TRUE),
         control.compute = list(cpo = TRUE, waic = TRUE, dic = TRUE),
         control.fixed = list(expand.factor.strategy = "inla"),
@@ -268,9 +268,9 @@ inlaSDM<-function(dataframe,
       # Create formula object
       form1 <- formula(form1)
       # Fit unspatial inla model
-      res5 <- inla(
+      res5 <- INLA::inla(
         form1,
-        data = inla.stack.data(stk.est),
+        data = INLA::inla.stack.data(stk.est),
         family = "binomial",
         control.compute = list(cpo = TRUE, waic = TRUE, dic = TRUE),
         control.fixed = list(expand.factor.strategy = "inla"),

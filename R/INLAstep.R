@@ -165,8 +165,8 @@ INLAstep<-function(fam1 = "gaussian",
                                dic = TRUE, 
                                waic = TRUE),
         verbose = FALSE,
-        data = inla.stack.data(in_stack, spde = spde),
-        control.predictor = list(A = inla.stack.A(in_stack), 
+        data = INLA::inla.stack.data(in_stack, spde = spde),
+        control.predictor = list(A = INLA::inla.stack.A(in_stack), 
                                  compute = TRUE),
         control.fixed = list(expand.factor.strategy = "inla")
       )
@@ -262,8 +262,8 @@ INLAstep<-function(fam1 = "gaussian",
                            dic = TRUE, 
                            waic = TRUE),
     verbose = FALSE,
-    data = inla.stack.data(in_stack, spde = spde),
-    control.predictor = list(A = inla.stack.A(in_stack), 
+    data = INLA::inla.stack.data(in_stack, spde = spde),
+    control.predictor = list(A = INLA::inla.stack.A(in_stack), 
                              compute = TRUE),
     control.fixed = list(expand.factor.strategy = "inla")
   )

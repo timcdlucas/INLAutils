@@ -46,7 +46,7 @@ plot_inla_residuals <- function(inla.model, observed){
   predicted.p.value <- c()
   n <- length(observed)
   for(i in (1:n)){
-    predicted.p.value[i] <- inla.pmarginal(q = observed[i], marginal = inla.model$marginals.fitted.values[[i]])
+    predicted.p.value[i] <- INLA::inla.pmarginal(q = observed[i], marginal = inla.model$marginals.fitted.values[[i]])
   }
 
   # Set up plot area
@@ -112,7 +112,7 @@ ggplot_inla_residuals <- function(inla.model, observed, CI = FALSE, binwidth = N
   predicted.p.value <- c()
   n <- length(observed)
   for(i in (1:n)){
-    predicted.p.value[i] <- inla.pmarginal(q = observed[i], marginal = inla.model$marginals.fitted.values[[i]])
+    predicted.p.value[i] <- INLA::inla.pmarginal(q = observed[i], marginal = inla.model$marginals.fitted.values[[i]])
   }
 
   df <- data.frame(predicted = inla.model$summary.fitted.values$mean[1:length(observed)],
