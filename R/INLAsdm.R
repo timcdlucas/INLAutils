@@ -79,8 +79,12 @@
 #'# Pull together coordinates and PA data into SpatialPointsDataFrame
 #'dataframe = sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = PA))
 #'
-#'
-#'model <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE)
+#'# Run the model.
+#' model <- inlaSDM(dataframe, 
+#'                  predictors, 
+#'                  spatial = TRUE, 
+#'                  cross_validation = FALSE,
+#'                  meshvals = list(co = 0.3, minME = 1))
 #'autoplot(model$mesh[[1]])
 #'autoplot(model$models[[1]])
 #'
