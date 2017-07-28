@@ -4,8 +4,8 @@ Title: Utility Functions for INLA
 Version: 0.0.2
 Date: 28/07/17
 Authors@R: c(
-    as.person("Tim Lucas <timcdlucas@gmail.com> [aut, cre]"),
-    as.person("Dave Redding <dwredding@gmail.com> [aut]")
+    person("Tim", "Lucas", "CD", "timcdlucas@gmail.com", c("aut", "cre")),
+    person("Dave", "Redding", , "dwredding@gmail.com", "aut")
   )
 Description: A number of utility functions for INLA. Additional diagnostic plots
   and support for ggplot2. Step wise regression with INLA. Species distribution models 
