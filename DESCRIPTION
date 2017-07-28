@@ -1,12 +1,12 @@
 Package: INLAutils
 Type: Package
-Title: Utility Functions for INLA: Additional Plots and Support for ggplot2
+Title: Utility Functions for INLA
 Version: 0.0.2
-Date: 11/06/15
-Authors@R: person(c(
-    "Tim Lucas <timcdlucas@gmail.com> [aut, cre]", 
-    "Dave Redding <dwredding@gmail.com> [aut]"
-  ))
+Date: 28/07/17
+Authors@R: c(
+    as.person("Tim Lucas <timcdlucas@gmail.com> [aut, cre]"),
+    as.person("Dave Redding <dwredding@gmail.com> [aut]")
+  )
 Description: A number of utility functions for INLA. Additional diagnostic plots
   and support for ggplot2. Step wise regression with INLA. Species distribution models 
   and others.
@@ -25,10 +25,7 @@ Suggests:
     knitr,
     testthat,
     INLA,
-    doSNOW,
-    snow,
     dismo
-VignetteBuilder: knitr
 LazyData: true
 URL: https://github.com/timcdlucas/INLAutils
 BugReports: https://github.com/timcdlucas/INLAutils/issues
