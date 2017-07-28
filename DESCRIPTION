@@ -1,7 +1,7 @@
 Package: INLAutils
 Type: Package
 Title: Utility Functions for INLA
-Version: 0.0.2
+Version: 0.0.3
 Date: 28/07/17
 Authors@R: c(
     person("Tim", "Lucas", "CD", "timcdlucas@gmail.com", c("aut", "cre")),
