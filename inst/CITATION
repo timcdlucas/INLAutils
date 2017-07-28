@@ -2,8 +2,10 @@ citHeader("To cite INLAutils in publications, please use:")
 
 citEntry(entry = "Article",
          author = as.person(c(
+           "Dave W Redding <dwredding@gmail.com> [aut]",
            "Tim C D Lucas <timcdlucas@gmail.com> [aut, cre]", 
-           "Dave W Redding <dwredding@gmail.com> [aut]"
+           "Tim Blackburn",
+           "Kate E Jones"
          )),
          title = "Evaluating Bayesian spatial methods for modelling species distributions with clumped and restricted occurrence data",
          journal = "bioRxiv",
