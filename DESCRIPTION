@@ -3,7 +3,7 @@ Type: Package
 Title: Utility Functions for INLA: Additional Plots and Support for ggplot2
 Version: 0.0.2
 Date: 11/06/15
-Authors@R: as.person(c(
+Authors@R: person(c(
     "Tim Lucas <timcdlucas@gmail.com> [aut, cre]", 
     "Dave Redding <dwredding@gmail.com> [aut]"
   ))
