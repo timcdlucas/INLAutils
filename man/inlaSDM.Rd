@@ -6,9 +6,10 @@
 \usage{
 inlaSDM(dataframe, predictors, include = 1:raster::nlayers(predictors),
   step = FALSE, invariant = "0 + Intercept", cross_validation = FALSE,
-  cv_folds = 5, spatial = TRUE, num.threads = 1, meshvals = list(minME =
-  max(raster::res(predictors)) * 10, maxME = max(raster::res(predictors)) * 100,
-  co = 0, minOS = -0.1, maxOS = -0.3))
+  cv_folds = 5, spatial = TRUE, num.threads = 1,
+  meshvals = list(inner.max.edge = max(raster::res(predictors)) * 10,
+  outer.max.edge = max(raster::res(predictors)) * 100, cutoff = 0, inner.offset
+  = -0.1, outer.offset = -0.3))
 }
 \arguments{
 \item{dataframe}{A \code{\link[sp]{SpatialPointsDataFrame}} containing the presence absence values}
@@ -36,6 +37,21 @@ Fit INLA species distribution models.
 }
 \details{
 For now invariant MUST include 'Intercept'.
+
+meshvals takes a list of up to five named values:
+ \describe{
+ \item{inner.max.edge}{Maximum triangle length for inner domain.}
+ \item{outer.max.edge}{Maximum triangle length for outer domain.}
+ \item{cutoff}{Minumum allowed distance between mesh nodes.}
+ \item{inner.offset}{Extension distance beyond points.}
+ \item{outer.offset}{Additional extension distance with larger triangles (with max length outer.max.edge)}
+ }
+ 
+ Note that negative values for the offsets are in absolute units by default. Negative values give the 
+   extension distance relative to the diameter of the coordinates range (i.e. -0.1 will create an extension 10\% the 
+   that 10\% the diameter of the points).
+ 
+These values are explained in more detail in \code{\link[INLA]{inla.mesh.2d}}.
 }
 \examples{
 
@@ -94,8 +110,12 @@ predictors <- raster::stack(x1, x2)
 # Pull together coordinates and PA data into SpatialPointsDataFrame
 dataframe = sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = PA))
 
-
-model <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE)
+# Run the model.
+model <- inlaSDM(dataframe, 
+                 predictors, 
+                 spatial = TRUE, 
+                 cross_validation = FALSE,
+                 meshvals = list(cutoff = 0.3, inner.max.edge = 1))
 autoplot(model$mesh[[1]])
 autoplot(model$models[[1]])
 

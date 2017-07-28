@@ -22,7 +22,21 @@
 #'
 #'@details For now invariant MUST include 'Intercept'.
 #'
-#'meshvals takes a list 
+#'meshvals takes a list of up to five named values:
+#'  \describe{
+#'  \item{inner.max.edge}{Maximum triangle length for inner domain.}
+#'  \item{outer.max.edge}{Maximum triangle length for outer domain.}
+#'  \item{cutoff}{Minumum allowed distance between mesh nodes.}
+#'  \item{inner.offset}{Extension distance beyond points.}
+#'  \item{outer.offset}{Additional extension distance with larger triangles (with max length outer.max.edge)}
+#'  }
+#'  
+#'  Note that negative values for the offsets are in absolute units by default. Negative values give the 
+#'    extension distance relative to the diameter of the coordinates range (i.e. -0.1 will create an extension 10\% the 
+#'    that 10\% the diameter of the points).
+#'  
+#'These values are explained in more detail in \code{\link[INLA]{inla.mesh.2d}}.
+#'
 #'
 #'@export
 #'@examples
