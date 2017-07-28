@@ -82,7 +82,7 @@ test_that('All basic INLAsdm options return at least reasonable', {
   
   # spatial
   
-  model_space_nocv <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, meshvals = list(co = 1.2))
+  model_space_nocv <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, meshvals = list(cutoff = 1.2))
 
   expect_true(class(model_space_nocv) == 'inlaSDM')
   expect_true(class(model_space_nocv[[2]][[1]]) == 'inla')
@@ -96,7 +96,7 @@ test_that('All basic INLAsdm options return at least reasonable', {
     # CV
       
       model_nospace_nocv <- inlaSDM(dataframe, predictors, spatial = TRUE, 
-                                    cross_validation = TRUE, cv_folds = 2, meshvals = list(co = 1.2))
+                                    cross_validation = TRUE, cv_folds = 2, meshvals = list(cutoff = 1.2))
       
       expect_true(class(model_nospace_nocv) == 'inlaSDM')
       expect_true(all(sapply(model_nospace_nocv$models, class) == 'inla'))
@@ -122,7 +122,7 @@ test_that('stepwise SDM works', {
   
   # step spatial
   model_space_nocv <- inlaSDM(dataframe, predictors, step = TRUE, spatial = TRUE, 
-                              cross_validation = FALSE, meshvals = list(co = 1.2))
+                              cross_validation = FALSE, meshvals = list(cutoff = 1.2))
   
 
   expect_true(class(model_space_nocv) == 'inlaSDM')
@@ -144,8 +144,8 @@ test_that('INLAsdm invariant works', {
 
 test_that('meshvals cutoff works', { 
   # Complete example
-  model1 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, meshvals = list(co = 1.2))
-  model2 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, meshvals = list(co = 1.5))
+  model1 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, meshvals = list(cutoff = 1.2))
+  model2 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, meshvals = list(cutoff = 1.5))
   
   expect_true(model1$mesh[[1]]$n > model2$mesh[[1]]$n)
   
@@ -159,9 +159,9 @@ test_that('meshvals cutoff works', {
 test_that('meshvals max edge works', { 
   # Complete example
   model1 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, 
-                    meshvals = list(co = 1.2))
+                    meshvals = list(cutoff = 1.2))
   model2 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, 
-                    meshvals = list(co = 1.2, maxME = max(raster::res(predictors)) * 50))
+                    meshvals = list(cutoff = 1.2, inner.max.edge = max(raster::res(predictors)) * 50))
   
   expect_true(model1$mesh[[1]]$n < model2$mesh[[1]]$n)
   
@@ -174,11 +174,11 @@ test_that('meshvals max edge works', {
 test_that('meshvals full list works', { 
   # Complete example
   model1 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, 
-                    meshvals = list(minME = max(raster::res(predictors)) * 12, 
-                                    maxME = max(raster::res(predictors)) * 60, 
-                                    co = 1.2, 
-                                    minOS = -0.15,
-                                    maxOS = -0.25))
+                    meshvals = list(inner.max.edge = max(raster::res(predictors)) * 12, 
+                                    outer.max.edge = max(raster::res(predictors)) * 60, 
+                                    cutoff = 1.2, 
+                                    inner.offset = -0.15,
+                                    outer.offset = -0.25))
 
   expect_true(class(model1$mesh[[1]]) == 'inla.mesh')
   
@@ -209,7 +209,7 @@ test_that('INLAsdm include works', {
   
   
   model_nospace_nocv <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, 
-                                meshvals = list(co = 1.2))
+                                meshvals = list(cutoff = 1.2))
 
   expect_true(class(model_nospace_nocv) == 'inlaSDM')
   expect_true(class(model_nospace_nocv[[2]][[1]]) == 'inla')

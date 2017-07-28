@@ -21,6 +21,9 @@
 #'@param num.threads How many threads should be used for parallel computation.
 #'
 #'@details For now invariant MUST include 'Intercept'.
+#'
+#'meshvals takes a list 
+#'
 #'@export
 #'@examples
 #'
@@ -84,7 +87,7 @@
 #'                  predictors, 
 #'                  spatial = TRUE, 
 #'                  cross_validation = FALSE,
-#'                  meshvals = list(co = 0.3, minME = 1))
+#'                  meshvals = list(cutoff = 0.3, inner.max.edge = 1))
 #'autoplot(model$mesh[[1]])
 #'autoplot(model$models[[1]])
 #'
@@ -98,11 +101,11 @@ inlaSDM<-function(dataframe,
                   cv_folds = 5,
                   spatial = TRUE,
                   num.threads = 1,
-                  meshvals = list(minME = max(raster::res(predictors)) * 10, 
-                                  maxME = max(raster::res(predictors)) * 100, 
-                                  co = 0, 
-                                  minOS = -0.1,
-                                  maxOS = -0.3)
+                  meshvals = list(inner.max.edge = max(raster::res(predictors)) * 10, 
+                                  out.max.edge = max(raster::res(predictors)) * 100, 
+                                  cutoff = 0, 
+                                  inner.offset = -0.1,
+                                  outer.offset = -0.3)
                   ){
   
   
@@ -113,11 +116,11 @@ inlaSDM<-function(dataframe,
   
   
   # Make meshvals be complete
-  meshvals_complete = list(minME = max(raster::res(predictors)) * 10, 
-                           maxME = max(raster::res(predictors)) * 100, 
-                           co = 0, 
-                           minOS = -0.1,
-                           maxOS = -0.3)
+  meshvals_complete = list(inner.max.edge = max(raster::res(predictors)) * 10, 
+                           outer.max.edge = max(raster::res(predictors)) * 100, 
+                           cutoff = 0, 
+                           inner.offset = -0.1,
+                           outer.offset = -0.3)
   # Check that all values in meshvals arg are correct
   assert_that(all(names(meshvals) %in% names(meshvals_complete)))
   
@@ -174,9 +177,9 @@ inlaSDM<-function(dataframe,
     if(spatial == TRUE){
       ##make mesh
       mesh5 <- INLA::inla.mesh.2d(loc = sp::coordinates(dataf1), 
-                            max.edge = c(meshvals_complete$minME, meshvals_complete$maxME), 
-                            cutoff = meshvals_complete$co, 
-                            offset = c(meshvals_complete$minOS, meshvals_complete$maxOS))
+                            max.edge = c(meshvals_complete$inner.max.edge, meshvals_complete$outer.max.edge), 
+                            cutoff = meshvals_complete$cutoff, 
+                            offset = c(meshvals_complete$inner.offset, meshvals_complete$outer.offset))
       
       ####The SPDE model is defined 
       spde <- INLA::inla.spde2.matern(mesh5, alpha=2)
