@@ -1,11 +1,12 @@
-#First submission
+# submission
 
 ## Test environments
 * local ubuntu 16.04 R 3.4.0 (2017-04-21)
-* travis CI ubuntu 12.04 (unstable) (2017-07-28 r72983)
-* travis CI ubuntu 12.04 R 3.3.3 (2017-03-06)
-* winbuilder R devel 3.4.0 RC (2017-04-18 r72540)
-* 
+* travis CI ubuntu 12.04 devel (2017-07-28 r72983)
+* travis CI ubuntu 12.04 R 3.4.0 (2017-03-06)
+* winbuilder R 3.4.1 (2017-06-30)
+* winbuilder R devel (2017-07-27 r72981)
+
 
 ## R CMD check results
 There were no ERRORs or WARNINGs.
@@ -26,4 +27,7 @@ These words are spelled correctly.
 Suggests or Enhances not in mainstream repositories:
   INLA
   
-This package is based around adding to the INLA package. I understand this package cannot be on CRAN.
+This package is based around adding to the INLA (http://www.r-inla.org/) package. I understand this package cannot be on CRAN. I believe other packages on CRAN depend on INLA so hopefully this will not be a problem.
+
+
+The examples and tests are a bit slow (but less than 15 seconds). Given that they are demonstrating analyses on spatial data, they are inevitably a bit slow. If this is a problem I will make them faster (and less realistic).
