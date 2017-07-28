@@ -102,7 +102,7 @@ inlaSDM<-function(dataframe,
                   spatial = TRUE,
                   num.threads = 1,
                   meshvals = list(inner.max.edge = max(raster::res(predictors)) * 10, 
-                                  out.max.edge = max(raster::res(predictors)) * 100, 
+                                  outer.max.edge = max(raster::res(predictors)) * 100, 
                                   cutoff = 0, 
                                   inner.offset = -0.1,
                                   outer.offset = -0.3)
