@@ -10,13 +10,13 @@ INLAstep(fam1 = "gaussian", dataf, spde = NULL, in_stack = NULL,
   thresh = 2, num.threads = 1, ...)
 }
 \arguments{
-\item{fam1}{String defining the likelihood familiy}
+\item{fam1}{String defining the likelihood familiy.}
 
 \item{dataf}{A dataframe including covariates and response data.}
 
-\item{spde}{An spde model object for the spatial component}
+\item{spde}{An spde model object for the spatial component.}
 
-\item{in_stack}{An inla.data.stack object containing all needed data}
+\item{in_stack}{An inla.data.stack object containing all needed data.}
 
 \item{invariant}{The part of the formula that should not change (e.g. the intercept and the spatial component.)}
 

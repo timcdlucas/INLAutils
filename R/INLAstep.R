@@ -8,10 +8,10 @@
 #' Force part of the model to remain in the model (e.g. the spatial term and intercept).
 #' 
 #'@name INLAstep
-#'@param fam1 String defining the likelihood familiy
+#'@param fam1 String defining the likelihood familiy.
 #'@param dataf A dataframe including covariates and response data.
-#'@param spde An spde model object for the spatial component
-#'@param in_stack An inla.data.stack object containing all needed data
+#'@param spde An spde model object for the spatial component.
+#'@param in_stack An inla.data.stack object containing all needed data.
 #'@param invariant The part of the formula that should not change (e.g. the intercept and the spatial component.)
 #'@param direction string 'forwards' for forward variable selection and 'backwards' for backwards variable elimination.
 #'@param include Vector of integers to determine which columns in dataf should be used. If NULL, use all columns except y and y2.
