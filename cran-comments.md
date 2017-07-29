@@ -1,4 +1,7 @@
-# submission
+# resubmission
+
+Fixed wrong date format in DESCRIPTION
+Removed README from build as images were causing issues.
 
 ## Test environments
 * local ubuntu 16.04 R 3.4.0 (2017-04-21)
