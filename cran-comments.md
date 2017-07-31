@@ -1,7 +1,9 @@
 # resubmission
 
 Fixed wrong date format in DESCRIPTION
+Fixed URL issue in DESCRIPTION
 Removed README from build as images were causing issues.
+Faster examples.
 
 ## Test environments
 * local ubuntu 16.04 R 3.4.0 (2017-04-21)
@@ -32,5 +34,3 @@ Suggests or Enhances not in mainstream repositories:
   
 This package is based around adding to the INLA (http://www.r-inla.org/) package. I understand this package cannot be on CRAN. I believe other packages on CRAN depend on INLA so hopefully this will not be a problem.
 
-
-The examples and tests are a bit slow (but less than 15 seconds). Given that they are demonstrating analyses on spatial data, they are inevitably a bit slow. If this is a problem I will make them faster (and less realistic).
