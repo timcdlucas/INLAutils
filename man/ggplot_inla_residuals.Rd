@@ -19,6 +19,7 @@ ggplot_inla_residuals(inla.model, observed, CI = FALSE, binwidth = NULL)
 Plot residuals of observed vs predicted values for INLA model using ggplot2
 }
 \examples{
+\dontrun{
  library(INLA)
  data(Epil)
  observed <- Epil[1:30, 'y']
@@ -42,4 +43,5 @@ Plot residuals of observed vs predicted values for INLA model using ggplot2
  mod.seeds = inla(formula, data=Seeds, family = "binomial", Ntrials = n, 
                   control.predictor = list(compute = TRUE, link = 1))
  ggplot_inla_residuals(mod.seeds, na.omit(Seeds$r / Seeds$n))
+}
 }

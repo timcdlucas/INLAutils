@@ -77,6 +77,7 @@ plot_inla_residuals <- function(inla.model, observed){
 #'@export
 #'
 #'@examples
+#'\dontrun{
 #'  library(INLA)
 #'  data(Epil)
 #'  observed <- Epil[1:30, 'y']
@@ -100,7 +101,7 @@ plot_inla_residuals <- function(inla.model, observed){
 #'  mod.seeds = inla(formula, data=Seeds, family = "binomial", Ntrials = n, 
 #'                   control.predictor = list(compute = TRUE, link = 1))
 #'  ggplot_inla_residuals(mod.seeds, na.omit(Seeds$r / Seeds$n))
-
+#'}
 
 ggplot_inla_residuals <- function(inla.model, observed, CI = FALSE, binwidth = NULL){
   
