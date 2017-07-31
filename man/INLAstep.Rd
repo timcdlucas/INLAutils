@@ -52,18 +52,19 @@ Force part of the model to remain in the model (e.g. the spatial term and interc
                            A = list(1),
                            effects = list(data.frame(Intercept = 1, Epil[3:5])))
                       
+ \dontrun{
   result <- INLAstep(fam1 = "poisson", 
                      Epil,
                      in_stack = stack,
                      invariant = "0 + Intercept",
                      direction = 'backwards',
-                     include = 3:4,
+                     include = 3:5,
                      y = 'y',
                      y2 = 'y',
                      powerl = 1,
                      inter = 1,
                      thresh = 2)
-\dontrun{
-autoplot(result$best_model, which = c(1, 5), CI = TRUE)
+
+  autoplot(result$best_model, which = c(1, 5), CI = TRUE)
 }
 }
