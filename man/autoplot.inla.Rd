@@ -41,21 +41,20 @@ The plot types are
  plot(result)
 
  p <- autoplot(result)
- p
 
  # Change the theme
- p + theme_bw()
+ p <- p + theme_bw()
 
  # Add a title to a subplot
  p[2] <- p[2] + ggtitle('Hyper parameters')
- p
 
  # Switch plot of fixed effects posteriors to not rescale x axis
  #   If variables are on the same scale, this may provide a useful comparison
  p[1] <- p[1] + facet_wrap('var', scale = 'free_y')
- p
 
 # Change colours etc.
 p[[1]]$layers[[1]] <- geom_line(colour = 'red', linetype = 2)
 
+# print the image.
+p
 }

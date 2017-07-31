@@ -34,9 +34,10 @@ Replicate the individual plots produced by \code{\link{plot}} using ggplot.
  formula = y ~ Trt + Age + V4 +
           f(Ind, model="iid") + f(rand,model="iid")
  result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
-
+\dontrun{
  plot_random_effects(result)
  plot_random_effects(result, type = 'boxplot')
  plot_fixed_marginals(result)
  plot_hyper_marginals(result)
+}
 }

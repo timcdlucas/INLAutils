@@ -52,6 +52,7 @@
 #'                x2 = c(rnorm(70), rnorm(30, 5))) # positive relationship
 #'
 #'# Have a look
+#'\dontrun{
 #'ggplot(cbind(x, PA), aes(x1, PA)) + 
 #'  geom_point() +
 #'  geom_smooth(method = 'glm', method.args = list(family = 'binomial'))
@@ -63,7 +64,7 @@
 #'
 #'
 #'ggplot(cbind(coords, PA), aes(long, lat, colour = PA)) + geom_point()
-#'
+#'}
 #'
 #'# Set raster resolution
 #'res <- 50
@@ -102,9 +103,10 @@
 #'                  spatial = TRUE, 
 #'                  cross_validation = FALSE,
 #'                  meshvals = list(cutoff = 0.3, inner.max.edge = 1))
+#'\dontrun{                  
 #'autoplot(model$mesh[[1]])
 #'autoplot(model$models[[1]])
-#'
+#'}
 
 inlaSDM<-function(dataframe,
                   predictors, 
