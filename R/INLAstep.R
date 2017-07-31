@@ -36,7 +36,7 @@
 #'                      in_stack = stack,
 #'                      invariant = "0 + Intercept",
 #'                      direction = 'backwards',
-#'                      include = 3:5,
+#'                      include = 3:4,
 #'                      y = 'y',
 #'                      y2 = 'y',
 #'                      powerl = 1,

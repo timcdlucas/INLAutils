@@ -57,7 +57,7 @@ Force part of the model to remain in the model (e.g. the spatial term and interc
                      in_stack = stack,
                      invariant = "0 + Intercept",
                      direction = 'backwards',
-                     include = 3:5,
+                     include = 3:4,
                      y = 'y',
                      y2 = 'y',
                      powerl = 1,
