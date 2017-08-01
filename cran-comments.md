@@ -1,5 +1,8 @@
 # resubmission
 
+* Add quotation marks to INLA in Title field of DESCRIPTION
+* Add URL for INLA.
+
 
 * Skip slow tests on cran
 * Quote non-english words in DESCRIPTION
