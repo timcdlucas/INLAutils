@@ -54,12 +54,12 @@ x2[is.na(x2)] <- rnorm(sum(is.na(raster::getValues(x2))))
 predictors <- raster::stack(x1, x2)
 
 # Pull together coordinates and PA data into SpatialPointsDataFrame
-dataframe = sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = PA))
+dataframe <- sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = PA))
 
 
 
 
-test_that('All basic INLAsdm options return at least reasonable', {
+test_that('All basic INLAsdm options return at least reasonable values', {
 
   
   # non spatial
@@ -78,10 +78,12 @@ test_that('All basic INLAsdm options return at least reasonable', {
       expect_true(class(model_nospace_nocv) == 'inlaSDM')
       expect_true(all(sapply(model_nospace_nocv$models, class) == 'inla'))
       expect_true(length(model_nospace_nocv[[2]][[1]]$summary.random) == 0)
+})
 
+test_that('All spatial INLAsdm options return at least reasonable values', {
   
+  skip_on_cran()
   # spatial
-  
   model_space_nocv <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, meshvals = list(cutoff = 1.2))
 
   expect_true(class(model_space_nocv) == 'inlaSDM')
@@ -117,20 +119,23 @@ test_that('stepwise SDM works', {
   expect_true(class(model_nospace_nocv[[2]][[1]]) == 'inla')
   expect_true(length(model_nospace_nocv[[2]][[1]]$summary.random) == 0)
 
+})
+
+test_that('Spatial stepwise SDM works', {
   
+  skip_on_cran()
   # CV
-  
   # step spatial
-  model_space_nocv <- inlaSDM(dataframe, predictors, step = TRUE, spatial = TRUE, 
-                              cross_validation = FALSE, meshvals = list(cutoff = 1.2))
+    model_space_nocv <- inlaSDM(dataframe, predictors, step = TRUE, spatial = TRUE, 
+                                cross_validation = FALSE, meshvals = list(cutoff = 1.2))
+    
   
-
-  expect_true(class(model_space_nocv) == 'inlaSDM')
-  expect_true(class(model_space_nocv[[2]][[1]]) == 'inla')
-  expect_true(class(model_space_nocv$mesh[[1]]) == 'inla.mesh')
+    expect_true(class(model_space_nocv) == 'inlaSDM')
+    expect_true(class(model_space_nocv[[2]][[1]]) == 'inla')
+    expect_true(class(model_space_nocv$mesh[[1]]) == 'inla.mesh')
+    
+    expect_true(length(model_space_nocv[[2]][[1]]$summary.random) != 0)
   
-  expect_true(length(model_space_nocv[[2]][[1]]$summary.random) != 0)
-
   
 })
 
@@ -143,6 +148,8 @@ test_that('INLAsdm invariant works', {
 
 
 test_that('meshvals cutoff works', { 
+  
+  skip_on_cran()
   # Complete example
   model1 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, meshvals = list(cutoff = 1.2))
   model2 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, meshvals = list(cutoff = 1.5))
@@ -157,6 +164,8 @@ test_that('meshvals cutoff works', {
 
 
 test_that('meshvals max edge works', { 
+  
+  skip_on_cran()
   # Complete example
   model1 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, 
                     meshvals = list(cutoff = 1.2))
@@ -172,6 +181,8 @@ test_that('meshvals max edge works', {
 
 
 test_that('meshvals full list works', { 
+  skip_on_cran()
+  
   # Complete example
   model1 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, 
                     meshvals = list(inner.max.edge = max(raster::res(predictors)) * 12, 
@@ -204,7 +215,11 @@ test_that('INLAsdm include works', {
   expect_true(row.names(model_nospace_nocv[[2]][[1]]$summary.fixed)[2] == 'layer.2')
   expect_true(nrow(model_nospace_nocv[[2]][[1]]$summary.fixed) == 2)
   
+})
+
+test_that('INLAsdm include works with spatial model', { 
   
+  skip_on_cran()
   # Check this works in spatial as well. There's some code duplication.
   
   

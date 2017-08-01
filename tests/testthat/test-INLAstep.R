@@ -4,7 +4,7 @@ context('Test INLAstep function')
 
 test_that('Basic usage works', {
   
-
+  skip_on_cran()
   set.seed(10)
   
   coords <- data.frame(long = c(rnorm(70), rnorm(30, 3)), lat = rnorm(100))
@@ -204,7 +204,7 @@ test_that('Feature engineering works. expandExplanatoryVars', {
 test_that('Feature engineering works. Whole models.', {
   # Hopefully this will include refectored functions.
   
-  
+  skip_on_cran()
   data(Epil)
   stack <- inla.stack(data = list(y = Epil$y),
                       A = list(1),
@@ -243,6 +243,7 @@ test_that('Feature engineering works. Whole models.', {
 
 
 test_that('Forwards and backwards works', {
+  skip_on_cran()
   set.seed(20)
   data(Epil)
   stack <- inla.stack(data = list(y = Epil$y),
