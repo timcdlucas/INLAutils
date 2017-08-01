@@ -2,9 +2,9 @@
 
 * Add quotation marks to INLA in Title field of DESCRIPTION
 * Add URL for INLA.
+* Skip more slow tests on cran
 
 
-* Skip slow tests on cran
 * Quote non-english words in DESCRIPTION
 * Added Additional_repositories field to DESCRIPTION.
 * Fixed wrong date format in DESCRIPTION
