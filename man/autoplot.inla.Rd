@@ -55,6 +55,4 @@ The plot types are
 # Change colours etc.
 p[[1]]$layers[[1]] <- geom_line(colour = 'red', linetype = 2)
 
-# print the image.
-p
 }

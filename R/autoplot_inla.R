@@ -45,8 +45,7 @@
 #' # Change colours etc.
 #' p[[1]]$layers[[1]] <- geom_line(colour = 'red', linetype = 2)
 #' 
-#' # print the image.
-#' p
+
 
 
 autoplot.inla <- function(object, which = c(1:3, 5), priors = FALSE, CI = FALSE, ...){
