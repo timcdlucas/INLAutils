@@ -1,15 +1,15 @@
 Package: INLAutils
 Type: Package
-Title: Utility Functions for INLA
+Title: Utility Functions for 'INLA'
 Version: 0.0.3
 Date: 2017-07-29
 Authors@R: c(
     person("Tim CD", "Lucas", email =  "timcdlucas@gmail.com", role = c("aut", "cre")),
     person("Dave", "Redding", email = "dwredding@gmail.com", role = "aut")
   )
-Description: A number of utility functions for 'INLA'. Additional diagnostic plots
+Description: A number of utility functions for 'INLA' <http://www.r-inla.org>. Additional diagnostic plots
   and support for 'ggplot2'. Step wise regression with 'INLA'. Species distribution models 
-  and others.
+  and other helper functions.
 License: MIT + file LICENSE
 Imports:
     ggfortify,
