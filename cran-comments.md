@@ -1,9 +1,13 @@
 # resubmission
 
-Fixed wrong date format in DESCRIPTION
-Fixed URL issue in DESCRIPTION
-Removed README from build as images were causing issues.
-Faster examples.
+
+* Skip slow tests on cran
+* Quote non-english words in DESCRIPTION
+* Added Additional_repositories field to DESCRIPTION.
+* Fixed wrong date format in DESCRIPTION
+* Fixed URL issue in DESCRIPTION
+* Removed README from build as images were causing issues.
+* Faster examples.
 
 ## Test environments
 * local ubuntu 16.04 R 3.4.0 (2017-04-21)
@@ -18,19 +22,13 @@ There were no ERRORs or WARNINGs.
 
 ## Notes
 
-Maintainer: 'Tim Lucas <timcdlucas@gmail.com>'
+Maintainer: 'Tim CD Lucas <timcdlucas@gmail.com>'
 
 New submission
 
-Possibly mis-spelled words in DESCRIPTION:
-  INLA (3:30, 11:48, 12:54)
-  ggplot (4:9, 12:19)
-
-These words are spelled correctly.
-
-
 Suggests or Enhances not in mainstream repositories:
   INLA
-  
-This package is based around adding to the INLA (http://www.r-inla.org/) package. I understand this package cannot be on CRAN. I believe other packages on CRAN depend on INLA so hopefully this will not be a problem.
+Availability using Additional_repositories specification:
+  INLA   yes   https://www.math.ntnu.no/inla/R/stable
+
 
