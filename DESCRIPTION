@@ -7,8 +7,8 @@ Authors@R: c(
     person("Tim CD", "Lucas", email =  "timcdlucas@gmail.com", role = c("aut", "cre")),
     person("Dave", "Redding", email = "dwredding@gmail.com", role = "aut")
   )
-Description: A number of utility functions for INLA. Additional diagnostic plots
-  and support for ggplot2. Step wise regression with INLA. Species distribution models 
+Description: A number of utility functions for 'INLA'. Additional diagnostic plots
+  and support for 'ggplot2'. Step wise regression with 'INLA'. Species distribution models 
   and others.
 License: MIT + file LICENSE
 Imports:
