@@ -176,9 +176,9 @@ test_that('meshvals max edge works', {
   skip_on_cran()
   # Complete example
   model1 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, 
-                    meshvals = list(cutoff = 0.3))
+                    meshvals = list(cutoff = 0.3, inner.max.edge = max(raster::res(predictors)) * 30))
   model2 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, 
-                    meshvals = list(cutoff = 0.3, inner.max.edge = max(raster::res(predictors)) * 2))
+                    meshvals = list(cutoff = 0.3, inner.max.edge = max(raster::res(predictors)) * 10))
   
   expect_true(model1$mesh[[1]]$n < model2$mesh[[1]]$n)
   
