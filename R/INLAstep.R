@@ -25,13 +25,14 @@
 #'@importFrom stats formula
 #'@export
 #'@examples 
+#'\dontrun{
 #'   library(INLA)
 #'   data(Epil)
 #'   stack <- INLA::inla.stack(data = list(y = Epil$y),
 #'                            A = list(1),
 #'                            effects = list(data.frame(Intercept = 1, Epil[3:5])))
 #'                       
-#'  \dontrun{
+#'  
 #'   result <- INLAstep(fam1 = "poisson", 
 #'                      Epil,
 #'                      in_stack = stack,

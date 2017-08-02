@@ -10,6 +10,7 @@
 #'@param ... Other arguments passed to specific methods
 #'@export
 #'@examples
+#'\dontrun{
 #' library(INLA)
 #' m = 100
 #' points = matrix(runif(m*2),m,2)
@@ -38,7 +39,7 @@
 #' p + facet_grid(. ~ type)
 #' 
 #' # Plot projections with ggalt
-#' \dontrun{
+#' 
 #' library(ggalt)
 #' p + ggalt::coord_proj("+proj=wintri")
 #' }
