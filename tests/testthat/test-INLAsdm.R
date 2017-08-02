@@ -1,9 +1,6 @@
 context('Tests for INLA sdm functions')
 
 
-library(INLA)
-set.seed(6)
-
 # Create locations, presence absence points and covariates with spatial and environmental relationships
 coords <- data.frame(long = c(rnorm(70), rnorm(30, 3)), lat = rnorm(100))
 PA <- rep(c(0, 1), each = 50)
@@ -61,6 +58,7 @@ dataframe <- sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = P
 
 test_that('All basic INLAsdm options return at least reasonable values', {
 
+  skip_if_not_installed('INLA')
   
   # non spatial
   model_nospace_nocv <- inlaSDM(dataframe, predictors, spatial = FALSE, cross_validation = FALSE)
@@ -82,6 +80,7 @@ test_that('All basic INLAsdm options return at least reasonable values', {
 
 test_that('All spatial INLAsdm options return at least reasonable values', {
   
+  skip_if_not_installed('INLA')
   skip_on_cran()
   # spatial
   model_space_nocv <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, meshvals = list(cutoff = 1.2))
@@ -111,6 +110,8 @@ test_that('All spatial INLAsdm options return at least reasonable values', {
 
 
 test_that('stepwise SDM works', {
+  
+  skip_if_not_installed('INLA')
   
   # Step non spatial
   model_nospace_nocv <- inlaSDM(dataframe, predictors, step = TRUE, spatial = FALSE, cross_validation = FALSE)
@@ -149,6 +150,8 @@ test_that('INLAsdm invariant works', {
 
 test_that('meshvals cutoff works', { 
   
+  skip_if_not_installed('INLA')
+  
   skip_on_cran()
   # Complete example
   model1 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, meshvals = list(cutoff = 1.2))
@@ -164,6 +167,8 @@ test_that('meshvals cutoff works', {
 
 
 test_that('meshvals max edge works', { 
+  
+  skip_if_not_installed('INLA')
   
   skip_on_cran()
   # Complete example
@@ -181,6 +186,9 @@ test_that('meshvals max edge works', {
 
 
 test_that('meshvals full list works', { 
+  
+  skip_if_not_installed('INLA')
+  
   skip_on_cran()
   
   # Complete example
@@ -199,6 +207,8 @@ test_that('meshvals full list works', {
 
 test_that('INLAsdm include works', { 
 
+  skip_if_not_installed('INLA')
+  
   # Check we remove some columns  
   model_nospace_nocv <- inlaSDM(dataframe, predictors, spatial = FALSE, cross_validation = FALSE, include = 1)
 
@@ -218,6 +228,8 @@ test_that('INLAsdm include works', {
 })
 
 test_that('INLAsdm include works with spatial model', { 
+  
+  skip_if_not_installed('INLA')
   
   skip_on_cran()
   # Check this works in spatial as well. There's some code duplication.

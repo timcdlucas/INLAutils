@@ -3,6 +3,8 @@ context('Test that autoplot works on mesh objects')
 
 test_that('Mesh plot can be built and altered', {
 
+  skip_if_not_installed('INLA')
+  
   # code from https://www.math.ntnu.no/inla/r-inla.org/tutorials/spde/inla-spde-howto.pdf
   n=200 
   coo=matrix(runif(2*n), n)

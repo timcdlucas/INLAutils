@@ -1,6 +1,8 @@
 context('Basic tests that autoplot produces plots without errors')
 
 test_that('autoplot does not fail when it should not.', {
+  
+  skip_if_not_installed('INLA')
   library(INLA)
   data(Epil)
   ##Define the model
@@ -33,6 +35,8 @@ test_that('autoplot does not fail when it should not.', {
 
 
 test_that('Check which arg more carefully.', {
+  
+  skip_if_not_installed('INLA')
   
   data <- data.frame(y = rpois(100, 10), x1 = rnorm(100))
   

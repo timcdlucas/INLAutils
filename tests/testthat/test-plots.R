@@ -3,6 +3,9 @@ context('Test all plots (just no errors)')
 
 
 test_that('ggplot_projection_shapefile works', {
+  
+  skip_if_not_installed('INLA')
+  
    set.seed(2)
    n <- 20
    loc <- matrix(runif(n*2), n, 2)
@@ -49,6 +52,8 @@ test_that('ggplot_projection_shapefile works', {
 
 
 test_that('plot_inla residuals works', {
+  
+  skip_if_not_installed('INLA')
   
   library(INLA)
   data(Epil)
