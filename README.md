@@ -3,6 +3,7 @@ INLAutils
 
 [![Build Status](https://travis-ci.org/timcdlucas/INLAutils.svg)](https://travis-ci.org/timcdlucas/INLAutils)
 [![codecov.io](https://codecov.io/github/timcdlucas/INLAutils/coverage.svg?branch=master)](https://codecov.io/github/timcdlucas/INLAutils?branch=master)
+[![cran version](http://www.r-pkg.org/badges/version/zoon)](https://cran.rstudio.com/web/packages/zoon) 
 
 
 A package containing utility functions for the `R-INLA` package.
@@ -24,9 +25,14 @@ then install `INLAutils`
 
 
 ```r
+# From CRAN
+install.packages('INLAutils')
+
+# From github
 library(devtools)
 install_github('timcdlucas/INLAutils')
 
+# Load packages
 library(INLA)
 library(INLAutils)
 ```
@@ -162,7 +168,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ 0 + Intercept + Base + Age + V4
-## <environment: 0x1094d8e0>
+## <environment: 0x0000000025d0f668>
 ```
 
 ```r
@@ -184,7 +190,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ +Age + Trt + V4 + f(inla.group(Age), model = "rw2")
-## <environment: 0x134fc610>
+## <environment: 0x000000001d89bc78>
 ```
 
 ```r
