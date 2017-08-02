@@ -3,6 +3,7 @@ context('Tests for INLA sdm functions')
 suppressWarnings(
   require(INLA)
 )
+set.seed(4)
 # Create locations, presence absence points and covariates with spatial and environmental relationships
 coords <- data.frame(long = c(rnorm(70), rnorm(30, 3)), lat = rnorm(100))
 PA <- rep(c(0, 1), each = 50)
@@ -168,26 +169,24 @@ test_that('meshvals cutoff works', {
 
 
 
-test_that('meshvals max edge works', { 
+test_that('meshvals max edge works', {
   
   skip_if_not_installed('INLA')
   
   skip_on_cran()
   # Complete example
   model1 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, 
-                    meshvals = list(cutoff = 1.2))
+                    meshvals = list(cutoff = 0.3))
   model2 <- inlaSDM(dataframe, predictors, spatial = TRUE, cross_validation = FALSE, include = 2, 
-                    meshvals = list(cutoff = 1.2, inner.max.edge = max(raster::res(predictors)) * 1))
+                    meshvals = list(cutoff = 0.3, inner.max.edge = max(raster::res(predictors)) * 2))
   
   expect_true(model1$mesh[[1]]$n < model2$mesh[[1]]$n)
   
-  # incomplete example
-  
-  
+
 })
 
 
-test_that('meshvals full list works', { 
+test_that('meshvals full list works', {
   
   skip_if_not_installed('INLA')
   
