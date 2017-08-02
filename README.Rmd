@@ -3,7 +3,7 @@ INLAutils
 
 [![Build Status](https://travis-ci.org/timcdlucas/INLAutils.svg)](https://travis-ci.org/timcdlucas/INLAutils)
 [![codecov.io](https://codecov.io/github/timcdlucas/INLAutils/coverage.svg?branch=master)](https://codecov.io/github/timcdlucas/INLAutils?branch=master)
-[![cran version](http://www.r-pkg.org/badges/version/zoon)](https://cran.rstudio.com/web/packages/zoon) 
+[![cran version](http://www.r-pkg.org/badges/version/INLAutils)](https://cran.rstudio.com/web/packages/INLAutls) 
 
 
 A package containing utility functions for the `R-INLA` package.
