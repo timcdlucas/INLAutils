@@ -1,6 +1,8 @@
 context('Tests for INLA sdm functions')
 
-
+suppressWarnings(
+  require(INLA)
+)
 # Create locations, presence absence points and covariates with spatial and environmental relationships
 coords <- data.frame(long = c(rnorm(70), rnorm(30, 3)), lat = rnorm(100))
 PA <- rep(c(0, 1), each = 50)
@@ -59,7 +61,6 @@ dataframe <- sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = P
 test_that('All basic INLAsdm options return at least reasonable values', {
 
   skip_if_not_installed('INLA')
-  
   # non spatial
   model_nospace_nocv <- inlaSDM(dataframe, predictors, spatial = FALSE, cross_validation = FALSE)
 
@@ -123,6 +124,7 @@ test_that('stepwise SDM works', {
 })
 
 test_that('Spatial stepwise SDM works', {
+  skip_if_not_installed('INLA')
   
   skip_on_cran()
   # CV

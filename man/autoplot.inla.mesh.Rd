@@ -24,6 +24,7 @@
 An autoplot (ggplot2) method for INLA mesh objects.
 }
 \examples{
+\dontrun{
 library(INLA)
 m = 100
 points = matrix(runif(m*2),m,2)
@@ -52,7 +53,7 @@ p + scale_colour_manual(values = c('red', 'grey', 'darkblue', 'steelblue', 'yell
 p + facet_grid(. ~ type)
 
 # Plot projections with ggalt
-\dontrun{
+
 library(ggalt)
 p + ggalt::coord_proj("+proj=wintri")
 }

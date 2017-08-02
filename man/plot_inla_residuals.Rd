@@ -15,6 +15,7 @@ plot_inla_residuals(inla.model, observed)
 Plot residuals of observed vs predicted values for INLA model
 }
 \examples{
+\dontrun{
  library(INLA)
  data(Epil)
  observed <- Epil[1:30, 'y']
@@ -38,4 +39,5 @@ Plot residuals of observed vs predicted values for INLA model
  mod.seeds = inla(formula, data=Seeds, family = "binomial", Ntrials = n, 
                   control.predictor = list(compute = TRUE, link = 1))
  plot_inla_residuals(mod.seeds, na.omit(Seeds$r / Seeds$n))
+ }
 }

@@ -24,6 +24,7 @@ ggplot_projection_shapefile(raster = NULL, projector = NULL,
 Plot a raster (either a raster layer or a inla projection matrix) with a shape file
 }
 \examples{
+\dontrun{
 set.seed(2)
 library(INLA)
 
@@ -48,5 +49,5 @@ library(raster)
 raster <- raster(projection)
 extent(raster) <- c(range(projector$x), range(projector$y))
 ggplot_projection_shapefile(raster, spatialpolygons = SPls)
-
+}
 }

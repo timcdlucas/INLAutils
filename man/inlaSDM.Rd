@@ -54,7 +54,7 @@ meshvals takes a list of up to five named values:
 These values are explained in more detail in \code{\link[INLA]{inla.mesh.2d}}.
 }
 \examples{
-
+\dontrun{
 library(INLA)
 set.seed(6)
 
@@ -117,7 +117,7 @@ model <- inlaSDM(dataframe,
                  spatial = TRUE, 
                  cross_validation = FALSE,
                  meshvals = list(cutoff = 0.3, inner.max.edge = 1))
-\dontrun{                  
+                 
 autoplot(model$mesh[[1]])
 autoplot(model$models[[1]])
 }

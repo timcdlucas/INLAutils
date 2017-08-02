@@ -46,13 +46,14 @@ Choose the level of interactions and power terms to expand the model formula to.
 Force part of the model to remain in the model (e.g. the spatial term and intercept).
 }
 \examples{
+\dontrun{
   library(INLA)
   data(Epil)
   stack <- INLA::inla.stack(data = list(y = Epil$y),
                            A = list(1),
                            effects = list(data.frame(Intercept = 1, Epil[3:5])))
                       
- \dontrun{
+ 
   result <- INLAstep(fam1 = "poisson", 
                      Epil,
                      in_stack = stack,

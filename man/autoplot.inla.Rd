@@ -32,6 +32,7 @@ The plot types are
 }
 }
 \examples{
+\dontrun{
  library(INLA)
  data(Epil)
  ##Define the model
@@ -54,5 +55,5 @@ The plot types are
 
 # Change colours etc.
 p[[1]]$layers[[1]] <- geom_line(colour = 'red', linetype = 2)
-
+}
 }

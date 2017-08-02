@@ -25,6 +25,7 @@ See \code{\link[ggplot2]{geom_smooth}} for details.}
 Plot residuals against covariate values for INLA model using ggplot2
 }
 \examples{
+\dontrun{
  library(INLA)
  data(Epil)
  observed <- Epil[1:30, 'y']
@@ -48,4 +49,5 @@ Plot residuals against covariate values for INLA model using ggplot2
  mod.seeds = inla(formula, data=Seeds, family = "binomial", Ntrials = n, 
                   control.predictor = list(compute = TRUE, link = 1))
  ggplot_inla_residuals2(mod.seeds, na.omit(Seeds$r / Seeds$n), method = 'lm')
+ }
 }

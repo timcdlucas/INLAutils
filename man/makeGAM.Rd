@@ -33,7 +33,7 @@ as random effects are yet to be added).
  # GAM with additional linear terms
  form2 <- makeGAM(c('x1', 'x2'), response = 'y', invariant = '0 + Intercept', 
                   linear = c('x1', 'x2', 'x3'))
- 
+ \dontrun{
  library(INLA)
  data(Epil)
  observed <- Epil[1:30, 'y']
@@ -47,4 +47,5 @@ as random effects are yet to be added).
                control.predictor = list(compute = TRUE, link = 1))
  ggplot_inla_residuals(result, observed, binwidth = 0.2)
  autoplot(result)
+ }
 }
