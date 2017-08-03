@@ -2,10 +2,6 @@
 language: r
 sudo: required
 
-r:
- - release
- - devel
-
 # cache packages to speed up builds
 cache: packages
 
