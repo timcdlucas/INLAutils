@@ -28,6 +28,6 @@ matrix:
     - r: devel
       r_github_packages: andrewzm/INLA
     - r: devel
-      install: R -e 'install.packages('devtools', dep = TRUE);devtools::install_deps(dep = c("Depends", "Imports"))'
+      install: R -e 'install.packages("devtools", dep = TRUE);devtools::install_deps(dep = c("Depends", "Imports"))'
 
 
