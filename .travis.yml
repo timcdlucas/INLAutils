@@ -15,10 +15,12 @@ r_packages:
  - ggfortify
  - testthat
  - assertthat
+ - raster
+ - sp 
+ - reshape2
 
 r_github_packages:
  - andrewzm/INLA
-
 
 
 after_success:
