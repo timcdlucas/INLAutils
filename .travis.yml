@@ -25,10 +25,8 @@ matrix:
   include:
     - r: release
       r_github_packages: andrewzm/INLA
-      os: linux
     - r: devel
       r_github_packages: andrewzm/INLA
-      os: linux
     - r: devel
-      os: osx
+      install: R -e 'devtools::install_deps(dep = c("Depends", "Imports", "LinkingTo", "Suggests", "Enhances"))'
 
