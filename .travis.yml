@@ -22,6 +22,15 @@ r_packages:
 r_github_packages:
  - andrewzm/INLA
 
-
 after_success:
  - Rscript -e 'library(covr);codecov()'
+
+
+matrix:
+  include:
+    - r: release
+      r_github_packages: andrewzm/INLA
+    - r: devel
+      r_github_packages: andrewzm/INLA
+    - r: release
+    - r: devel
