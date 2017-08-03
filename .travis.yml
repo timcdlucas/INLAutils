@@ -28,5 +28,5 @@ matrix:
     - r: devel
       r_github_packages: andrewzm/INLA
     - r: devel
-      install: R -e 'devtools::install_deps(dep = c("Depends", "Imports", "LinkingTo", "Suggests", "Enhances"))'
+      install: R -e 'devtools::install_deps(dep = c("Depends", "Imports", "LinkingTo", "Enhances"))'
 
