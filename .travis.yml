@@ -19,9 +19,6 @@ r_packages:
  - sp 
  - reshape2
 
-r_github_packages:
- - andrewzm/INLA
-
 after_success:
  - Rscript -e 'library(covr);codecov()'
 
