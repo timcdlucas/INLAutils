@@ -3,7 +3,7 @@ language: r
 sudo: required
 
 # cache packages to speed up builds
-cache: packages
+#cache: packages
 
 r_packages:
  - covr
