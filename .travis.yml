@@ -2,6 +2,8 @@
 language: r
 sudo: required
 
+
+
 # cache packages to speed up builds
 #cache: packages
 
@@ -23,7 +25,10 @@ matrix:
   include:
     - r: release
       r_github_packages: andrewzm/INLA
+      os: linux
     - r: devel
       r_github_packages: andrewzm/INLA
-    - r: release
+      os: linux
     - r: devel
+      os: osx
+
