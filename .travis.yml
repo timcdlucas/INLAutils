@@ -23,6 +23,10 @@ after_success:
 
 matrix:
   include:
+    - r: release
+      r_github_packages: andrewzm/INLA
+    - r: devel
+      r_github_packages: andrewzm/INLA
     - r: devel
       env: _R_CHECK_FORCE_SUGGESTS_=false
       install: R -e 'install.packages("devtools", dep = TRUE);devtools::install_deps(dep = c("Depends", "Imports"))'
@@ -30,7 +34,3 @@ matrix:
 
 
 
-#    - r: release
-#      r_github_packages: andrewzm/INLA
-#    - r: devel
-#      r_github_packages: andrewzm/INLA
