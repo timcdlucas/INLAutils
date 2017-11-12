@@ -4,8 +4,8 @@ Title: Utility Functions for 'INLA'
 Version: 0.0.4
 Date: 2017-07-29
 Authors@R: c(
-    person("Tim CD", "Lucas", email =  "timcdlucas@gmail.com", role = c("aut", "cre")),
-    person("Dave", "Redding", email = "dwredding@gmail.com", role = "aut")
+    person("Tim CD", "Lucas", email =  "timcdlucas@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-4694-8107")),
+    person("Dave", "Redding", email = "dwredding@gmail.com", role = "aut", comment = c(ORCID = "0000-0001-8615-1798"))
   )
 Description: A number of utility functions for 'INLA' <http://www.r-inla.org>. Additional diagnostic plots
   and support for 'ggplot2'. Step wise regression with 'INLA'. Species distribution models 
