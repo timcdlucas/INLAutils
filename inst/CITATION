@@ -8,8 +8,8 @@ citEntry(entry = "Article",
            "Kate E Jones"
          )),
          title = "Evaluating Bayesian spatial methods for modelling species distributions with clumped and restricted occurrence data",
-         journal = "bioRxiv",
+         journal = "PLoS ONE",
          year = "2017",
-         url = "http://biorxiv.org/content/early/2017/02/06/105742",
-         textVersion = "Redding, D. W., Lucas, T., Blackburn, T., & Jones, K. E. (2017). Evaluating Bayesian spatial methods for modelling species distributions with clumped and restricted occurrence data. bioRxiv, 105742."
+         url = "https://doi.org/10.1371/journal.pone.0187602",
+         textVersion = "Redding, D. W., Lucas, T., Blackburn, T., & Jones, K. E. (2017). Evaluating Bayesian spatial methods for modelling species distributions with clumped and restricted occurrence data. PLoS ONE, 12(11): e0187602."
 )
