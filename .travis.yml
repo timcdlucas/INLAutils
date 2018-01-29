@@ -17,6 +17,7 @@ r_packages:
  - reshape2
  - tidyr
  - cowplot
+ - devtools
 
 after_success:
  - Rscript -e 'library(covr);codecov()'
