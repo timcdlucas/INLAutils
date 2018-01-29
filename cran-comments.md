@@ -1,37 +1,40 @@
 # resubmission
 
-* Add quotation marks to INLA in Title field of DESCRIPTION
-* Add URL for INLA.
-* Skip more slow tests on cran
-
-
-* Quote non-english words in DESCRIPTION
-* Added Additional_repositories field to DESCRIPTION.
-* Fixed wrong date format in DESCRIPTION
-* Fixed URL issue in DESCRIPTION
-* Removed README from build as images were causing issues.
-* Faster examples.
+* Remove ggfortify dependency as it was archived on CRAN.
+* The package still heavily relies on INLA which is not on CRAN.
+  My CI tests it with and without INLA installed with no issues.
+  Last time I submitted, the CRAN Solaris machine gave test errors.
+  I was told to fix the issue, but when I explained the issue and asked
+  for advice on how to proceed, I got no reply. Therefore I am unsure
+  whether the Solaris will give errors again. Any advice on this issue
+  would be appreciated.
 
 ## Test environments
-* local ubuntu 16.04 R 3.4.0 (2017-04-21)
-* travis CI ubuntu 12.04 devel (2017-07-28 r72983)
-* travis CI ubuntu 12.04 R 3.4.0 (2017-03-06)
-* winbuilder R 3.4.1 (2017-06-30)
-* winbuilder R devel (2017-07-27 r72981)
+* local ubuntu 16.04 R 3.4.1 (2017-06-30)
+* travis CI ubuntu 14.04 (unstable) (2018-01-29 r74183)
+* travis CI ubuntu 14.04 R 3.4.2 (2017-01-27)
+* winbuilder R 3.4.3 (2017-11-30)
+* winbuilder R (unstable) (2018-01-28 r74177)
 
 
 ## R CMD check results
-There were no ERRORs or WARNINGs.
+There were no ERRORs.
 
-## Notes
+The following warnings as discussed above.
 
-Maintainer: 'Tim CD Lucas <timcdlucas@gmail.com>'
+
+Maintainer: 'Tim Lucas <timcdlucas@gmail.com>'
 
 New submission
+
+Package was archived on CRAN
+
+CRAN repository db overrides:
+  X-CRAN-Comment: Archived on 2018-01-27 as it depends on the archived
+    'ggfortify'.
 
 Suggests or Enhances not in mainstream repositories:
   INLA
 Availability using Additional_repositories specification:
   INLA   yes   https://www.math.ntnu.no/inla/R/stable
-
 
