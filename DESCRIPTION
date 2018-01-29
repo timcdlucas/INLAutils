@@ -1,7 +1,7 @@
 Package: INLAutils
 Type: Package
 Title: Utility Functions for 'INLA'
-Version: 0.0.4
+Version: 0.0.5
 Date: 2017-07-29
 Authors@R: c(
     person("Tim", "Lucas", email =  "timcdlucas@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-4694-8107")),
@@ -12,7 +12,6 @@ Description: A number of utility functions for 'INLA' <http://www.r-inla.org>. A
   and other helper functions.
 License: MIT + file LICENSE
 Imports:
-    ggfortify,
     assertthat,
     raster,
     methods,
