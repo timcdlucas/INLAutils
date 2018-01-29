@@ -118,7 +118,8 @@ autoplot.inla <- function(object, which = c(1:3, 5), priors = FALSE, CI = FALSE,
     plots$marginal.fitted <- plot_marginals_fitted(object)
   }
 
-  methods::new('ggmultiplot', plots = plots, nrow = 2)
+  print(cowplot::plot_grid(plotlist = plots))
+  return(invisible(plots))
 }
 
 
