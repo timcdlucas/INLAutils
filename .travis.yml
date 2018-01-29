@@ -10,12 +10,13 @@ sudo: required
 r_packages:
  - covr
  - ggplot2
- - ggfortify
  - testthat
  - assertthat
  - raster
  - sp 
  - reshape2
+ - tidyr
+ - cowplot
 
 after_success:
  - Rscript -e 'library(covr);codecov()'
