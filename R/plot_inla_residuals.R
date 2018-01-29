@@ -90,8 +90,11 @@ plot_inla_residuals <- function(inla.model, observed){
 #'           f(Ind, model="iid") + f(rand,model="iid")
 #'  result = inla(formula, family="poisson", data = Epil, 
 #'                control.predictor = list(compute = TRUE, link = 1))
-#'  ggplot_inla_residuals(result, observed)
+#'  p <- ggplot_inla_residuals(result, observed)
 #'  
+#'  # Subplots can be altered afterwards
+#'  p[[1]] <- p[[1]] + theme_grey()
+#'  cowplot::plot_grid(plotlist = p)
 #'
 #'  data(Seeds)
 #'  l <- nrow(Seeds)
@@ -143,9 +146,8 @@ ggplot_inla_residuals <- function(inla.model, observed, CI = FALSE, binwidth = N
                                                           yend = 'observed'),
                                                alpha = 0.4) 
   
-
-  methods::new('ggmultiplot', plots = plots)
-
+  print(cowplot::plot_grid(plotlist = plots))
+  return(invisible(plots))
 }
 
 

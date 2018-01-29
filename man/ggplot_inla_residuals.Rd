@@ -30,8 +30,11 @@ Plot residuals of observed vs predicted values for INLA model using ggplot2
           f(Ind, model="iid") + f(rand,model="iid")
  result = inla(formula, family="poisson", data = Epil, 
                control.predictor = list(compute = TRUE, link = 1))
- ggplot_inla_residuals(result, observed)
+ p <- ggplot_inla_residuals(result, observed)
  
+ # Subplots can be altered afterwards
+ p[[1]] <- p[[1]] + theme_grey()
+ cowplot::plot_grid(plotlist = p)
 
  data(Seeds)
  l <- nrow(Seeds)
