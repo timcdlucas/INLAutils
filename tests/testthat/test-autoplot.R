@@ -26,7 +26,7 @@ test_that('autoplot does not fail when it should not.', {
 
   # Test that you can change a single figure
   p3 <- p
-  expect_error(p3[2] <- p3[2] + ggtitle('Hyper parameters'), NA)
+  expect_error(p3[[2]] <- p3[[2]] + ggtitle('Hyper parameters'), NA)
   expect_false(identical(p, p3))
 
 

@@ -86,6 +86,7 @@ ggplot_projection_shapefile <- function(raster = NULL,
       raster::extent(raster) <- c(range(projector$x), range(projector$y))
     } 
     
+    x <- y <- NULL
     raster.df <- methods::as(raster, "SpatialPixelsDataFrame")
     raster.df <- as.data.frame(raster.df)
     raster.df <- tidyr::gather(raster.df, key = "raster_name", value = "z", -x,-y)

@@ -17,7 +17,9 @@ Imports:
     methods,
     RColorBrewer,
     sp,
-    reshape2
+    reshape2,
+    tidyr,
+    cowplot
 Depends:
     ggplot2
 Additional_repositories: https://www.math.ntnu.no/inla/R/stable
