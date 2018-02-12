@@ -3,8 +3,6 @@ INLAutils
 
 [![Build Status](https://travis-ci.org/timcdlucas/INLAutils.svg)](https://travis-ci.org/timcdlucas/INLAutils)
 [![codecov.io](https://codecov.io/github/timcdlucas/INLAutils/coverage.svg?branch=master)](https://codecov.io/github/timcdlucas/INLAutils?branch=master)
-[![cran version](http://www.r-pkg.org/badges/version/INLAutils)](https://cran.rstudio.com/web/packages/INLAutls) 
-
 
 A package containing utility functions for the `R-INLA` package.
 
@@ -25,9 +23,6 @@ then install `INLAutils`
 
 
 ```r
-# From CRAN
-install.packages('INLAutils')
-
 # From github
 library(devtools)
 install_github('timcdlucas/INLAutils')
@@ -37,7 +32,7 @@ library(INLA)
 library(INLAutils)
 ```
 
-
+Unfortunately, CRAN have now decided that as INLA is not on CRAN, INLAutils cannot be on CRAN either (a totally reasonable position). 
 
 
 
