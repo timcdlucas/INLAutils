@@ -5,11 +5,12 @@ Version: 0.0.6
 Date: 2017-07-29
 Authors@R: c(
     person("Tim", "Lucas", email =  "timcdlucas@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-4694-8107")),
-    person("Dave", "Redding", email = "dwredding@gmail.com", role = "aut", comment = c(ORCID = "0000-0001-8615-1798"))
-  )
+    person("Dave", "Redding", email = "dwredding@gmail.com", role = "aut", comment = c(ORCID = "0000-0001-8615-1798")),
+    person("Andre", "Python", email = "python.andre@gmail.com", role = "aut", comment = c(ORCID = "0000-0001-8094-7226"))
+    )
 Description: A number of utility functions for 'INLA' <http://www.r-inla.org>. Additional diagnostic plots
-  and support for 'ggplot2'. Step wise regression with 'INLA'. Species distribution models 
-  and other helper functions.
+  and support for 'ggplot2'. Step wise regression with 'INLA'. Species distribution models. 
+  Spatial leave-one-out cross validation with INLA and other helper functions.
 License: MIT + file LICENSE
 Imports:
     assertthat,

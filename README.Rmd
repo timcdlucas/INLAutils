@@ -166,9 +166,28 @@ There are some helper functions for general analyses.
  result = inla(formula, family="poisson", data = Epil)
 ```
 
+### Spatial leave-one-out cross-validation (sloo-cv)
 
+The package `INLAutils` provides an approach to run sloo-cv for INLA objects.
 
-
+```{r inlasloo, eval = TRUE, echo = TRUE}
+      #data
+  coords <- data.frame(long = c(rnorm(70), rnorm(30, 3)), lat = rnorm(100))
+  PA <- rep(c(0, 1), each = 50)
+  x <- data.frame(x1 = rnorm(100),x2 = c(rnorm(70), rnorm(30, 2))) # x1 no relationship, x2 positive relationship
+  dataf1 <- sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = PA, x))
+  mesh <- INLA::inla.mesh.2d(loc = sp::coordinates(dataf1),max.edge = c(3, 3),cutoff = 1.3)
+  ss <- 3#sample size to process (number of SLOO runs)
+  rad <- range.out*0.15#define the radius of the spatial buffer surrounding the removed point
+  dataframe <- dataframe#dataframe with response 'y' and covariates 'x1', 'x2'
+  dataframe$y <- round(runif(length(dataframe$y), 0, 12))#create positive discrete response
+  modform <- as.formula(paste('y ~ -1+ y.intercept + x1 + f(spatial.field, model=spde)'))#one model
+  family <- list('gamma')#one model
+  ntrials <- round(max(dataframe$y,na.rm=TRUE))#for Binomial family
+  alpha <- 0.05#rmse and mae confidence intervals (1-alpha)
+      #function
+  sloo1 = inlasloo.fun(dataframe=dataframe, long='long', lat='lat',y= 'y', ss=ss, rad=rad, ntrials=ntrials, modform=modform,mesh=mesh,family=family,alpha=0.05,mae=FALSE,ds=FALSE,sqroot=FALSE)
+```
 
 ### Domain specific applications
 
