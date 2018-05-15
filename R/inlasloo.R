@@ -26,15 +26,14 @@
 #' If FALSE, the rmse and/or mae are computed without transformation of the data.
 #' @param ... other arguments passed to methods
 #'
-#' @export
-#' @name inlasloo.fun
+#' @name inlasloo
 #' 
 #' @examples 
 #'  \dontrun{
 #'  require(INLA)
 #'  require(sp)
 #'  require(grDevices)
-#'  
+#' 
 #'  # generate a dataframe and INLA output for the function
 #'  set.seed(10)
 #'  coords <- data.frame(long = c(rnorm(70), rnorm(30, 3)), lat = rnorm(100))
@@ -54,49 +53,51 @@
 #'                    control.compute = list( config=TRUE),control.inla = list(int.strategy='eb'))
 #'  out.field <- INLA::inla.spde2.result(out,'spatial.field', spde, do.transf=TRUE)
 #'  range.out <- INLA::inla.emarginal(function(x) x, out.field$marginals.range.nominal[[1]])
-#'  
+#' 
 #'  # parameters for the SLOO process
-#'  ss <- 11#sample size to process (number of SLOO runs)
+#'  ss <- 1#sample size to process (number of SLOO runs)
 #'  rad <- range.out*0.15#define the radius of the spatial buffer surrounding the removed point
 #'  mesh <- mesh#use the mesh of the model
 #'  dataframe <- dataframe#dataframe with response 'y' and covariates 'x1', 'x2'
-#'  dataframe$y <- round(runif(length(dataframe$y), 0, 12))#create positive discrete response
+#'  dataframe$y <- round(runif(length(dataframe$y), 1, 12))#create positive discrete response
 #'  modform <- stats::as.formula(paste('y ~ -1+ y.intercept + x1 + f(spatial.field, model=spde)'))
 #'  family <- list('gamma')#one model
 #'  ntrials <- round(max(dataframe$y,na.rm=TRUE))# for Binomial family
 #'  alpha <- 0.05#rmse and mae confidence intervals (1-alpha)
-#'  
+#' 
 #'  # run the function
-#'  inlasloo.fun(dataframe=dataframe, long='x_coord', lat='y_coord',y= 'y', ss=ss, rad=rad, 
-#'  ntrials=ntrials,modform=modform,mesh=mesh,family=family,alpha=0.05,mae=TRUE,ds=TRUE,sqroot=FALSE)
-#'   
+#'  inlasloo(dataframe=dataframe, long='long', lat='lat',y= 'y', ss=ss, rad=rad,
+#'  modform=modform,mesh=mesh,family=family,alpha=0.05,mae=TRUE,ds=TRUE,sqroot=FALSE)
+#' 
 #'  # SLOO function with one model formula (Binomial) and linear terms
-#'  sloo1<-inlasloo.fun(dataframe=dataframe, long='x_coord', lat='y_coord', y='y', ss=1, rad=0.1, 
+#'  sloo1<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1, rad=0.1,
 #'  ntrials=5,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
-#'  family='binomial',alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
-#'  
+#'  family='binomial',alpha=0.05,mae=FALSE,ds=FALSE,sqroot=FALSE)
+#' 
 #'  # SLOO function with two families (Binomial and Poisson) and linear terms
-#'  sloo2<-inlasloo.fun(dataframe=dataframe, long='x_coord', lat='y_coord', y='y', ss=1, rad=0.1,
+#'  sloo2<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1, rad=0.1,
 #'   ntrials=5,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
 #'  family=list('binomial','poisson'),alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
-#'  
+#' 
 #'  # SLOO function with one family (Binomial) and two model formulas
-#'  sloo2<-inlasloo.fun(dataframe=dataframe, long='x_coord', lat='y_coord', y='y', ss=1,
+#'  sloo3<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1,
 #'   rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
 #'  'y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'),
 #'  mesh=mesh,family='binomial',alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
-#'  }
 #'  
-
+#'  # SLOO function with two families (Binomial and Poisson) and two model formulas
+#'  sloo4<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1,
+#'   rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
+#'  'y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'),
+#'  mesh=mesh,list('binomial','poisson'),alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
+#'  }
 
  
-inlasloo.fun <- function(dataframe, long, lat, y, ss, rad, modform, 
+inlasloo <- function(dataframe, long, lat, y, ss, rad, modform, 
                          family, mesh, ntrials = NULL, int.strategy = "eb", alpha = 0.05,
                          mae = FALSE, ds = FALSE, sqroot = FALSE, ...) {
-    source("slooplot.fun.R")  #source plotting function associated with inlasloo.fun
-    source("sloopoint.fun.R")  #source plotting function associated with inlasloo.fun
-    cat("Identification of input parameters values", "\n")
-    cat("#########################################", "\n")
+    message("Identification of input parameters values")
+    message("#########################################", "\n")
     if (class(modform) != "list") {
         modform <- list(modform)  #if there is only one model make it as list
     } else {
@@ -108,24 +109,24 @@ inlasloo.fun <- function(dataframe, long, lat, y, ss, rad, modform,
         family <- family  # keep it as list for multiple models
     }
     famnames <- (paste(family, collapse = ","))
-    print(paste("number of models =", length(modform) * length(family)))
-    print(ifelse(missing(dataframe), "dataframe not specified", paste("number of rows in dataframe =", nrow(dataframe))))
-    print(ifelse(missing(long), "long not specified", paste("longitude =", long)))
-    print(ifelse(missing(lat), "lat not specified", paste("latitude =", lat)))
-    print(ifelse(missing(y), "y not specified", paste("response =", y)))
-    print(ifelse(missing(ss), "ss not specified", paste("samplig size =", ss)))
-    print(ifelse(missing(rad), "rad not specified", paste("radius of disc of removed observations =", round(rad, 2))))
-    print(ifelse(mae == TRUE, "RMSE and MAE computed", "RMSE computed"))
-    print(ifelse(ds == TRUE, "DS computed", "DS not computed"))
-    print(ifelse(sqroot == TRUE, "square root for RMSE and MAE computed", "square root for RMSE and MAE not computed"))
-    print(ifelse(missing(family), "family not specified", paste("INLA family distribution of response =", famnames)))
-    print(ifelse(is.null(ntrials) == "TRUE", "family is not Binomial so ntrials is not specified", ifelse(ntrials > 0, paste("number of Bernoulli trials =", 
+    message(paste("number of models =", length(modform) * length(family)))
+    message(ifelse(missing(dataframe), "dataframe not specified", paste("number of rows in dataframe =", nrow(dataframe))))
+    message(ifelse(missing(long), "long not specified", paste("longitude =", long)))
+    message(ifelse(missing(lat), "lat not specified", paste("latitude =", lat)))
+    message(ifelse(missing(y), "y not specified", paste("response =", y)))
+    message(ifelse(missing(ss), "ss not specified", paste("samplig size =", ss)))
+    message(ifelse(missing(rad), "rad not specified", paste("radius of disc of removed observations =", round(rad, 2))))
+    message(ifelse(mae == TRUE, "RMSE and MAE computed", "RMSE computed"))
+    message(ifelse(ds == TRUE, "DS computed", "DS not computed"))
+    message(ifelse(sqroot == TRUE, "square root for RMSE and MAE computed", "square root for RMSE and MAE not computed"))
+    message(ifelse(missing(family), "family not specified", paste("INLA family distribution of response =", famnames)))
+    message(ifelse(is.null(ntrials) == "TRUE", "family is not Binomial so ntrials is not specified", ifelse(ntrials > 0, paste("number of Bernoulli trials =", 
         ntrials), "ntrials should be positive integer or not specified")))
-    print(ifelse(missing(mesh), "mesh not specified", paste("number of mesh vertices =", mesh$n)))
-    print(ifelse(int.strategy == "eb", "INLA integration strategy =  empirical bayes ", paste(int.strategy, ": user-defined INLA integration strategy")))
-    print(ifelse(alpha != 0.05, paste("(1-alpha)", "", "% credible intervals of scores"), "default 95% credible intervals of scores"))
-    cat("End identification of input parameters values", "\n")
-    cat("#############################################", "\n")
+    message(ifelse(missing(mesh), "mesh not specified", paste("number of mesh vertices =", mesh$n)))
+    message(ifelse(int.strategy == "eb", "INLA integration strategy =  empirical bayes ", paste(int.strategy, ": user-defined INLA integration strategy")))
+    message(ifelse(alpha != 0.05, paste("(1-alpha)", "", "% credible intervals of scores"), "default 95% credible intervals of scores"))
+    message("End identification of input parameters values", "\n")
+    message("#############################################", "\n")
     
     if (class(dataframe) != "data.frame") 
         stop("unexpected class instead of data.frame class for the argument \"dataframe\"")
@@ -203,7 +204,7 @@ inlasloo.fun <- function(dataframe, long, lat, y, ss, rad, modform,
             
             if (family == "bernoulli") {
                 out <- INLA::inla(modform, family = "binomial", Ntrials = 1, data = datastk, control.predictor = list(A = INLA::inla.stack.A(stk.full), 
-                  link = 1), control.inla = list(int.strategy = int.strategy))
+                  link = 1), control.inla = list(int.strategy = int.strategy), ...)
                 indpred <- INLA::inla.stack.index(stk.full, "pred.y")$data
                 pall <- round(out$summary.fitted.values[indpred, ], 3)  #get mean, sd, etc of predicted reponse at test.df location
                 p <- c(p, as.numeric(pall[1]))  #first element is the mean of predictions
@@ -211,7 +212,7 @@ inlasloo.fun <- function(dataframe, long, lat, y, ss, rad, modform,
                 
             } else if (family == "binomial") {
                 out <- INLA::inla(modform, family = "binomial", Ntrials = ntrials, data = datastk, control.predictor = list(A = INLA::inla.stack.A(stk.full), 
-                  link = 1), control.inla = list(int.strategy = int.strategy))
+                  link = 1), control.inla = list(int.strategy = int.strategy), ...)
                 indpred <- INLA::inla.stack.index(stk.full, "pred.y")$data
                 pall <- round(out$summary.fitted.values[indpred, ], 3)  #get mean, sd, etc of predicted reponse at test.df location
                 p <- c(p, as.numeric(pall[1]))  #first element is the mean of predictions
@@ -219,7 +220,7 @@ inlasloo.fun <- function(dataframe, long, lat, y, ss, rad, modform,
                 
             } else {
                 out <- INLA::inla(modform, family = family, data = datastk, control.predictor = list(A = INLA::inla.stack.A(stk.full), 
-                  link = 1), control.inla = list(int.strategy = int.strategy), verbose = TRUE)
+                  link = 1), control.inla = list(int.strategy = int.strategy), ...)
                 indpred <- INLA::inla.stack.index(stk.full, "pred.y")$data
                 pall <- round(out$summary.fitted.values[indpred, ], 3)  #get mean, sd, etc of predicted reponse at test.df location
                 p <- c(p, as.numeric(pall[1]))  #first element is the mean of predictions
@@ -238,30 +239,30 @@ inlasloo.fun <- function(dataframe, long, lat, y, ss, rad, modform,
         if (mae == TRUE) {
             p.mae <- mean(abs(p.res), na.rm = TRUE)
         } else {
-            p.mae <- "MAE not computed"
+            p.mae <- NA
         }
         if (ds == TRUE) {
             p.ds <- mean((test.df$y - (mean(p, na.rm = TRUE) * stats::sd(p, na.rm = TRUE)))^2 + 2 * log(stats::sd(p, na.rm = TRUE)), na.rm = TRUE)
         } else {
-            p.ds <- "Dawid-Sebastiani score not computed"
+            p.ds <- NA
         }  #good for general predictive model choice; stable for size imbalance in categorical predictors)
         
         slooresults[[j]] <- list(Observed_response = test.df$y, Predictions = round(p, 3), Residuals = round(p.res, 3), RMSE = round(p.rmse, 
-            3), MAE = round(p.mae, 3), DS = round(p.ds, 3), family = family, ntrials = ntrials, test.df = test.df, Rownames_test = as.numeric(rownames(test.df)))
+            3), MAE = round(p.mae, 3), DS = round(as.numeric(p.ds), 3), family = family, ntrials = ntrials, test.df = test.df, Rownames_test = as.numeric(rownames(test.df)))
         
-        cat("\n")
-        cat("#############################################", "\n")
-        cat("Summary of the Spatial leave-one-out analysis", "\n")
-        cat("MODEL", "", j, "\n")
+        message("\n")
+        message("Summary of the Spatial leave-one-out analysis")
+        message("#############################################", "\n")
+        message("MODEL", "", j, "\n")
         print(slooresults[[j]][-c(9:10)])
-        cat("End summary of the Spatial leave-one-out analysis", "\n")
-        cat("#################################################", "\n")
+        message("End summary of the Spatial leave-one-out analysis")
+        message("#################################################", "\n")
     }  #end of j loop
     
     # plot locations of observation and test points
     par(mfrow = grDevices::n2mfrow(length(result.list)), family = "mono", oma = c(0, 0, 2, 0))
     for (j in 1:(length(result.list))) {
-        slooplot.fun(alpha = alpha, df = slooresults[[j]], mae = mae, ds = ds, family = as.character(result.list[[j]][1]), ntrials = ntrials, 
+        slooplot(alpha = alpha, df = slooresults[[j]], mae = mae, ds = ds, family = as.character(result.list[[j]][1]), ntrials = ntrials, 
             sqroot = sqroot)
         graphics::mtext(paste0("MODEL", "", j), side = 3, adj = 1, cex = 0.8, line = 1.6)
     }
@@ -270,6 +271,6 @@ inlasloo.fun <- function(dataframe, long, lat, y, ss, rad, modform,
     slooresults <<- slooresults#save the results as an object
     # plot locations of observation and test points
     par(mfrow = c(1, 1), family = "mono")
-    sloopoint.fun(points = cbind(dataframe$long, dataframe$lat), test = cbind(slooresults[[1]]$test.df$long, slooresults[[1]]$test.df$lat), 
+    sloopoint(points = cbind(dataframe$long, dataframe$lat), test = cbind(slooresults[[1]]$test.df$long, slooresults[[1]]$test.df$lat), 
         rad = rad)
 }
