@@ -54,65 +54,66 @@ In option, other scores can be computed, such as the mean absolute error, dawid-
 }
 \examples{
  \dontrun{
- require(INLA)
- require(sp)
- require(grDevices)
+require(INLA)
+require(sp)
+require(grDevices)
 
- # generate a dataframe and INLA output for the function
- set.seed(10)
- coords <- data.frame(long = c(rnorm(70), rnorm(30, 3)), lat = rnorm(100))
- PA <- rep(c(0, 1), each = 50)
- x <- data.frame(x1 = rnorm(100),x2 = c(rnorm(70), rnorm(30, 2)))# x1 no relat., x2 pos. relat.
- dataf1 <- sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = PA, x))
- mesh <- INLA::inla.mesh.2d(loc = sp::coordinates(dataf1),max.edge = c(3, 3),cutoff = 1.3)
- spde <- INLA::inla.spde2.matern(mesh, alpha=2)#SPDE model is defined
- A <- INLA::inla.spde.make.A(mesh, loc = sp::coordinates(dataf1))#projector matrix
- dataframe <- data.frame(dataf1) #generate dataframe with response and covariate
- modform<-stats::as.formula(paste('y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'))
- stk <- INLA::inla.stack(data=list(y=dataframe$y),A=list(A, 1),
- effects=list(list(spatial.field=1:spde$n.spde),
- list(y.intercept=rep(1,length(dataframe$y)),covariate=dataframe[c(-1)])),tag='est')
- out <- INLA::inla(modform, family='normal',Ntrials = 1, data=INLA::inla.stack.data(stk, spde=spde),
-                   control.predictor = list(A=INLA::inla.stack.A(stk),link=1),
-                   control.compute = list( config=TRUE),control.inla = list(int.strategy='eb'))
- out.field <- INLA::inla.spde2.result(out,'spatial.field', spde, do.transf=TRUE)
- range.out <- INLA::inla.emarginal(function(x) x, out.field$marginals.range.nominal[[1]])
+# generate a dataframe and INLA output for the function
+set.seed(10)
+coords <- data.frame(long = c(rnorm(70), rnorm(30, 3)), lat = rnorm(100))
+PA <- rep(c(0, 1), each = 50)
+x <- data.frame(x1 = rnorm(100),x2 = c(rnorm(70), rnorm(30, 2)))# x1 no relat., x2 pos. relat.
+dataf1 <- sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = PA, x))
+mesh <- INLA::inla.mesh.2d(loc = sp::coordinates(dataf1),max.edge = c(3, 3),cutoff = 1.3)
+spde <- INLA::inla.spde2.matern(mesh, alpha=2)#SPDE model is defined
+A <- INLA::inla.spde.make.A(mesh, loc = sp::coordinates(dataf1))#projector matrix
+dataframe <- data.frame(dataf1) #generate dataframe with response and covariate
+modform<-stats::as.formula(paste('y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'))
+stk <- INLA::inla.stack(data=list(y=dataframe$y),A=list(A, 1),
+effects=list(list(spatial.field=1:spde$n.spde),
+list(y.intercept=rep(1,length(dataframe$y)),covariate=dataframe[c(-1)])),tag='est')
+out <- INLA::inla(modform, family='normal',Ntrials = 1, data=INLA::inla.stack.data(stk, spde=spde),
+                  control.predictor = list(A=INLA::inla.stack.A(stk),link=1),
+                  control.compute = list( config=TRUE),control.inla = list(int.strategy='eb'))
+out.field <- INLA::inla.spde2.result(out,'spatial.field', spde, do.transf=TRUE)
+range.out <- INLA::inla.emarginal(function(x) x, out.field$marginals.range.nominal[[1]])
 
- # parameters for the SLOO process
- ss <- 1#sample size to process (number of SLOO runs)
- rad <- range.out*0.15#define the radius of the spatial buffer surrounding the removed point
- mesh <- mesh#use the mesh of the model
- dataframe <- dataframe#dataframe with response 'y' and covariates 'x1', 'x2'
- dataframe$y <- round(runif(length(dataframe$y), 1, 12))#create positive discrete response
- modform <- stats::as.formula(paste('y ~ -1+ y.intercept + x1 + f(spatial.field, model=spde)'))
- family <- list('gamma')#one model
- ntrials <- round(max(dataframe$y,na.rm=TRUE))# for Binomial family
- alpha <- 0.05#rmse and mae confidence intervals (1-alpha)
+# parameters for the SLOO process
+ss <- 1#sample size to process (number of SLOO runs)
+rad <- range.out*0.15#define the radius of the spatial buffer surrounding the removed point
+mesh <- mesh#use the mesh of the model
+dataframe <- dataframe#dataframe with response 'y' and covariates 'x1', 'x2'
+dataframe$y <- round(runif(length(dataframe$y), 1, 12))#create positive discrete response
+modform <- stats::as.formula(paste('y ~ -1+ y.intercept + x1 + f(spatial.field, model=spde)'))
+family <- list('gamma')#one model
+ntrials <- round(max(dataframe$y,na.rm=TRUE))# for Binomial family
+alpha <- 0.05#rmse and mae confidence intervals (1-alpha)
 
- # run the function
- inlasloo(dataframe=dataframe, long='long', lat='lat',y= 'y', ss=ss, rad=rad,
- modform=modform,mesh=mesh,family=family,alpha=0.05,mae=TRUE,ds=TRUE,sqroot=FALSE)
+# run the function
+inlasloo(dataframe=dataframe, long='long', lat='lat',y= 'y', ss=ss, rad=rad,
+modform=modform,mesh=mesh,family=family,alpha=0.05,mae=TRUE,ds=TRUE,sqroot=FALSE)
 
- # SLOO function with one model formula (Binomial) and linear terms
- sloo1<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1, rad=0.1,
- ntrials=5,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
- family='binomial',alpha=0.05,mae=FALSE,ds=FALSE,sqroot=FALSE)
+# SLOO function with one model formula (Binomial) and linear terms
+sloo1<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1, rad=0.1,
+ntrials=5,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
+family='binomial',alpha=0.05,mae=FALSE,ds=FALSE,sqroot=FALSE)
 
  # SLOO function with two families (Binomial and Poisson) and linear terms
  sloo2<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1, rad=0.1,
-  ntrials=5,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
+ ntrials=5,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
  family=list('binomial','poisson'),alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
 
  # SLOO function with one family (Binomial) and two model formulas
  sloo3<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1,
-  rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
+ rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
  'y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'),
  mesh=mesh,family='binomial',alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
  
- # SLOO function with two families (Binomial and Poisson) and two model formulas
+ # SLOO function with two families (Binomial and Poisson), two model formulas, 
+ # and MAE, DS, and sqroot activated
  sloo4<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1,
-  rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
+ rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
  'y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'),
- mesh=mesh,list('binomial','poisson'),alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
+ mesh=mesh,list('binomial','poisson'),alpha=0.05,mae=TRUE,ds=TRUE,sqroot=TRUE)
  }
 }

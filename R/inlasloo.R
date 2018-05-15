@@ -26,71 +26,74 @@
 #' If FALSE, the rmse and/or mae are computed without transformation of the data.
 #' @param ... other arguments passed to methods
 #'
+#' @export
+#' 
 #' @name inlasloo
 #' 
 #' @examples 
 #'  \dontrun{
-#'  require(INLA)
-#'  require(sp)
-#'  require(grDevices)
+#' require(INLA)
+#' require(sp)
+#' require(grDevices)
 #' 
-#'  # generate a dataframe and INLA output for the function
-#'  set.seed(10)
-#'  coords <- data.frame(long = c(rnorm(70), rnorm(30, 3)), lat = rnorm(100))
-#'  PA <- rep(c(0, 1), each = 50)
-#'  x <- data.frame(x1 = rnorm(100),x2 = c(rnorm(70), rnorm(30, 2)))# x1 no relat., x2 pos. relat.
-#'  dataf1 <- sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = PA, x))
-#'  mesh <- INLA::inla.mesh.2d(loc = sp::coordinates(dataf1),max.edge = c(3, 3),cutoff = 1.3)
-#'  spde <- INLA::inla.spde2.matern(mesh, alpha=2)#SPDE model is defined
-#'  A <- INLA::inla.spde.make.A(mesh, loc = sp::coordinates(dataf1))#projector matrix
-#'  dataframe <- data.frame(dataf1) #generate dataframe with response and covariate
-#'  modform<-stats::as.formula(paste('y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'))
-#'  stk <- INLA::inla.stack(data=list(y=dataframe$y),A=list(A, 1),
-#'  effects=list(list(spatial.field=1:spde$n.spde),
-#'  list(y.intercept=rep(1,length(dataframe$y)),covariate=dataframe[c(-1)])),tag='est')
-#'  out <- INLA::inla(modform, family='normal',Ntrials = 1, data=INLA::inla.stack.data(stk, spde=spde),
-#'                    control.predictor = list(A=INLA::inla.stack.A(stk),link=1),
-#'                    control.compute = list( config=TRUE),control.inla = list(int.strategy='eb'))
-#'  out.field <- INLA::inla.spde2.result(out,'spatial.field', spde, do.transf=TRUE)
-#'  range.out <- INLA::inla.emarginal(function(x) x, out.field$marginals.range.nominal[[1]])
+#' # generate a dataframe and INLA output for the function
+#' set.seed(10)
+#' coords <- data.frame(long = c(rnorm(70), rnorm(30, 3)), lat = rnorm(100))
+#' PA <- rep(c(0, 1), each = 50)
+#' x <- data.frame(x1 = rnorm(100),x2 = c(rnorm(70), rnorm(30, 2)))# x1 no relat., x2 pos. relat.
+#' dataf1 <- sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = PA, x))
+#' mesh <- INLA::inla.mesh.2d(loc = sp::coordinates(dataf1),max.edge = c(3, 3),cutoff = 1.3)
+#' spde <- INLA::inla.spde2.matern(mesh, alpha=2)#SPDE model is defined
+#' A <- INLA::inla.spde.make.A(mesh, loc = sp::coordinates(dataf1))#projector matrix
+#' dataframe <- data.frame(dataf1) #generate dataframe with response and covariate
+#' modform<-stats::as.formula(paste('y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'))
+#' stk <- INLA::inla.stack(data=list(y=dataframe$y),A=list(A, 1),
+#' effects=list(list(spatial.field=1:spde$n.spde),
+#' list(y.intercept=rep(1,length(dataframe$y)),covariate=dataframe[c(-1)])),tag='est')
+#' out <- INLA::inla(modform, family='normal',Ntrials = 1, data=INLA::inla.stack.data(stk, spde=spde),
+#'                   control.predictor = list(A=INLA::inla.stack.A(stk),link=1),
+#'                   control.compute = list( config=TRUE),control.inla = list(int.strategy='eb'))
+#' out.field <- INLA::inla.spde2.result(out,'spatial.field', spde, do.transf=TRUE)
+#' range.out <- INLA::inla.emarginal(function(x) x, out.field$marginals.range.nominal[[1]])
+#'
+#' # parameters for the SLOO process
+#' ss <- 1#sample size to process (number of SLOO runs)
+#' rad <- range.out*0.15#define the radius of the spatial buffer surrounding the removed point
+#' mesh <- mesh#use the mesh of the model
+#' dataframe <- dataframe#dataframe with response 'y' and covariates 'x1', 'x2'
+#' dataframe$y <- round(runif(length(dataframe$y), 1, 12))#create positive discrete response
+#' modform <- stats::as.formula(paste('y ~ -1+ y.intercept + x1 + f(spatial.field, model=spde)'))
+#' family <- list('gamma')#one model
+#' ntrials <- round(max(dataframe$y,na.rm=TRUE))# for Binomial family
+#' alpha <- 0.05#rmse and mae confidence intervals (1-alpha)
+#'
+#' # run the function
+#' inlasloo(dataframe=dataframe, long='long', lat='lat',y= 'y', ss=ss, rad=rad,
+#' modform=modform,mesh=mesh,family=family,alpha=0.05,mae=TRUE,ds=TRUE,sqroot=FALSE)
+#'
+#' # SLOO function with one model formula (Binomial) and linear terms
+#' sloo1<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1, rad=0.1,
+#' ntrials=5,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
+#' family='binomial',alpha=0.05,mae=FALSE,ds=FALSE,sqroot=FALSE)
 #' 
-#'  # parameters for the SLOO process
-#'  ss <- 1#sample size to process (number of SLOO runs)
-#'  rad <- range.out*0.15#define the radius of the spatial buffer surrounding the removed point
-#'  mesh <- mesh#use the mesh of the model
-#'  dataframe <- dataframe#dataframe with response 'y' and covariates 'x1', 'x2'
-#'  dataframe$y <- round(runif(length(dataframe$y), 1, 12))#create positive discrete response
-#'  modform <- stats::as.formula(paste('y ~ -1+ y.intercept + x1 + f(spatial.field, model=spde)'))
-#'  family <- list('gamma')#one model
-#'  ntrials <- round(max(dataframe$y,na.rm=TRUE))# for Binomial family
-#'  alpha <- 0.05#rmse and mae confidence intervals (1-alpha)
+#' # SLOO function with two families (Binomial and Poisson) and linear terms
+#' sloo2<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1, rad=0.1,
+#' ntrials=5,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
+#' family=list('binomial','poisson'),alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
 #' 
-#'  # run the function
-#'  inlasloo(dataframe=dataframe, long='long', lat='lat',y= 'y', ss=ss, rad=rad,
-#'  modform=modform,mesh=mesh,family=family,alpha=0.05,mae=TRUE,ds=TRUE,sqroot=FALSE)
-#' 
-#'  # SLOO function with one model formula (Binomial) and linear terms
-#'  sloo1<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1, rad=0.1,
-#'  ntrials=5,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
-#'  family='binomial',alpha=0.05,mae=FALSE,ds=FALSE,sqroot=FALSE)
-#' 
-#'  # SLOO function with two families (Binomial and Poisson) and linear terms
-#'  sloo2<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1, rad=0.1,
-#'   ntrials=5,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
-#'  family=list('binomial','poisson'),alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
-#' 
-#'  # SLOO function with one family (Binomial) and two model formulas
-#'  sloo3<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1,
-#'   rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
-#'  'y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'),
-#'  mesh=mesh,family='binomial',alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
+#' # SLOO function with one family (Binomial) and two model formulas
+#' sloo3<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1,
+#' rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
+#' 'y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'),
+#' mesh=mesh,family='binomial',alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
 #'  
-#'  # SLOO function with two families (Binomial and Poisson) and two model formulas
-#'  sloo4<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1,
-#'   rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
-#'  'y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'),
-#'  mesh=mesh,list('binomial','poisson'),alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
-#'  }
+#' # SLOO function with two families (Binomial and Poisson), two model formulas, 
+#' # and MAE, DS, and sqroot activated
+#' sloo4<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1,
+#' rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
+#' 'y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'),
+#' mesh=mesh,list('binomial','poisson'),alpha=0.05,mae=TRUE,ds=TRUE,sqroot=TRUE)
+#' }
 
  
 inlasloo <- function(dataframe, long, lat, y, ss, rad, modform, 
@@ -171,6 +174,7 @@ inlasloo <- function(dataframe, long, lat, y, ss, rad, modform,
     # start of SLOO process
     test.df <- dataframe[sample(nrow(dataframe), ss), ]  #sample subset of size ss from the dataframe
     slooresults <- list()
+    slooresultsprint<- list()
     familys <- family
     modforms <- modform
     result.list <- expand.grid(familys, modforms)  #create all possible combinations of family and modforms
@@ -247,14 +251,22 @@ inlasloo <- function(dataframe, long, lat, y, ss, rad, modform,
             p.ds <- NA
         }  #good for general predictive model choice; stable for size imbalance in categorical predictors)
         
-        slooresults[[j]] <- list(Observed_response = test.df$y, Predictions = round(p, 3), Residuals = round(p.res, 3), RMSE = round(p.rmse, 
-            3), MAE = round(p.mae, 3), DS = round(as.numeric(p.ds), 3), family = family, ntrials = ntrials, test.df = test.df, Rownames_test = as.numeric(rownames(test.df)))
+        slooresults[[j]] <- list(Observed_response = test.df$y, Predictions = p, Residuals = p.res, RMSE = p.rmse, 
+            MAE = p.mae, DS = p.ds, family = family, ntrials = ntrials, test.df = test.df, Rownames_test = as.numeric(rownames(test.df)))
         
+        slooresultsprint <- slooresults[[j]]
+        slooresultsprint[[1]]<-round(as.numeric(slooresultsprint[[1]]),3)
+        slooresultsprint[[2]]<-round(as.numeric(slooresultsprint[[2]]),3)
+        slooresultsprint[[3]]<-round(as.numeric(slooresultsprint[[3]]),3)
+        slooresultsprint[[4]]<-round(as.numeric(slooresultsprint[[4]]),3)
+        slooresultsprint[[5]]<-round(as.numeric(slooresultsprint[[5]]),3)
+        slooresultsprint[[6]]<-round(as.numeric(slooresultsprint[[6]]),3)
+          
         message("\n")
         message("Summary of the Spatial leave-one-out analysis")
         message("#############################################", "\n")
         message("MODEL", "", j, "\n")
-        print(slooresults[[j]][-c(9:10)])
+        print(slooresultsprint[-c(9:10)])
         message("End summary of the Spatial leave-one-out analysis")
         message("#################################################", "\n")
     }  #end of j loop
@@ -268,9 +280,9 @@ inlasloo <- function(dataframe, long, lat, y, ss, rad, modform,
     }
     graphics::title(paste("SLOO with number of iterations =", "", ss), outer = TRUE)
     # end plot
-    slooresults <<- slooresults#save the results as an object
     # plot locations of observation and test points
     par(mfrow = c(1, 1), family = "mono")
     sloopoint(points = cbind(dataframe$long, dataframe$lat), test = cbind(slooresults[[1]]$test.df$long, slooresults[[1]]$test.df$lat), 
         rad = rad)
+    return(slooresults)#save the results as an object
 }
