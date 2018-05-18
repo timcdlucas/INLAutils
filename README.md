@@ -168,7 +168,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ 0 + Intercept + Base + Age + V4
-## <environment: 0xd4536c8>
+## <environment: 0x11e84220>
 ```
 
 ```r
@@ -190,7 +190,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ +Age + Trt + V4 + f(inla.group(Age), model = "rw2")
-## <environment: 0x13b08510>
+## <environment: 0xadb9040>
 ```
 
 ```r
@@ -213,14 +213,21 @@ mesh <- INLA::inla.mesh.2d(loc = sp::coordinates(dataf1), max.edge = c(3, 3),cut
 spde <- INLA::inla.spde2.matern(mesh, alpha=2)#SPDE model is defined
 A <- INLA::inla.spde.make.A(mesh, loc = sp::coordinates(dataf1))#projector matrix
 dataframe <- data.frame(dataf1) #generate dataframe with response and covariate
-modform<-stats::as.formula(paste('y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'))
-stk <- INLA::inla.stack(data=list(y=dataframe$y),A=list(A, 1),
-effects=list(list(spatial.field=1:spde$n.spde),
-list(y.intercept=rep(1,length(dataframe$y)),covariate=dataframe[c(-1)])),tag='est')
+modform <- 'y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'
+stk <- INLA::inla.stack(data = list(y = dataframe$y), A = list(A, 1),
+                        effects = list(list(spatial.field = 1:spde$n.spde),
+list(y.intercept=rep(1, length(dataframe$y)), covariate = dataframe[c(-1)])), tag='est')
 out <- INLA::inla(modform, family='normal',Ntrials = 1, data=INLA::inla.stack.data(stk, spde=spde),
-                  control.predictor = list(A=INLA::inla.stack.A(stk),link=1),
+                  control.predictor = list(A = INLA::inla.stack.A(stk),link=1),
                   control.compute = list( config=TRUE),control.inla = list(int.strategy='eb'))
-out.field <- INLA::inla.spde2.result(out,'spatial.field', spde, do.transf=TRUE)
+```
+
+```
+## Error: MPredictor == ny is not TRUE
+```
+
+```r
+out.field <- INLA::inla.spde2.result(out,'spatial.field', spde, do.transf = TRUE)
 range.out <- INLA::inla.emarginal(function(x) x, out.field$marginals.range.nominal[[1]])
 
 # parameters for the SLOO process
