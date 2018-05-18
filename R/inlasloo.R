@@ -24,7 +24,8 @@
 #' @param ds If TRUE, compute the Dawid-Sebastiani score (ds). If FALSE, does not compute ds.
 #' @param sqroot If TRUE, compute the square root of the observed and predicted values to generate the rmse and/or mae. 
 #' If FALSE, the rmse and/or mae are computed without transformation of the data.
-#' @param ... other arguments passed to methods
+#' @param print Logical to determine whether to print a summary of the results.
+#' @param ... other arguments passed to inla
 #'
 #' @export
 #' 
@@ -98,7 +99,7 @@
  
 inlasloo <- function(dataframe, long, lat, y, ss, rad, modform, 
                          family, mesh, ntrials = NULL, int.strategy = "eb", alpha = 0.05,
-                         mae = FALSE, ds = FALSE, sqroot = FALSE, ...) {
+                         mae = FALSE, ds = FALSE, sqroot = FALSE, print = FALSE, ...) {
     message("Identification of input parameters values")
     message("#########################################", "\n")
     if (class(modform) != "list") {
@@ -266,7 +267,7 @@ inlasloo <- function(dataframe, long, lat, y, ss, rad, modform,
         message("Summary of the Spatial leave-one-out analysis")
         message("#############################################", "\n")
         message("MODEL", "", j, "\n")
-        print(slooresultsprint[-c(9:10)])
+        if (print == TRUE) print(slooresultsprint[-c(9:10)])
         message("End summary of the Spatial leave-one-out analysis")
         message("#################################################", "\n")
     }  #end of j loop

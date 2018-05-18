@@ -6,7 +6,7 @@
 \usage{
 inlasloo(dataframe, long, lat, y, ss, rad, modform, family, mesh,
   ntrials = NULL, int.strategy = "eb", alpha = 0.05, mae = FALSE,
-  ds = FALSE, sqroot = FALSE, ...)
+  ds = FALSE, sqroot = FALSE, print = FALSE, ...)
 }
 \arguments{
 \item{dataframe}{dataframe including the variables to be used}
@@ -40,7 +40,9 @@ inlasloo(dataframe, long, lat, y, ss, rad, modform, family, mesh,
 \item{sqroot}{If TRUE, compute the square root of the observed and predicted values to generate the rmse and/or mae. 
 If FALSE, the rmse and/or mae are computed without transformation of the data.}
 
-\item{...}{other arguments passed to methods}
+\item{print}{Logical to determine whether to print a summary of the results.}
+
+\item{...}{other arguments passed to inla}
 }
 \description{
 This function will apply a spatial leave-one-out cross-validation (SLOO-CV) of one or several models running on INLA.
