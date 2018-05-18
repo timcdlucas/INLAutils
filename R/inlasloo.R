@@ -8,21 +8,21 @@
 #' In addition, one can provide further INLA specifications, such as int.strategy='eb'.
 #' SLOO-CV computes the root mean square error (rmse) with a tolerance for confidence interval defined by the user. 
 #' In option, other scores can be computed, such as the mean absolute error, dawid-sebastiani or using square root of the data.
-#' @param dataframe = dataframe including the variables to be used 
-#' @param long = Character string giving the name of the longitude variable
-#' @param lat = Character string giving the name of the latitude variable
-#' @param y = Character string giving the names of the response
-#' @param ss = Numeric value giving the sample size to process (number of SLOO runs)
-#' @param rad = Numeric value giving the radius for the spatial buffer around left-out point's location
-#' @param modform = Formula or list of Formula for the model or models, respectively in INLA format
-#' @param family = Character string or list of Character string giving the family or families, respectively of the response in INLA format 
-#' @param mesh = inla.mesh object, consisting in triangle mesh to be defined using INLA.
-#' @param ntrials = Numeric value (1,2,...) setting the number of trials for a Binomial family
-#' @param int.strategy = Character string giving INLA integration strategy
-#' @param alpha = Numeric value (0,...,1) giving the threshold for computing confidence intervals (1-alpha) of rmse and mae estimation
-#' @param mae = If TRUE, compute the mean absolute error (mae) and the root mean square error (rmse). If FALSE, compute the rmse only.
-#' @param ds = If TRUE, compute the Dawid-Sebastiani score (ds). If FALSE, does not compute ds.
-#' @param sqroot = If TRUE, compute the square root of the observed and predicted values to generate the rmse and/or mae. 
+#' @param dataframe dataframe including the variables to be used 
+#' @param long Character string giving the name of the longitude variable
+#' @param lat Character string giving the name of the latitude variable
+#' @param y Character string giving the names of the response
+#' @param ss Numeric value giving the sample size to process (number of SLOO runs)
+#' @param rad Numeric value giving the radius for the spatial buffer around left-out point's location
+#' @param modform Formula or list of Formula for the model or models, respectively in INLA format
+#' @param family Character string or list of Character string giving the family or families, respectively of the response in INLA format 
+#' @param mesh inla.mesh object, consisting in triangle mesh to be defined using INLA.
+#' @param ntrials Numeric value (1,2,...) setting the number of trials for a Binomial family
+#' @param int.strategy Character string giving INLA integration strategy
+#' @param alpha Numeric value (0,...,1) giving the threshold for computing confidence intervals (1-alpha) of rmse and mae estimation
+#' @param mae If TRUE, compute the mean absolute error (mae) and the root mean square error (rmse). If FALSE, compute the rmse only.
+#' @param ds If TRUE, compute the Dawid-Sebastiani score (ds). If FALSE, does not compute ds.
+#' @param sqroot If TRUE, compute the square root of the observed and predicted values to generate the rmse and/or mae. 
 #' If FALSE, the rmse and/or mae are computed without transformation of the data.
 #' @param ... other arguments passed to methods
 #'

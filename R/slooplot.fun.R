@@ -1,13 +1,13 @@
 #' A function to plot outputs of a spatial leave-one-out cross-validation in R using INLA.
 #' 
 #' This function plots the output of a spatial leave-one-out cross-validation (SLOO-CV) of one or several models running on INLA.
-#' @param df = dataframe (output of inla.sloo), which include the "Observed_response", "Predictions", "Residuals", RMSE, MAE (optional), and DS(optional)
-#' @param alpha = Numeric value (0,...,1) giving the threshold for computing confidence intervals (1-alpha) of rmse and mae estimation
-#' @param mae = If TRUE, compute the mean absolute error (mae) and the root mean square error (rmse). If FALSE, compute the rmse only.
-#' @param ds = If TRUE, compute the Dawid-Sebastiani score (ds). If FALSE, does not compute ds.
-#' @param family = Character string or list of Character string giving the family or families, respectively of the response in INLA format 
-#' @param ntrials = Numeric value (1,2,...) setting the number of trials for a Binomial family
-#' @param sqroot = If TRUE, compute the square root of the observed and predicted values to generate the rmse and/or mae. 
+#' @param df dataframe (output of inla.sloo), which include the "Observed_response", "Predictions", "Residuals", RMSE, MAE (optional), and DS(optional)
+#' @param alpha Numeric value (0,...,1) giving the threshold for computing confidence intervals (1-alpha) of rmse and mae estimation
+#' @param mae If TRUE, compute the mean absolute error (mae) and the root mean square error (rmse). If FALSE, compute the rmse only.
+#' @param ds If TRUE, compute the Dawid-Sebastiani score (ds). If FALSE, does not compute ds.
+#' @param family Character string or list of Character string giving the family or families, respectively of the response in INLA format 
+#' @param ntrials Numeric value (1,2,...) setting the number of trials for a Binomial family
+#' @param sqroot If TRUE, compute the square root of the observed and predicted values to generate the rmse and/or mae. 
 #' 
 #' @export
 #' @name slooplot.fun

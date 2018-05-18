@@ -9,35 +9,35 @@ inlasloo(dataframe, long, lat, y, ss, rad, modform, family, mesh,
   ds = FALSE, sqroot = FALSE, ...)
 }
 \arguments{
-\item{dataframe}{= dataframe including the variables to be used}
+\item{dataframe}{dataframe including the variables to be used}
 
-\item{long}{= Character string giving the name of the longitude variable}
+\item{long}{Character string giving the name of the longitude variable}
 
-\item{lat}{= Character string giving the name of the latitude variable}
+\item{lat}{Character string giving the name of the latitude variable}
 
-\item{y}{= Character string giving the names of the response}
+\item{y}{Character string giving the names of the response}
 
-\item{ss}{= Numeric value giving the sample size to process (number of SLOO runs)}
+\item{ss}{Numeric value giving the sample size to process (number of SLOO runs)}
 
-\item{rad}{= Numeric value giving the radius for the spatial buffer around left-out point's location}
+\item{rad}{Numeric value giving the radius for the spatial buffer around left-out point's location}
 
-\item{modform}{= Formula or list of Formula for the model or models, respectively in INLA format}
+\item{modform}{Formula or list of Formula for the model or models, respectively in INLA format}
 
-\item{family}{= Character string or list of Character string giving the family or families, respectively of the response in INLA format}
+\item{family}{Character string or list of Character string giving the family or families, respectively of the response in INLA format}
 
-\item{mesh}{= inla.mesh object, consisting in triangle mesh to be defined using INLA.}
+\item{mesh}{inla.mesh object, consisting in triangle mesh to be defined using INLA.}
 
-\item{ntrials}{= Numeric value (1,2,...) setting the number of trials for a Binomial family}
+\item{ntrials}{Numeric value (1,2,...) setting the number of trials for a Binomial family}
 
-\item{int.strategy}{= Character string giving INLA integration strategy}
+\item{int.strategy}{Character string giving INLA integration strategy}
 
-\item{alpha}{= Numeric value (0,...,1) giving the threshold for computing confidence intervals (1-alpha) of rmse and mae estimation}
+\item{alpha}{Numeric value (0,...,1) giving the threshold for computing confidence intervals (1-alpha) of rmse and mae estimation}
 
-\item{mae}{= If TRUE, compute the mean absolute error (mae) and the root mean square error (rmse). If FALSE, compute the rmse only.}
+\item{mae}{If TRUE, compute the mean absolute error (mae) and the root mean square error (rmse). If FALSE, compute the rmse only.}
 
-\item{ds}{= If TRUE, compute the Dawid-Sebastiani score (ds). If FALSE, does not compute ds.}
+\item{ds}{If TRUE, compute the Dawid-Sebastiani score (ds). If FALSE, does not compute ds.}
 
-\item{sqroot}{= If TRUE, compute the square root of the observed and predicted values to generate the rmse and/or mae. 
+\item{sqroot}{If TRUE, compute the square root of the observed and predicted values to generate the rmse and/or mae. 
 If FALSE, the rmse and/or mae are computed without transformation of the data.}
 
 \item{...}{other arguments passed to methods}
@@ -98,22 +98,22 @@ sloo1<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1, rad=0.
 ntrials=5,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
 family='binomial',alpha=0.05,mae=FALSE,ds=FALSE,sqroot=FALSE)
 
- # SLOO function with two families (Binomial and Poisson) and linear terms
- sloo2<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1, rad=0.1,
- ntrials=5,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
- family=list('binomial','poisson'),alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
+# SLOO function with two families (Binomial and Poisson) and linear terms
+sloo2<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1, rad=0.1,
+ntrials=5,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
+family=list('binomial','poisson'),alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
 
- # SLOO function with one family (Binomial) and two model formulas
- sloo3<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1,
- rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
- 'y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'),
- mesh=mesh,family='binomial',alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
+# SLOO function with one family (Binomial) and two model formulas
+sloo3<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1,
+rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
+'y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'),
+mesh=mesh,family='binomial',alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
  
- # SLOO function with two families (Binomial and Poisson), two model formulas, 
- # and MAE, DS, and sqroot activated
- sloo4<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1,
- rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
- 'y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'),
- mesh=mesh,list('binomial','poisson'),alpha=0.05,mae=TRUE,ds=TRUE,sqroot=TRUE)
- }
+# SLOO function with two families (Binomial and Poisson), two model formulas, 
+# and MAE, DS, and sqroot activated
+sloo4<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1,
+rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
+'y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'),
+mesh=mesh,list('binomial','poisson'),alpha=0.05,mae=TRUE,ds=TRUE,sqroot=TRUE)
+}
 }
