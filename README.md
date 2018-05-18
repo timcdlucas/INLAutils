@@ -3,6 +3,8 @@ INLAutils
 
 [![Build Status](https://travis-ci.org/timcdlucas/INLAutils.svg)](https://travis-ci.org/timcdlucas/INLAutils)
 [![codecov.io](https://codecov.io/github/timcdlucas/INLAutils/coverage.svg?branch=master)](https://codecov.io/github/timcdlucas/INLAutils?branch=master)
+[![cran version](http://www.r-pkg.org/badges/version/INLAutils)](https://cran.rstudio.com/web/packages/INLAutls) 
+
 
 A package containing utility functions for the `R-INLA` package.
 
@@ -23,6 +25,9 @@ then install `INLAutils`
 
 
 ```r
+# From CRAN
+install.packages('INLAutils')
+
 # From github
 library(devtools)
 install_github('timcdlucas/INLAutils')
@@ -32,7 +37,7 @@ library(INLA)
 library(INLAutils)
 ```
 
-Unfortunately, CRAN have now decided that as INLA is not on CRAN, INLAutils cannot be on CRAN either (a totally reasonable position). 
+
 
 
 
@@ -163,7 +168,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ 0 + Intercept + Base + Age + V4
-## <environment: 0x0000000029d71cf0>
+## <environment: 0x15c3ffe0>
 ```
 
 ```r
@@ -185,26 +190,182 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ +Age + Trt + V4 + f(inla.group(Age), model = "rw2")
-## <environment: 0x000000001d543948>
+## <environment: 0x15024960>
 ```
 
 ```r
  result = inla(formula, family="poisson", data = Epil)
 ```
 
+### Spatial leave-one-out cross-validation (sloo-cv)
+
+The package `INLAutils` provides an approach to run sloo-cv for INLA objects.
 
 
+```r
+# generate a dataframe and INLA output for the function
+set.seed(10)
+coords <- data.frame(long = c(rnorm(70), rnorm(30, 3)), lat = rnorm(100))
+PA <- rep(c(0, 1), each = 50)
+x <- data.frame(x1 = rnorm(100), x2 = c(rnorm(70), rnorm(30, 2)))# x1 no relat., x2 pos. relat.
+dataf1 <- sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = PA, x))
+mesh <- INLA::inla.mesh.2d(loc = sp::coordinates(dataf1), max.edge = c(3, 3),cutoff = 1.3)
+spde <- INLA::inla.spde2.matern(mesh, alpha=2)#SPDE model is defined
+A <- INLA::inla.spde.make.A(mesh, loc = sp::coordinates(dataf1))#projector matrix
+dataframe <- data.frame(dataf1) #generate dataframe with response and covariate
+modform<-stats::as.formula(paste('y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'))
+stk <- INLA::inla.stack(data=list(y=dataframe$y),A=list(A, 1),
+effects=list(list(spatial.field=1:spde$n.spde),
+list(y.intercept=rep(1,length(dataframe$y)),covariate=dataframe[c(-1)])),tag='est')
+out <- INLA::inla(modform, family='normal',Ntrials = 1, data=INLA::inla.stack.data(stk, spde=spde),
+                  control.predictor = list(A=INLA::inla.stack.A(stk),link=1),
+                  control.compute = list( config=TRUE),control.inla = list(int.strategy='eb'))
+out.field <- INLA::inla.spde2.result(out,'spatial.field', spde, do.transf=TRUE)
+range.out <- INLA::inla.emarginal(function(x) x, out.field$marginals.range.nominal[[1]])
 
+# parameters for the SLOO process
+ss <- 1 #sample size to process (number of SLOO runs)
+rad <- range.out*0.15 #define the radius of the spatial buffer surrounding the removed point
+dataframe$y <- round(runif(length(dataframe$y), 1, 12)) #create positive discrete response
+modform <- y ~ -1+ y.intercept + x1 + f(spatial.field, model=spde)
+family <- list('gamma') #one model
+alpha <- 0.05 #rmse and mae confidence intervals (1-alpha)
 
-### Domain specific applications
+# run the function
+cv <- inlasloo(dataframe = dataframe, 
+               long = 'long', lat = 'lat',
+               y = 'y', ss = ss, 
+               rad = rad, modform = modform,
+               mesh = mesh, family = family,
+               mae = TRUE)
+```
 
+```
+## Identification of input parameters values
+```
 
+```
+## #########################################
+```
 
-To do list
-----------
+```
+## number of models = 1
+```
 
-* `inla.sdm`
-* ggplot2 version of `plot.inla.tremesh`
-* Make good `plot` and `ggplot` functions for plotting the Gaussian Random Field with value and uncertainty.
-* `stepINLA`
+```
+## number of rows in dataframe = 100
+```
+
+```
+## longitude = long
+```
+
+```
+## latitude = lat
+```
+
+```
+## response = y
+```
+
+```
+## samplig size = 1
+```
+
+```
+## radius of disc of removed observations = 1.3
+```
+
+```
+## RMSE and MAE computed
+```
+
+```
+## DS not computed
+```
+
+```
+## square root for RMSE and MAE not computed
+```
+
+```
+## INLA family distribution of response = gamma
+```
+
+```
+## family is not Binomial so ntrials is not specified
+```
+
+```
+## number of mesh vertices = 37
+```
+
+```
+## INLA integration strategy =  empirical bayes
+```
+
+```
+## default 95% credible intervals of scores
+```
+
+```
+## End identification of input parameters values
+```
+
+```
+## #############################################
+```
+
+```
+## 
+```
+
+```
+## Summary of the Spatial leave-one-out analysis
+```
+
+```
+## #############################################
+```
+
+```
+## MODEL1
+```
+
+```
+## $Observed_response
+## [1] 9
+## 
+## $Predictions
+## [1] 7.338
+## 
+## $Residuals
+## [1] 1.662
+## 
+## $RMSE
+## [1] 1.662
+## 
+## $MAE
+## [1] 1.662
+## 
+## $DS
+## [1] NA
+## 
+## $family
+## [1] "gamma"
+## 
+## $ntrials
+## NULL
+```
+
+```
+## End summary of the Spatial leave-one-out analysis
+```
+
+```
+## #################################################
+```
+
+![plot of chunk inlasloo](figure/inlasloo-1.png)![plot of chunk inlasloo](figure/inlasloo-2.png)
+
 
