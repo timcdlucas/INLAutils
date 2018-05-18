@@ -1,8 +1,11 @@
-# resubmission
+# resubmission after archive
 
-* Remove ggfortify dependency as it was archived on CRAN.
+* The previous version of this package was archived as a dependency,
+  ggfortify was archived.
+* I have removed ggfortify as a  dependency.
 * The package still heavily relies on INLA which is not on CRAN.
   My CI tests it with and without INLA installed with no issues.
+  https://travis-ci.org/timcdlucas/INLAutils/builds/334919171?utm_source=github_status&utm_medium=notification
   Last time I submitted, the CRAN Solaris machine gave test errors.
   I was told to fix the issue, but when I explained the issue and asked
   for advice on how to proceed, I got no reply. Therefore I am unsure
