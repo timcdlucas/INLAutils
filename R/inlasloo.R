@@ -262,14 +262,15 @@ inlasloo <- function(dataframe, long, lat, y, ss, rad, modform,
         slooresultsprint[[4]]<-round(as.numeric(slooresultsprint[[4]]),3)
         slooresultsprint[[5]]<-round(as.numeric(slooresultsprint[[5]]),3)
         slooresultsprint[[6]]<-round(as.numeric(slooresultsprint[[6]]),3)
-          
-        message("\n")
-        message("Summary of the Spatial leave-one-out analysis")
-        message("#############################################", "\n")
-        message("MODEL", "", j, "\n")
-        if (print == TRUE) print(slooresultsprint[-c(9:10)])
-        message("End summary of the Spatial leave-one-out analysis")
-        message("#################################################", "\n")
+        if (print == TRUE) {
+          message("\n")
+          message("Summary of the Spatial leave-one-out analysis")
+          message("#############################################", "\n")
+          message("MODEL", "", j, "\n")
+          print(slooresultsprint[-c(9:10)])
+          message("End summary of the Spatial leave-one-out analysis")
+          message("#################################################", "\n")
+        }
     }  #end of j loop
     
     # plot locations of observation and test points

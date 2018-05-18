@@ -168,7 +168,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ 0 + Intercept + Base + Age + V4
-## <environment: 0x11e84220>
+## <environment: 0xe4b25a0>
 ```
 
 ```r
@@ -190,7 +190,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ +Age + Trt + V4 + f(inla.group(Age), model = "rw2")
-## <environment: 0xadb9040>
+## <environment: 0x11b48a40>
 ```
 
 ```r
