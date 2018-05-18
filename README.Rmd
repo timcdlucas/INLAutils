@@ -170,7 +170,7 @@ There are some helper functions for general analyses.
 
 The package `INLAutils` provides an approach to run sloo-cv for INLA objects.
 
-```{r inlasloo, eval = TRUE, echo = TRUE, results = 'hide', messages = FALSE}
+```{r inlasloo, eval = TRUE, echo = TRUE, results = 'hide', message = FALSE}
   
 # generate a dataframe and INLA output for the function
 set.seed(10)

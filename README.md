@@ -168,7 +168,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ 0 + Intercept + Base + Age + V4
-## <environment: 0x6fb2c80>
+## <environment: 0xe8e2cf0>
 ```
 
 ```r
@@ -190,7 +190,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ +Age + Trt + V4 + f(inla.group(Age), model = "rw2")
-## <environment: 0x1319d838>
+## <environment: 0xf773c40>
 ```
 
 ```r
@@ -238,106 +238,6 @@ cv <- inlasloo(dataframe = dataframe,
                rad = rad, modform = modform,
                mesh = mesh, family = family,
                mae = TRUE)
-```
-
-```
-## Identification of input parameters values
-```
-
-```
-## #########################################
-```
-
-```
-## number of models = 1
-```
-
-```
-## number of rows in dataframe = 100
-```
-
-```
-## longitude = long
-```
-
-```
-## latitude = lat
-```
-
-```
-## response = y
-```
-
-```
-## samplig size = 20
-```
-
-```
-## radius of disc of removed observations = 1.3
-```
-
-```
-## RMSE and MAE computed
-```
-
-```
-## DS not computed
-```
-
-```
-## square root for RMSE and MAE not computed
-```
-
-```
-## INLA family distribution of response = gamma
-```
-
-```
-## family is not Binomial so ntrials is not specified
-```
-
-```
-## number of mesh vertices = 37
-```
-
-```
-## INLA integration strategy =  empirical bayes
-```
-
-```
-## default 95% credible intervals of scores
-```
-
-```
-## End identification of input parameters values
-```
-
-```
-## #############################################
-```
-
-```
-## 
-```
-
-```
-## Summary of the Spatial leave-one-out analysis
-```
-
-```
-## #############################################
-```
-
-```
-## MODEL1
-```
-
-```
-## End summary of the Spatial leave-one-out analysis
-```
-
-```
-## #################################################
 ```
 
 ![plot of chunk inlasloo](figure/inlasloo-1.png)![plot of chunk inlasloo](figure/inlasloo-2.png)
