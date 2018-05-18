@@ -168,7 +168,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ 0 + Intercept + Base + Age + V4
-## <environment: 0x15c3ffe0>
+## <environment: 0xd4536c8>
 ```
 
 ```r
@@ -190,7 +190,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ +Age + Trt + V4 + f(inla.group(Age), model = "rw2")
-## <environment: 0x15024960>
+## <environment: 0x13b08510>
 ```
 
 ```r
@@ -224,7 +224,7 @@ out.field <- INLA::inla.spde2.result(out,'spatial.field', spde, do.transf=TRUE)
 range.out <- INLA::inla.emarginal(function(x) x, out.field$marginals.range.nominal[[1]])
 
 # parameters for the SLOO process
-ss <- 1 #sample size to process (number of SLOO runs)
+ss <- 20 #sample size to process (number of SLOO runs)
 rad <- range.out*0.15 #define the radius of the spatial buffer surrounding the removed point
 dataframe$y <- round(runif(length(dataframe$y), 1, 12)) #create positive discrete response
 modform <- y ~ -1+ y.intercept + x1 + f(spatial.field, model=spde)
@@ -269,7 +269,7 @@ cv <- inlasloo(dataframe = dataframe,
 ```
 
 ```
-## samplig size = 1
+## samplig size = 20
 ```
 
 ```
@@ -330,32 +330,6 @@ cv <- inlasloo(dataframe = dataframe,
 
 ```
 ## MODEL1
-```
-
-```
-## $Observed_response
-## [1] 9
-## 
-## $Predictions
-## [1] 7.338
-## 
-## $Residuals
-## [1] 1.662
-## 
-## $RMSE
-## [1] 1.662
-## 
-## $MAE
-## [1] 1.662
-## 
-## $DS
-## [1] NA
-## 
-## $family
-## [1] "gamma"
-## 
-## $ntrials
-## NULL
 ```
 
 ```
