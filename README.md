@@ -66,6 +66,22 @@ So `INLAutils` provides an `autoplot` method for INLA objects.
 
 ![plot of chunk autoplot](figure/autoplot-1.png)
 
+Because these are ggplot2 objects, we can easily modify them.
+
+```r
+  p <- autoplot(result)
+```
+
+![plot of chunk autoplot2](figure/autoplot2-1.png)
+
+```r
+  # Find data names with names(p[[1]]$data)
+  p[[1]] + 
+    geom_line(aes(colour = var), size = 1.3) +
+    palettetown::scale_colour_poke(pokemon = 'Oddish', spread = 4)
+```
+
+![plot of chunk autoplot2](figure/autoplot2-2.png)
 
 There is an autoplot method for INLA SPDE meshes.
 
@@ -168,7 +184,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ 0 + Intercept + Base + Age + V4
-## <environment: 0xe8e2cf0>
+## <environment: 0x12ced760>
 ```
 
 ```r
@@ -190,7 +206,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ +Age + Trt + V4 + f(inla.group(Age), model = "rw2")
-## <environment: 0xf773c40>
+## <environment: 0xac1a068>
 ```
 
 ```r
@@ -206,17 +222,20 @@ The package `INLAutils` provides an approach to run sloo-cv for INLA objects.
 # generate a dataframe and INLA output for the function
 set.seed(10)
 coords <- data.frame(long = c(rnorm(70), rnorm(30, 3)), lat = rnorm(100))
-PA <- rep(c(0, 1), each = 50)
-x <- data.frame(x1 = rnorm(100), x2 = c(rnorm(70), rnorm(30, 2)))# x1 no relat., x2 pos. relat.
-dataf1 <- sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = PA, x))
+x <- data.frame(x1 = rnorm(100), x2 = rnorm(100))# x1 no relat., x2 pos. relat.
+y <- x$x2 * 2 + rnorm(100)
+dataf1 <- sp::SpatialPointsDataFrame(coords = coords, data = data.frame(y = y, x))
 mesh <- INLA::inla.mesh.2d(loc = sp::coordinates(dataf1), max.edge = c(3, 3),cutoff = 1.3)
 spde <- INLA::inla.spde2.matern(mesh, alpha=2)#SPDE model is defined
 A <- INLA::inla.spde.make.A(mesh, loc = sp::coordinates(dataf1))#projector matrix
 dataframe <- data.frame(dataf1) #generate dataframe with response and covariate
 modform<-stats::as.formula(paste('y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'))
-stk <- INLA::inla.stack(data=list(y=dataframe$y),A=list(A, 1),
-effects=list(list(spatial.field=1:spde$n.spde),
-list(y.intercept=rep(1,length(dataframe$y)),covariate=dataframe[c(-1)])),tag='est')
+stk <- INLA::inla.stack(data = list(y=dataframe$y), 
+                        A = list(A, 1),
+                        effects = list(list(spatial.field=1:spde$n.spde),
+                        list(y.intercept = rep(1, length(dataframe$y)),
+                             covariate = dataframe[c(-1)])), 
+                        tag='est')
 out <- INLA::inla(modform, family='normal',Ntrials = 1, data=INLA::inla.stack.data(stk, spde=spde),
                   control.predictor = list(A =INLA::inla.stack.A(stk),link=1),
                   control.compute = list( config=TRUE),control.inla = list(int.strategy='eb'))
@@ -228,7 +247,6 @@ ss <- 20 #sample size to process (number of SLOO runs)
 rad <- range.out*0.15 #define the radius of the spatial buffer surrounding the removed point
 dataframe$y <- round(runif(length(dataframe$y), 1, 12)) #create positive discrete response
 modform <- y ~ -1+ y.intercept + x1 + f(spatial.field, model=spde)
-family <- list('gamma') #one model
 alpha <- 0.05 #rmse and mae confidence intervals (1-alpha)
 
 # run the function
@@ -236,7 +254,7 @@ cv <- inlasloo(dataframe = dataframe,
                long = 'long', lat = 'lat',
                y = 'y', ss = ss, 
                rad = rad, modform = modform,
-               mesh = mesh, family = family,
+               mesh = mesh, family = 'normal',
                mae = TRUE)
 ```
 

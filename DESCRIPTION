@@ -28,7 +28,8 @@ Suggests:
     knitr,
     testthat,
     INLA,
-    dismo
+    dismo,
+    palettetown
 LazyData: true
 URL: https://github.com/timcdlucas/INLAutils
 BugReports: https://github.com/timcdlucas/INLAutils/issues
