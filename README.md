@@ -61,18 +61,12 @@ So `INLAutils` provides an `autoplot` method for INLA objects.
                f(Ind, model="iid") + f(rand,model="iid")
       result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
      
-      autoplot(result)
+      p <- autoplot(result)
 ```
 
 ![plot of chunk autoplot](figure/autoplot-1.png)
 
 Because these are ggplot2 objects, we can easily modify them.
-
-```r
-  p <- autoplot(result)
-```
-
-![plot of chunk autoplot2](figure/autoplot2-1.png)
 
 ```r
   # Find data names with names(p[[1]]$data)
@@ -81,7 +75,7 @@ Because these are ggplot2 objects, we can easily modify them.
     palettetown::scale_colour_poke(pokemon = 'Oddish', spread = 4)
 ```
 
-![plot of chunk autoplot2](figure/autoplot2-2.png)
+![plot of chunk autoplot2](figure/autoplot2-1.png)
 
 There is an autoplot method for INLA SPDE meshes.
 
@@ -184,7 +178,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ 0 + Intercept + Base + Age + V4
-## <environment: 0x12ced760>
+## <environment: 0x11a22ff8>
 ```
 
 ```r
@@ -206,7 +200,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ +Age + Trt + V4 + f(inla.group(Age), model = "rw2")
-## <environment: 0xac1a068>
+## <environment: 0x8d00078>
 ```
 
 ```r

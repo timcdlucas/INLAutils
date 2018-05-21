@@ -63,12 +63,11 @@ So `INLAutils` provides an `autoplot` method for INLA objects.
                f(Ind, model="iid") + f(rand,model="iid")
       result = inla(formula, family="poisson", data = Epil, control.predictor = list(compute = TRUE))
      
-      autoplot(result)
+      p <- autoplot(result)
 ```
 
 Because these are ggplot2 objects, we can easily modify them.
 ```{r autoplot2, eval = TRUE, echo = TRUE}
-  p <- autoplot(result)
   # Find data names with names(p[[1]]$data)
   p[[1]] + 
     geom_line(aes(colour = var), size = 1.3) +
