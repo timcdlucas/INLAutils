@@ -66,6 +66,14 @@ So `INLAutils` provides an `autoplot` method for INLA objects.
       autoplot(result)
 ```
 
+Because these are ggplot2 objects, we can easily modify them.
+```{r autoplot2, eval = TRUE, echo = TRUE}
+  p <- autoplot(result)
+  # Find data names with names(p[[1]]$data)
+  p[[1]] + 
+    geom_line(aes(colour = var), size = 1.3) +
+    palettetown::scale_colour_poke(pokemon = 'Oddish', spread = 4)
+```
 
 There is an autoplot method for INLA SPDE meshes.
 
