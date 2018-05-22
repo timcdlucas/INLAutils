@@ -178,7 +178,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ 0 + Intercept + Base + Age + V4
-## <environment: 0x11a22ff8>
+## <environment: 0xb6b15b0>
 ```
 
 ```r
@@ -200,7 +200,7 @@ There are some helper functions for general analyses.
 
 ```
 ## y ~ +Age + Trt + V4 + f(inla.group(Age), model = "rw2")
-## <environment: 0x8d00078>
+## <environment: 0xc1d0688>
 ```
 
 ```r
@@ -237,11 +237,10 @@ out.field <- INLA::inla.spde2.result(out,'spatial.field', spde, do.transf = TRUE
 range.out <- INLA::inla.emarginal(function(x) x, out.field$marginals.range.nominal[[1]])
 
 # parameters for the SLOO process
-ss <- 20 #sample size to process (number of SLOO runs)
-rad <- range.out*0.15 #define the radius of the spatial buffer surrounding the removed point
-dataframe$y <- round(runif(length(dataframe$y), 1, 12)) #create positive discrete response
-modform <- y ~ -1+ y.intercept + x1 + f(spatial.field, model=spde)
-alpha <- 0.05 #rmse and mae confidence intervals (1-alpha)
+ss <- 20 # sample size to process (number of SLOO runs)
+rad <- min(range.out, max(dist(coords)) / 4) # define the radius of the spatial buffer surrounding the removed point. Make sure it isn't bigger than 25% of the study area (Le Rest 2014)
+modform <- y ~ -1+ y.intercept + x1 + x2 + f(spatial.field, model=spde)
+alpha <- 0.05 # rmse and mae confidence intervals (1-alpha)
 
 # run the function
 cv <- inlasloo(dataframe = dataframe, 
