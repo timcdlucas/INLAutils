@@ -24,7 +24,7 @@ sloopoint <- function(points = points, test = test, rad = rad) {
     plot(points, pch = 3, xlab = "longitude", ylab = "latitude")
     points(test, pch = 19, col = "red", cex = 3.5, bg = "black")
     graphics::text(test, labels = pchname, cex = 0.75, col = "white")
-    graphics::symbols(x = test[, 1], y = test[, 2], circles = as.vector(rep(rad, length(test[, 1]))),fg = "red", add = TRUE)
+    graphics::symbols(x = test[, 1], y = test[, 2], circles = rep(rad, length(test[, 1])), fg = "red", add = TRUE, inches = FALSE)
     graphics::legend("topright", legend = c("Observed locations", paste0("Predicted location(s) and removed disc(s)\nwith iteration number at centroid:{1,...,", 
         length(test[, 1]), "}")), pch = c(3, 19), col = c("black", "red"), cex = 0.75, text.col = c("black", "red"))
 }
