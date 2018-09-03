@@ -118,7 +118,7 @@ inlasloo <- function(dataframe, long, lat, y, ss, rad, modform,
     message(ifelse(missing(long), "long not specified", paste("longitude =", long)))
     message(ifelse(missing(lat), "lat not specified", paste("latitude =", lat)))
     message(ifelse(missing(y), "y not specified", paste("response =", y)))
-    message(ifelse(missing(ss), "ss not specified", paste("samplig size =", ss)))
+    message(ifelse(missing(ss), "ss not specified", paste("sampling size =", ss)))
     message(ifelse(missing(rad), "rad not specified", paste("radius of disc of removed observations =", round(rad, 2))))
     message(ifelse(mae == TRUE, "RMSE and MAE computed", "RMSE computed"))
     message(ifelse(ds == TRUE, "DS computed", "DS not computed"))
