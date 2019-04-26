@@ -23,7 +23,7 @@ Imports:
     cowplot
 Depends:
     ggplot2
-Additional_repositories: https://www.math.ntnu.no/inla/R/stable
+Additional_repositories: https://inla.r-inla-download.org/R/stable
 Suggests:
     knitr,
     testthat,
