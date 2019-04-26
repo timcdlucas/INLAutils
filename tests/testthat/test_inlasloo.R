@@ -2,6 +2,9 @@ context('Test inlasloo')
 
 
 test_that('Basic sloo usage works', {
+  
+  skip_if_not_installed('INLA')
+  
   # generate a dataframe and INLA output for the function
   set.seed(10)
   coords <- data.frame(long = c(rnorm(70), rnorm(30, 3)), lat = rnorm(100))
@@ -53,6 +56,8 @@ test_that('Basic sloo usage works', {
 
 
 test_that('x y column names do not break things.', {
+  
+  skip_if_not_installed('INLA')
   
   library(sp)
   data(meuse)
