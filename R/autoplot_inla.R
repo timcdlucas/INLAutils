@@ -386,10 +386,15 @@ extractPriors <- function(x){
 # Return priors evaluated at points on x to be plotted.
 #   Doesn't account for free_x very well?
 evalPriors <- function(x, allMarginals, priors){
-    priorsEval <- data.frame(x = rep(seq(min(allMarginals$x), 
-                                         max(allMarginals$x), 
-                                         length.out = 1000),
-                                     by = length(x$names.fixed)),
+
+    # Make x ranges that match the ranges from the inla object
+    x_mins <- by(allMarginals, allMarginals$var, function(x) min(x$x))
+    x_maxs <- by(allMarginals, allMarginals$var, function(x) max(x$x))
+    
+    x_vals <- sapply(seq_along(x_mins), function(x) seq(x_mins[x], x_maxs[x], length.out = 1000))
+    x_vals <- as.vector(x_vals)
+  
+    priorsEval <- data.frame(x = x_vals,
                              var = rep(x$names.fixed, each = 1000),
                              mean = rep(priors$mean, each = 1000),
                              prec = rep(priors$prec, each = 1000))
