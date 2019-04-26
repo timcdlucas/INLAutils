@@ -134,7 +134,7 @@ ggplot_inla_residuals <- function(inla.model, observed, CI = FALSE, binwidth = N
 
   plots[[1]] <- ggplot2::ggplot(df, ggplot2::aes_string(x = 'predicted.p.value')) + 
                   ggplot2::geom_histogram(binwidth = binwidth) +
-                  ggplot2::labs(y = "Count", x = "Posterior probability") +
+                  ggplot2::labs(y = "Count", x = "Posterior probability")
     
 
   plots[[2]] <- ggplot2::ggplot(df, ggplot2::aes_string(x = 'predicted', y = 'observed')) +
