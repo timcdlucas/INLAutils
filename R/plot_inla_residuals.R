@@ -54,7 +54,7 @@ plot_inla_residuals <- function(inla.model, observed){
   # Set up plot area
   par(mfrow = c(1,2))
   # Plot histogram of predicted p values
-  hist(predicted.p.value,main = "", xlab = "Posterior predictive p-value")
+  hist(predicted.p.value,main = "", xlab = "Posterior predictive probability")
 
   # Plot observed vs residuals 
   plot(x = inla.model$summary.fitted.values$mean[1:length(observed)], y = observed,
@@ -133,7 +133,9 @@ ggplot_inla_residuals <- function(inla.model, observed, CI = FALSE, binwidth = N
   plots <- list()
 
   plots[[1]] <- ggplot2::ggplot(df, ggplot2::aes_string(x = 'predicted.p.value')) + 
-                  ggplot2::geom_histogram(binwidth = binwidth)
+                  ggplot2::geom_histogram(binwidth = binwidth) +
+                  ggplot2::labs(y = "Count", x = "Posterior probability") +
+    
 
   plots[[2]] <- ggplot2::ggplot(df, ggplot2::aes_string(x = 'predicted', y = 'observed')) +
                   ggplot2::geom_point() +
