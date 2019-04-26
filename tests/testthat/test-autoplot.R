@@ -51,3 +51,18 @@ test_that('Check which arg more carefully.', {
 })
 
 
+
+test_that('Plot prior different cases', {
+  
+  library(sp)
+  data(meuse)
+  
+  meuse <- cbind(meuse, y.intercept = 1)
+  
+  modform <- cadmium ~ -1 + y.intercept + elev + dist + om
+  
+  meuse_model <- inla(modform, data = meuse)
+  
+  expect_error(autoplot(meuse_model, priors = T), NA)
+  
+})

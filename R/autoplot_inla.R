@@ -378,7 +378,7 @@ extractPriors <- function(x){
     priors[names(nondef), 'mean'] <- x$.args$control.fixed$prec[[1]]
   }
 
-
+  priors <- priors[complete.cases(priors), ]
   
   return(priors)
 }
