@@ -162,10 +162,18 @@ inlasloo <- function(dataframe, long, lat, y, ss, rad, modform,
     rad <- rad
     ss <- ss
     int.strategy <- int.strategy
+    
     # data tranformation for further computing
-    colnames(dataframe)[colnames(dataframe) == y] <- "y"
-    colnames(dataframe)[colnames(dataframe) == long] <- "long"
-    colnames(dataframe)[colnames(dataframe) == lat] <- "lat"
+    
+    # Stupid way of getting correct column names without collisions (almost certainly).
+    colnames(dataframe)[colnames(dataframe) == y] <- "tmp_y_column_name_eeeeee"
+    colnames(dataframe)[colnames(dataframe) == long] <- "tmp_long_column_name_eeeeee"
+    colnames(dataframe)[colnames(dataframe) == lat] <- "tmp_lat_column_name_eeeeee"
+    
+    colnames(dataframe)[colnames(dataframe) == "tmp_y_column_name_eeeeee"] <- "y"
+    colnames(dataframe)[colnames(dataframe) == "tmp_long_column_name_eeeeee"] <- "long"
+    colnames(dataframe)[colnames(dataframe) == "tmp_lat_column_name_eeeeee"] <- "lat"
+    
     measurevar <- "y"  #replace response by 'y' in model formula
     for (i in 1:length(modform)) {
         modform[i] <- gsub(".*~", "", modform[i])
