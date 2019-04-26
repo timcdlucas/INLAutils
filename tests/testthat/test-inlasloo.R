@@ -101,6 +101,7 @@ test_that('x y column names do not break things.', {
                    rad = rad, 
                    modform = list(modform, modform2),
                    mesh = mesh, family = 'normal',
+                   int.strategy = 'inla',
                    mae = TRUE)
     , NA)
   
