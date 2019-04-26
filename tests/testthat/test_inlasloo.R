@@ -84,14 +84,15 @@ test_that('x y column names do not break things.', {
   # Make sure it isn't bigger than 25% of the study area (see Le Rest et al.(2014))
   alpha <- 0.05 # rmse and mae confidence intervals (1-alpha)
   
-  # run the function to compare both models
-  cv <- inlasloo(dataframe = dataframe, 
-                 long = 'x', lat = 'y',
-                 y = 'cadmium', ss = ss, 
-                 rad = rad, 
-                 modform = list(modform, modform2),
-                 mesh = mesh, family = 'normal',
-                 mae = TRUE)
-  
+  expect_error(
+    # run the function to compare both models
+    cv <- inlasloo(dataframe = dataframe, 
+                   long = 'x', lat = 'y',
+                   y = 'cadmium', ss = ss, 
+                   rad = rad, 
+                   modform = list(modform, modform2),
+                   mesh = mesh, family = 'normal',
+                   mae = TRUE)
+    , NA)
   
 })
