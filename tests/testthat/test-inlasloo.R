@@ -152,4 +152,4 @@ test_that('slooplot works.', {
 
 
 
-}
+})
