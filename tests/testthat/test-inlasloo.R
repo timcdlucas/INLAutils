@@ -95,13 +95,13 @@ test_that('x y column names do not break things.', {
   
   #expect_error(
     # run the function to compare both models
-    cv <- inlasloo(dataframe = dataframe, 
-                   long = 'x', lat = 'y',
-                   y = 'cadmium', ss = ss, 
-                   rad = rad, 
-                   modform = list(modform, modform2),
-                   mesh = mesh, family = 'normal',
-                   mae = TRUE)
+    #cv <- inlasloo(dataframe = dataframe, 
+     #              long = 'x', lat = 'y',
+      #             y = 'cadmium', ss = ss, 
+       #            rad = rad, 
+        #           modform = list(modform, modform2),
+         #          mesh = mesh, family = 'normal',
+          #         mae = TRUE)
    # , NA)
   
 })
