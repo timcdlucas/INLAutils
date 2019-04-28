@@ -53,6 +53,8 @@ test_that('Check which arg more carefully.', {
 
 
 test_that('Plot prior different cases', {
+
+  skip_if_not_installed('INLA')
   
   library(sp)
   data(meuse)
@@ -63,6 +65,6 @@ test_that('Plot prior different cases', {
   
   meuse_model <- inla(modform, data = meuse)
   
-  expect_error(autoplot(meuse_model, priors = T), NA)
+  expect_error(autoplot(meuse_model, priors = TRUE), NA)
   
 })
