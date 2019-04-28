@@ -66,7 +66,7 @@ test_that('x y column names do not break things.', {
   library(sp)
   data(meuse)
 
-  coords <- meuse[, c('x', 'y')] %>% scale
+  coords <- scale(meuse[, c('x', 'y')])
   dataf1 <- sp::SpatialPointsDataFrame(coords = coords, data = meuse[, -c(1:2)])
   
   mesh <- inla.mesh.2d(loc = sp::coordinates(dataf1), max.edge = c(0.2, 0.5), cutoff = 0.1)
@@ -101,8 +101,9 @@ test_that('x y column names do not break things.', {
                    rad = rad, 
                    modform = list(modform, modform2),
                    mesh = mesh, family = 'normal',
-                   int.strategy = 'inla',
                    mae = TRUE)
     , NA)
   
 })
+
+
