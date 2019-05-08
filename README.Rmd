@@ -23,9 +23,6 @@ install.packages("INLA", repos="https://www.math.ntnu.no/inla/R/stable")
 then install `INLAutils`
 
 ```{r installINLAutils, eval = FALSE}
-# From CRAN
-install.packages('INLAutils')
-
 # From github
 library(devtools)
 install_github('timcdlucas/INLAutils')
