@@ -25,9 +25,6 @@ then install `INLAutils`
 
 
 ```r
-# From CRAN
-install.packages('INLAutils')
-
 # From github
 library(devtools)
 install_github('timcdlucas/INLAutils')
