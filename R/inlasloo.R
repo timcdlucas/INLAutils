@@ -181,7 +181,9 @@ inlasloo <- function(dataframe, long, lat, y, ss, rad, modform,
     }
     
     # start of SLOO process
-    test.df <- dataframe[sample(nrow(dataframe), ss), ]  #sample subset of size ss from the dataframe
+    test_rows <- sample(nrow(dataframe), ss)
+    test.df <- dataframe[test_rows, ]  #sample subset of size ss from the dataframe
+    test.ntrials <- ntrials[test_rows]
     slooresults <- list()
     slooresultsprint<- list()
     familys <- family
@@ -224,7 +226,8 @@ inlasloo <- function(dataframe, long, lat, y, ss, rad, modform,
                 
                 
             } else if (family == "binomial") {
-                out <- INLA::inla(modform, family = "binomial", Ntrials = ntrials, data = datastk, control.predictor = list(A = INLA::inla.stack.A(stk.full), 
+                ntrials_sub <- c(ntrials[sqrt((dataframe$long - test.df[i, ]$long)^2 + (dataframe$lat - test.df[i, ]$lat)^2) > rad], test.ntrials[i])
+                out <- INLA::inla(modform, family = "binomial", Ntrials = ntrials_sub, data = datastk, control.predictor = list(A = INLA::inla.stack.A(stk.full), 
                   link = 1), control.inla = list(int.strategy = int.strategy), ...)
                 indpred <- INLA::inla.stack.index(stk.full, "pred.y")$data
                 pall <- round(out$summary.fitted.values[indpred, ], 3)  #get mean, sd, etc of predicted reponse at test.df location
@@ -261,7 +264,7 @@ inlasloo <- function(dataframe, long, lat, y, ss, rad, modform,
         }  #good for general predictive model choice; stable for size imbalance in categorical predictors)
         
         slooresults[[j]] <- list(Observed_response = test.df$y, Predictions = p, Residuals = p.res, RMSE = p.rmse, 
-            MAE = p.mae, DS = p.ds, family = family, ntrials = ntrials, test.df = test.df, Rownames_test = as.numeric(rownames(test.df)))
+            MAE = p.mae, DS = p.ds, family = family, ntrials = test.ntrials, test.df = test.df, Rownames_test = as.numeric(rownames(test.df)))
         
         slooresultsprint <- slooresults[[j]]
         slooresultsprint[[1]]<-round(as.numeric(slooresultsprint[[1]]),3)
@@ -284,7 +287,7 @@ inlasloo <- function(dataframe, long, lat, y, ss, rad, modform,
     # plot locations of observation and test points
     par(mfrow = grDevices::n2mfrow(length(result.list)), family = "mono", oma = c(0, 0, 2, 0))
     for (j in 1:(length(result.list))) {
-        slooplot(alpha = alpha, df = slooresults[[j]], mae = mae, ds = ds, family = as.character(result.list[[j]][1]), ntrials = ntrials, 
+        slooplot(alpha = alpha, df = slooresults[[j]], mae = mae, ds = ds, family = as.character(result.list[[j]][1]), ntrials = test.ntrials, 
             sqroot = sqroot)
         graphics::mtext(paste0("MODEL", "", j), side = 3, adj = 1, cex = 0.8, line = 1.6)
     }
