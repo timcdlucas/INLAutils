@@ -95,6 +95,7 @@ test_that('xy names work', {
                    y = 'y1', ss = 3, 
                    rad = rad, modform = modform,
                    mesh = mesh, family = 'normal',
+                   ds = TRUE,
                    mae = TRUE), 
     NA)
   
@@ -108,6 +109,7 @@ test_that('xy names work', {
                    y = 'y1', ss = 3, 
                    rad = rad, modform = list(modform, modform2),
                    mesh = mesh, family = 'normal',
+                   ds = TRUE,
                    mae = TRUE), 
     NA)
   
@@ -120,33 +122,75 @@ test_that('slooplot works.', {
 
   df<-data.frame(Residuals=runif(10, 0.0, 1.0),RMSE=runif(10, 0.0, 2.0),MAE=runif(10, 0.0, 2.0),
                  Observed_response= sample(c(0,1), replace=TRUE, size=10),
-                 Predictions=runif(10, 0.0, 1.0))
+                 Predictions=runif(10, 0.0, 1.0), DS = runif(10, 0.0, 1.0))
   alpha = 0.05
 
   expect_error(
-    slooplot1<-slooplot.fun(df=df, alpha=0.05,mae=TRUE,ds=FALSE,family='bernoulli',sqroot=FALSE)
+    slooplot1<-slooplot.fun(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='bernoulli',sqroot=FALSE)
     , NA)
 
 
   expect_error(
-    slooplot1<-slooplot.fun(df=df, alpha=0.05,mae=TRUE,ds=FALSE,family='normal',sqroot=FALSE)
+    slooplot1<-slooplot.fun(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='normal',sqroot=FALSE)
     , NA)
 
   expect_error(
-    slooplot1<-slooplot.fun(df=df, alpha=0.05,mae=TRUE,ds=FALSE,family='gamma',sqroot=FALSE)
+    slooplot1<-slooplot.fun(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='gamma',sqroot=FALSE)
     , NA)
 
   expect_error(
-    slooplot1<-slooplot.fun(df=df, alpha=0.05,mae=TRUE,ds=FALSE,family='normal',sqroot=TRUE)
+    slooplot1<-slooplot.fun(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='normal',sqroot=TRUE)
     , NA)
 
   expect_error(
-    slooplot1<-slooplot.fun(df=df, alpha=0.05,mae=TRUE,ds=FALSE,family='binomial',sqroot=FALSE)
+    slooplot1<-slooplot.fun(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='binomial',sqroot=FALSE)
     , NA)
 
   expect_error(
-    slooplot1<-slooplot.fun(df=df, alpha=0.05,mae=TRUE,ds=FALSE,family='poisson',sqroot=FALSE)
+    slooplot1<-slooplot.fun(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='poisson',sqroot=FALSE)
     , NA)
+
+
+  expect_error(
+    slooplot1<-slooplot.fun(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='poisson',sqroot=FALSE)
+    , NA)
+
+
+
+
+
+  # This other function that is basically a clone. Guess we should fix this.
+
+  expect_error(
+    slooplot1<-slooplot(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='bernoulli',sqroot=FALSE)
+    , NA)
+
+
+  expect_error(
+    slooplot1<-slooplot(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='normal',sqroot=FALSE)
+    , NA)
+
+  expect_error(
+    slooplot1<-slooplot(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='gamma',sqroot=FALSE)
+    , NA)
+
+  expect_error(
+    slooplot1<-slooplot(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='normal',sqroot=TRUE)
+    , NA)
+
+  expect_error(
+    slooplot1<-slooplot(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='binomial',sqroot=FALSE)
+    , NA)
+
+  expect_error(
+    slooplot1<-slooplot(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='poisson',sqroot=FALSE)
+    , NA)
+
+
+  expect_error(
+    slooplot1<-slooplot(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='poisson',sqroot=FALSE)
+    , NA)
+
 
 
 
