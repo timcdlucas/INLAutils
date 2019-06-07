@@ -352,13 +352,16 @@ plot_marginals_fitted <- function(x){
 extractPriors <- function(x){
   priors <- data.frame(var = x$names.fixed, mean = NA, prec = NA)
   row.names(priors) <- x$names.fixed
-  priors['(Intercept)', 2:3] <- c(x$.args$control.fixed$mean.intercept, x$.args$control.fixed$prec.intercept)
 
+  priors['(Intercept)', 2:3] <- c(x$.args$control.fixed$mean.intercept, x$.args$control.fixed$prec.intercept)
+  if(priors['(Intercept)', 3] == 0) priors['(Intercept)', 3] <- 1e-9
+  
+  
   # find and combine prior means    
   if(length(x$.args$control.fixed$mean) == 1){
     priors$mean[!priors$var == '(Intercept)'] <- x$.args$control.fixed$mean
   } else if(length(x$.args$control.fixed$mean) == length(x$names.fixed) - 1) {
-    priors$mean[names(x$.args$control.fixed$mean)] <- unlist(x$.args$control.fixed$mean)
+    priors[names(x$.args$control.fixed$mean), 'mean'] <- unlist(x$.args$control.fixed$mean)
   } else {
     priors$mean[!priors$var == '(Intercept)'] <- x$.args$control.fixed$mean$default
     # Take mean values that are not defulat
@@ -370,7 +373,7 @@ extractPriors <- function(x){
   if(length(x$.args$control.fixed$prec) == 1){
     priors$prec[!priors$var == '(Intercept)'] <- x$.args$control.fixed$prec
   } else if(length(x$.args$control.fixed$prec) == length(x$names.fixed) - 1) {
-    priors$prec[names(x$.args$control.fixed$prec)] <- unlist(x$.args$control.fixed$prec)
+    priors[names(x$.args$control.fixed$prec), 'prec'] <- unlist(x$.args$control.fixed$prec)
   } else {
     priors$prec[!priors$var == '(Intercept)'] <- x$.args$control.fixed$prec$default
     # Take mean values that are not defulat
