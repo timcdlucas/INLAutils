@@ -67,4 +67,11 @@ test_that('Plot prior different cases', {
   
   expect_error(autoplot(meuse_model, priors = TRUE), NA)
   
+  
+  modform2 <- cadmium ~ elev + dist + om
+  
+  meuse_model2 <- inla(modform2, data = meuse)
+  expect_error(autoplot(meuse_model2, priors = TRUE), NA)
+  
+  
 })
