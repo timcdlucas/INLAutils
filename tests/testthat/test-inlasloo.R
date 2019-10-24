@@ -60,7 +60,7 @@ test_that('Basic sloo usage works', {
 
 
 test_that('Other likelihoods', {
-  skip()
+  skip('codecovtest')
   skip_if_not_installed('INLA')
   
   library(INLA)
