@@ -19,14 +19,13 @@ r_packages:
  - cowplot
  - devtools
  
- coverage:
+coverage:
   status:
     project:
-      default:
-        # basic
-        target: 80
-        threshold: 10
-
+      default: false  # disable the default status that measures entire project
+      tests:  # declare a new status context "tests"
+        target: 80%  # we always want 80% coverage here
+        
 after_success:
  - Rscript -e 'library(covr);codecov()'
 
