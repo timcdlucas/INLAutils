@@ -18,6 +18,14 @@ r_packages:
  - tidyr
  - cowplot
  - devtools
+ 
+ coverage:
+  status:
+    project:
+      default:
+        # basic
+        target: 80
+        threshold: 10
 
 after_success:
  - Rscript -e 'library(covr);codecov()'
