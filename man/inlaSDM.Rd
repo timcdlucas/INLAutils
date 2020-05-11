@@ -4,12 +4,20 @@
 \alias{inlaSDM}
 \title{Fit INLA species distribution models.}
 \usage{
-inlaSDM(dataframe, predictors, include = 1:raster::nlayers(predictors),
-  step = FALSE, invariant = "0 + Intercept", cross_validation = FALSE,
-  cv_folds = 5, spatial = TRUE, num.threads = 1,
-  meshvals = list(inner.max.edge = max(raster::res(predictors)) * 10,
-  outer.max.edge = max(raster::res(predictors)) * 100, cutoff = 0, inner.offset
-  = -0.1, outer.offset = -0.3))
+inlaSDM(
+  dataframe,
+  predictors,
+  include = 1:raster::nlayers(predictors),
+  step = FALSE,
+  invariant = "0 + Intercept",
+  cross_validation = FALSE,
+  cv_folds = 5,
+  spatial = TRUE,
+  num.threads = 1,
+  meshvals = list(inner.max.edge = max(raster::res(predictors)) * 10, outer.max.edge =
+    max(raster::res(predictors)) * 100, cutoff = 0, inner.offset = -0.1, outer.offset =
+    -0.3)
+)
 }
 \arguments{
 \item{dataframe}{A \code{\link[sp]{SpatialPointsDataFrame}} containing the presence absence values}

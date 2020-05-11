@@ -33,4 +33,4 @@ Suggests:
 LazyData: true
 URL: https://github.com/timcdlucas/INLAutils
 BugReports: https://github.com/timcdlucas/INLAutils/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 7.0.2

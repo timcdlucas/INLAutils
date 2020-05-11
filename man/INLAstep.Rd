@@ -4,10 +4,22 @@
 \alias{INLAstep}
 \title{Perform stepwise variable selection with INLA}
 \usage{
-INLAstep(fam1 = "gaussian", dataf, spde = NULL, in_stack = NULL,
-  invariant = "0 + Intercept", direction = c("forwards", "backwards"),
-  y = NULL, y2 = NULL, include = NULL, powerl = 1, inter = 1,
-  thresh = 2, num.threads = 1, ...)
+INLAstep(
+  fam1 = "gaussian",
+  dataf,
+  spde = NULL,
+  in_stack = NULL,
+  invariant = "0 + Intercept",
+  direction = c("forwards", "backwards"),
+  y = NULL,
+  y2 = NULL,
+  include = NULL,
+  powerl = 1,
+  inter = 1,
+  thresh = 2,
+  num.threads = 1,
+  ...
+)
 }
 \arguments{
 \item{fam1}{String defining the likelihood familiy.}

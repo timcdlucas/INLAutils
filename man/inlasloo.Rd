@@ -4,9 +4,26 @@
 \alias{inlasloo}
 \title{A function to run a spatial leave-one-out cross-validation in R using INLA.}
 \usage{
-inlasloo(dataframe, long, lat, y, ss, rad, modform, family, mesh,
-  ntrials = NULL, int.strategy = "eb", alpha = 0.05, mae = FALSE,
-  ds = FALSE, sqroot = FALSE, print = FALSE, ...)
+inlasloo(
+  dataframe,
+  long,
+  lat,
+  y,
+  ss,
+  rad,
+  modform,
+  family,
+  mesh,
+  ntrials = NULL,
+  int.strategy = "eb",
+  alpha = 0.05,
+  mae = FALSE,
+  ds = FALSE,
+  sqroot = FALSE,
+  print = FALSE,
+  plot = TRUE,
+  ...
+)
 }
 \arguments{
 \item{dataframe}{dataframe including the variables to be used}
@@ -27,7 +44,7 @@ inlasloo(dataframe, long, lat, y, ss, rad, modform, family, mesh,
 
 \item{mesh}{inla.mesh object, consisting in triangle mesh to be defined using INLA.}
 
-\item{ntrials}{Numeric value (1,2,...) setting the number of trials for a Binomial family}
+\item{ntrials}{vector of positive integers c(1,2,...) setting the number of trials for a Binomial family}
 
 \item{int.strategy}{Character string giving INLA integration strategy}
 
@@ -41,6 +58,8 @@ inlasloo(dataframe, long, lat, y, ss, rad, modform, family, mesh,
 If FALSE, the rmse and/or mae are computed without transformation of the data.}
 
 \item{print}{Logical to determine whether to print a summary of the results.}
+
+\item{plot}{Logical to determine whether to print the plot of the results.}
 
 \item{...}{other arguments passed to inla}
 }
@@ -88,7 +107,7 @@ dataframe <- dataframe#dataframe with response 'y' and covariates 'x1', 'x2'
 dataframe$y <- round(runif(length(dataframe$y), 1, 12))#create positive discrete response
 modform <- stats::as.formula(paste('y ~ -1+ y.intercept + x1 + f(spatial.field, model=spde)'))
 family <- list('gamma')#one model
-ntrials <- round(max(dataframe$y,na.rm=TRUE))# for Binomial family
+ntrials <- rep(round(max(dataframe$y,na.rm=TRUE)*2),length(dataframe$y))# create ntrials for Binomial family
 alpha <- 0.05#rmse and mae confidence intervals (1-alpha)
 
 # run the function
@@ -97,24 +116,24 @@ modform=modform,mesh=mesh,family=family,alpha=0.05,mae=TRUE,ds=TRUE,sqroot=FALSE
 
 # SLOO function with one model formula (Binomial) and linear terms
 sloo1<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1, rad=0.1,
-ntrials=5,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
+ntrials=ntrials,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
 family='binomial',alpha=0.05,mae=FALSE,ds=FALSE,sqroot=FALSE)
 
 # SLOO function with two families (Binomial and Poisson) and linear terms
 sloo2<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1, rad=0.1,
-ntrials=5,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
+ntrials=ntrials,modform='y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)',mesh=mesh,
 family=list('binomial','poisson'),alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
 
 # SLOO function with one family (Binomial) and two model formulas
 sloo3<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1,
-rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
+rad=0.1, ntrials=ntrials,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
 'y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'),
 mesh=mesh,family='binomial',alpha=0.05,mae=TRUE,ds=FALSE,sqroot=FALSE)
  
 # SLOO function with two families (Binomial and Poisson), two model formulas, 
 # and MAE, DS, and sqroot activated
 sloo4<-inlasloo(dataframe=dataframe, long='long', lat='lat', y='y', ss=1,
-rad=0.1, ntrials=5,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
+rad=0.1, ntrials=ntrials,modform=list('y ~ -1+ y.intercept + f(spatial.field, model=spde)',
 'y ~ -1+ x1 + x2 + y.intercept + f(spatial.field, model=spde)'),
 mesh=mesh,list('binomial','poisson'),alpha=0.05,mae=TRUE,ds=TRUE,sqroot=TRUE)
 }

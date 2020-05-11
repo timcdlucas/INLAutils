@@ -4,22 +4,30 @@
 \alias{slooplot}
 \title{A function to plot outputs of a spatial leave-one-out cross-validation in R using INLA.}
 \usage{
-slooplot(alpha, df, mae, ds, family, ntrials, sqroot)
+slooplot(
+  alpha = alpha,
+  df = df,
+  mae = mae,
+  ds = ds,
+  family = family,
+  ntrials = ntrials,
+  sqroot = sqroot
+)
 }
 \arguments{
-\item{alpha}{= Numeric value (0,...,1) giving the threshold for computing confidence intervals (1-alpha) of rmse and mae estimation}
+\item{alpha}{Numeric value (0,...,1) giving the threshold for computing confidence intervals (1-alpha) of rmse and mae estimation}
 
-\item{df}{= dataframe (output of inla.sloo), which include the "Observed_response", "Predictions", "Residuals", RMSE, MAE (optional), and DS(optional)}
+\item{df}{dataframe (output of inla.sloo), which include the "Observed_response", "Predictions", "Residuals", RMSE, MAE (optional), and DS(optional)}
 
-\item{mae}{= If TRUE, compute the mean absolute error (mae) and the root mean square error (rmse). If FALSE, compute the rmse only.}
+\item{mae}{If TRUE, compute the mean absolute error (mae) and the root mean square error (rmse). If FALSE, compute the rmse only.}
 
-\item{ds}{= If TRUE, compute the Dawid-Sebastiani score (ds). If FALSE, does not compute ds.}
+\item{ds}{If TRUE, compute the Dawid-Sebastiani score (ds). If FALSE, does not compute ds.}
 
-\item{family}{= Character string or list of Character string giving the family or families, respectively of the response in INLA format}
+\item{family}{Character string or list of Character string giving the family or families, respectively of the response in INLA format}
 
-\item{ntrials}{= Numeric value (1,2,...) setting the number of trials for a Binomial family}
+\item{ntrials}{Numeric value (1,2,...) setting the number of trials for a Binomial family}
 
-\item{sqroot}{= If TRUE, compute the square root of the observed and predicted values to generate the rmse and/or mae.}
+\item{sqroot}{If TRUE, compute the square root of the observed and predicted values to generate the rmse and/or mae.}
 }
 \description{
 This function plots the output of a spatial leave-one-out cross-validation (SLOO-CV) of one or several models running on INLA.
