@@ -4,8 +4,13 @@
 \alias{ggplot_inla_residuals2}
 \title{Plot residuals against covariate values for INLA model using ggplot2}
 \usage{
-ggplot_inla_residuals2(inla.model, observed, CI = FALSE, se = TRUE,
-  method = "auto")
+ggplot_inla_residuals2(
+  inla.model,
+  observed,
+  CI = FALSE,
+  se = TRUE,
+  method = "auto"
+)
 }
 \arguments{
 \item{inla.model}{An inla object}

@@ -198,7 +198,7 @@ test_that('slooplot works.', {
     , NA)
 
   expect_error(
-    slooplot1<-slooplot.fun(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='binomial',sqroot=FALSE)
+    slooplot1<-slooplot.fun(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='binomial',sqroot=FALSE, ntrial = rep(10, 10))
     , NA)
 
   expect_error(
@@ -234,7 +234,7 @@ test_that('slooplot works.', {
     , NA)
 
   expect_error(
-    slooplot1<-slooplot(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='binomial',sqroot=FALSE)
+    slooplot1<-slooplot(df=df, alpha=0.05,mae=TRUE,ds=TRUE,family='binomial',sqroot=FALSE, ntrials = c(10, 10))
     , NA)
 
   expect_error(

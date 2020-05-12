@@ -3,7 +3,6 @@
 \docType{package}
 \name{INLAutils}
 \alias{INLAutils}
-\alias{INLAutils-package}
 \title{Utility Functions for INLA: Additional Plots and Support for ggplot2.}
 \description{
 Utility Functions for INLA: Additional Plots and Support for ggplot2.

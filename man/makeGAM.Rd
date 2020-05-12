@@ -4,8 +4,13 @@
 \alias{makeGAM}
 \title{A function to create the formulae needed to fit GAMs in INLA in R.}
 \usage{
-makeGAM(varnames, response = "y", invariant = "0 + Intercept",
-  linear = TRUE, returnstring = TRUE)
+makeGAM(
+  varnames,
+  response = "y",
+  invariant = "0 + Intercept",
+  linear = TRUE,
+  returnstring = TRUE
+)
 }
 \arguments{
 \item{varnames}{Character vector giving the names of the variables to be used.}

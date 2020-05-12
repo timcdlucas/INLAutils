@@ -4,8 +4,13 @@
 \alias{ggplot_projection_shapefile}
 \title{Plot a raster (either a raster layer or a inla projection matrix) with a shape file}
 \usage{
-ggplot_projection_shapefile(raster = NULL, projector = NULL,
-  spatialpolygons = NULL, mesh = NULL, shapecol = "white")
+ggplot_projection_shapefile(
+  raster = NULL,
+  projector = NULL,
+  spatialpolygons = NULL,
+  mesh = NULL,
+  shapecol = "white"
+)
 }
 \arguments{
 \item{raster}{Either a RasterLayer or a matrix 
