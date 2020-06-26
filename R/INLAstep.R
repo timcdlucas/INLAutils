@@ -171,7 +171,8 @@ INLAstep<-function(fam1 = "gaussian",
         data = INLA::inla.stack.data(in_stack, spde = spde),
         control.predictor = list(A = INLA::inla.stack.A(in_stack), 
                                  compute = TRUE),
-        control.fixed = list(expand.factor.strategy = "inla")
+        control.fixed = list(expand.factor.strategy = "inla"),
+        ...
       )
 
             rmse <-
@@ -268,7 +269,8 @@ INLAstep<-function(fam1 = "gaussian",
     data = INLA::inla.stack.data(in_stack, spde = spde),
     control.predictor = list(A = INLA::inla.stack.A(in_stack), 
                              compute = TRUE),
-    control.fixed = list(expand.factor.strategy = "inla")
+    control.fixed = list(expand.factor.strategy = "inla"),
+    ...
   )
   
   
