@@ -5,7 +5,7 @@ sudo: required
 
 
 # cache packages to speed up builds
-#cache: packages
+cache: packages
 
 r_packages:
  - covr
@@ -18,7 +18,15 @@ r_packages:
  - tidyr
  - cowplot
  - devtools
-
+ 
+coverage:
+  status:
+    project:
+      default: false  # disable the default status that measures entire project
+      tests:  # declare a new status context "tests"
+        target: 99%  # we always want 80% coverage here
+        threshold: 7%
+        
 after_success:
  - Rscript -e 'library(covr);codecov()'
 
