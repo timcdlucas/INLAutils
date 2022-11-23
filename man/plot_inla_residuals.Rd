@@ -25,7 +25,8 @@ Plot residuals of observed vs predicted values for INLA model
  formula = y ~ Trt + Age + V4 +
           f(Ind, model="iid") + f(rand,model="iid")
  result = inla(formula, family="poisson", data = Epil, 
-               control.predictor = list(compute = TRUE, link = 1))
+               control.predictor = list(compute = TRUE, link = 1),
+               control.compute = list(return.marginals.predictor=TRUE))
  plot_inla_residuals(result, observed)
  
 
@@ -37,7 +38,8 @@ Plot residuals of observed vs predicted values for INLA model
 
  formula = r ~ x1 * x2 + f(plate, model = "iid")
  mod.seeds = inla(formula, data=Seeds, family = "binomial", Ntrials = n, 
-                  control.predictor = list(compute = TRUE, link = 1))
+                  control.predictor = list(compute = TRUE, link = 1),
+                  control.compute = list(return.marginals.predictor=TRUE))
  plot_inla_residuals(mod.seeds, na.omit(Seeds$r / Seeds$n))
  }
 }

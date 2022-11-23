@@ -20,7 +20,8 @@
 #'  formula = y ~ Trt + Age + V4 +
 #'           f(Ind, model="iid") + f(rand,model="iid")
 #'  result = inla(formula, family="poisson", data = Epil, 
-#'                control.predictor = list(compute = TRUE, link = 1))
+#'                control.predictor = list(compute = TRUE, link = 1),
+#'                control.compute = list(return.marginals.predictor=TRUE))
 #'  plot_inla_residuals(result, observed)
 #'  
 #'
@@ -32,7 +33,8 @@
 #'
 #'  formula = r ~ x1 * x2 + f(plate, model = "iid")
 #'  mod.seeds = inla(formula, data=Seeds, family = "binomial", Ntrials = n, 
-#'                   control.predictor = list(compute = TRUE, link = 1))
+#'                   control.predictor = list(compute = TRUE, link = 1),
+#'                   control.compute = list(return.marginals.predictor=TRUE))
 #'  plot_inla_residuals(mod.seeds, na.omit(Seeds$r / Seeds$n))
 #'  }
 
@@ -40,7 +42,7 @@
 
 plot_inla_residuals <- function(inla.model, observed){
   
-  if(is.null(inla.model$marginals.fitted.values)) stop('No fitted values to plot')
+  if(is.null(inla.model$marginals.fitted.values)) stop('No fitted values to plot. Add control.compute = list(return.marginals.predictor=TRUE) to your inla() call.')
   if(any(is.na(inla.model$misc$linkfunctions$link))){ 
     warning('Fitted values from the INLA model may have been returned on the linear, rather than link scale. Use `control.predictor = list(link = 1)` to make sure all fitted values are on the natural scale.')
   }
