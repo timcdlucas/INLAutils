@@ -4,9 +4,6 @@
 \name{INLAutils}
 \alias{INLAutils}
 \title{Utility Functions for INLA: Additional Plots and Support for ggplot2.}
-\description{
-Utility Functions for INLA: Additional Plots and Support for ggplot2.
-}
 \author{
 as.person(c(
    "Tim Lucas <timcdlucas@gmail.com> [aut, cre]", 
